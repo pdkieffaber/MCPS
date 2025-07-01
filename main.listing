@@ -1,0 +1,7 @@
+# Plot anxiety scores over time by therapy type
+ggplot(data, aes(x = time, y = anxiety_scores, color = therapy_type)) +
+    geom_point(position = position_jitter(width = 0.1, height = 0)) +
+    geom_smooth(method = "loess", se = FALSE) +
+    labs(title = "Anxiety Scores Over Time by Therapy Type",
+         x = "Time (Months)", y = "Anxiety Score") +
+    theme_minimal()

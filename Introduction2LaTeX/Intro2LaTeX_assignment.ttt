@@ -1,0 +1,15 @@
+\begin{table*}[hbt]
+\ifnextchar[{\eatarg}{}
+[h]
+\centering
+\caption{Expected Reaction Times by Condition}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Group} & \textbf{Mean RT (ms)} & \textbf{SD} \\
+\midrule
+Control & 520 & 45 \\
+Sleep Deprived & 650 & 60 \\
+\bottomrule
+\end{tabular}
+\label{tab:reaction}
+\end{table*}

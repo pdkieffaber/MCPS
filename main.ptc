@@ -1,0 +1,72 @@
+\babel@toc {english}{}\relax 
+\gdef \the@ipfilectr {@-1}
+\contentsline {chapter}{\numberline {1}Methods for Data Collection}{7}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Software for Generating Experiments}{8}{section.1.1}%
+\contentsline {subsection}{\numberline {1.1.1}Choosing the Right Software}{8}{subsection.1.1.1}%
+\contentsline {subsubsection}{Commercial Vs. Open Source}{8}{section*.2}%
+\contentsline {subsubsection}{Flexibility Vs. Ease of Use}{8}{section*.3}%
+\contentsline {subsubsection}{Online Data Collection}{10}{section*.5}%
+\contentsline {section}{\numberline {1.2}Research in Practice}{12}{section.1.2}%
+\contentsline {section}{\numberline {1.3}PsyToolkit}{14}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}Getting Started with PsyToolkit}{14}{subsection.1.3.1}%
+\contentsline {subsection}{\numberline {1.3.2}Create Your First Survey}{14}{subsection.1.3.2}%
+\contentsline {subsubsection}{Test Your Survey}{17}{section*.8}%
+\contentsline {subsubsection}{Check the Survey Data}{18}{section*.9}%
+\contentsline {subsubsection}{Deploy Your Survey}{19}{section*.11}%
+\contentsline {subsection}{\numberline {1.3.3}Create Your First Experiment}{19}{subsection.1.3.3}%
+\contentsline {subsubsection}{Creating the Stimuli}{21}{section*.13}%
+\contentsline {subsubsection}{The Experiment Script}{22}{section*.15}%
+\contentsline {subsubsection}{Testing and Deploying Your Experiment}{24}{section*.16}%
+\contentsline {subsection}{\numberline {1.3.4}Intermediate Experiment Generation}{25}{subsection.1.3.4}%
+\contentsline {subsubsection}{The Go\_No-Go Task}{25}{section*.17}%
+\contentsline {subsubsection}{Random Selection of Tasks}{26}{section*.18}%
+\contentsline {subsection}{\numberline {1.3.5}Retrieving Experiment Data from PsyToolkit}{28}{subsection.1.3.5}%
+\contentsline {subsection}{\numberline {1.3.6}Advanced Experiment Generation}{30}{subsection.1.3.6}%
+\contentsline {subsubsection}{Introducing Randomness}{30}{section*.20}%
+\contentsline {subsubsection}{PsyToolkit Tables}{32}{section*.22}%
+\contentsline {subsubsection}{Conditional Execution}{35}{section*.24}%
+\contentsline {subsubsection}{Tying Up the Loose Ends}{36}{section*.26}%
+\gdef \the@ipfilectr {}
+\contentsline {part}{\@mypartnumtocformat {I}{PSYC672}}{39}{part.1}%
+\ttl@starttoc {default@1}
+\gdef \the@ipfilectr {@-2}
+\contentsline {chapter}{\numberline {2}Reproducible Research with GIT \& Git-HUB}{41}{chapter.2}%
+\contentsline {section}{\numberline {2.1}What is Reproducible Research?}{42}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Introduction to Git}{42}{section.2.2}%
+\contentsline {subsubsection}{Installing Git on Windows}{43}{section*.30}%
+\contentsline {subsubsection}{Git on macOS Option 1: Using Xcode Command Line Tools (Recommended)}{43}{section*.31}%
+\contentsline {subsubsection}{Git on macOS Option 2: Install via Homebrew}{43}{section*.32}%
+\contentsline {subsubsection}{Navigation Using the Terminal or Command Prompt}{44}{section*.35}%
+\contentsline {subsubsection}{Creating a Repository}{46}{section*.36}%
+\contentsline {subsubsection}{Connect to a Remote Repository}{46}{section*.37}%
+\contentsline {subsubsection}{Cloning a Repository}{48}{section*.39}%
+\contentsline {subsubsection}{Example Workflow}{51}{section*.43}%
+\contentsline {section}{\numberline {2.3}Collaboration with Git}{52}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Version Control for Experiments and Data Analysis}{54}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Using Markdown with Git/GitHub}{55}{section.2.5}%
+\contentsline {section}{\numberline {2.6}Tracking \& Reviewing Changes}{56}{section.2.6}%
+\contentsline {section}{\numberline {2.7}Handy Tips and Best Practices for Using Git and GitHub}{57}{section.2.7}%
+\contentsline {section}{\numberline {2.8}Assignment}{59}{section.2.8}%
+\gdef \the@ipfilectr {}
+\gdef \the@ipfilectr {@-3}
+\contentsline {chapter}{\numberline {3}Linear Mixed-Effects Models (LMM)}{61}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Background: Introduction to Statistical Modeling}{62}{section.3.1}%
+\contentsline {section}{\numberline {3.2}The Need for Mixed-Effects Models}{63}{section.3.2}%
+\contentsline {subsubsection}{Fixed Effects: Population-Level Relationships}{63}{section*.59}%
+\contentsline {section}{\numberline {3.3}Definition: Linear Mixed-Effects Models}{65}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Assumptions About Random Effects in Linear Mixed Effects Models}{66}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Covariance Structure in Linear Mixed Effects Models}{67}{section.3.5}%
+\contentsline {section}{\numberline {3.6}Model Fitting and Estimation}{67}{section.3.6}%
+\contentsline {subsection}{\numberline {3.6.1}Maximum Likelihood Estimation (MLE) in Linear Mixed Effects Models}{67}{subsection.3.6.1}%
+\contentsline {subsection}{\numberline {3.6.2}Restricted Maximum Likelihood}{68}{subsection.3.6.2}%
+\contentsline {section}{\numberline {3.7}Model Assumptions in LMM}{69}{section.3.7}%
+\contentsline {section}{\numberline {3.8}A Complete Working Example}{71}{section.3.8}%
+\contentsline {section}{\numberline {3.9}Visualizing the Results of a LMM}{78}{section.3.9}%
+\gdef \the@ipfilectr {}
+\gdef \the@ipfilectr {@-4}
+\contentsline {chapter}{\numberline {4}Graph Theory}{79}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Introduction to Graph Theory}{80}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Conducting Graph Theoretical Analyses}{82}{section.4.2}%
+\gdef \the@ipfilectr {}
+\contentsline {chapter}{\textcolor {ocre}{Index}}{87}{section*.91}%
+\contentsfinish 

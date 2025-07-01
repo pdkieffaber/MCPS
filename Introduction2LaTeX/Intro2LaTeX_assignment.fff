@@ -1,0 +1,24 @@
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[h]
+\centering
+\includegraphics[width=0.6\textwidth]{example-image}
+\caption{Group differences in reaction time on the Stroop task.}
+\label{fig:sample-plot}
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[h]
+\centering
+\begin{tikzpicture}
+\draw[thick] (0,0) rectangle (3,2);
+\node at (1.5,1) {Stroop Task};
+\draw[->, thick] (3,1) -- (5,1);
+\draw[thick] (5,0) rectangle (8,2);
+\node at (6.5,1) {Working Memory Task};
+\end{tikzpicture}
+\caption{Procedure schematic showing task sequence.}
+\label{fig:tikz-figure}
+\end{figure*}

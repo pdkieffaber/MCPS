@@ -1,0 +1,376 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% The Legrand Orange Book
+% LaTeX Template
+% Version 2.4 (26/09/2018)
+%
+% This template was downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Mathias Legrand (legrand.mathias@gmail.com) with modifications by:
+% Vel (vel@latextemplates.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+% Compiling this template:
+% This template uses biber for its bibliography and makeindex for its index.
+% When you first open the template, compile it from the command line with the 
+% commands below to make sure your LaTeX distribution is configured correctly:
+%
+% 1) pdflatex main
+% 2) makeindex main.idx -s StyleInd.ist
+% 3) biber main
+% 4) pdflatex main x 2
+%
+% After this, when you wish to update the bibliography/index use the appropriate
+% command above and make sure to compile with pdflatex several times 
+% afterwards to propagate your changes to the document.
+%
+% This template also uses a number of packages which may need to be
+% updated to the newest versions for the template to compile. It is strongly
+% recommended you update your LaTeX distribution if you have any
+% compilation errors.
+%
+% Important note:
+% Chapter heading images should have a 2:1 width:height ratio,
+% e.g. 920px width and 460px height.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+\documentclass[12pt]{book} % Default font size and left-justified equations
+%\usepackage[toc,style=mcolindexgroup,nonumberlist,acronym,section=section]{glossaries}
+\newcommand{\weblink}[1]{\textcolor{ocre}{\url{#1}}}
+\newcommand{\weblinkT}[2]{\textcolor{ocre}{\href{#1}{#2}}}
+\usepackage{glossaries}
+%\usepackage[counter=page,xindy,section=page]{glossaries}
+%\usepackage{datatool-base} %used for glossaries
+\usepackage[export]{adjustbox} %for adjusting figure alignment
+\usepackage[
+  text={7in,10in},
+  centering
+]{geometry}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, calc, matrix, shapes}
+\usepackage{pstricks}
+\usepackage{pst-barcode}
+\usepackage{floatrow}
+\usepackage{amsmath}
+\usepackage{booktabs} % For nicer table formatting
+\usepackage{array}    % For more control over column width
+\usepackage{colortbl}%color background in tables
+\usepackage{pgfplots}
+\usepgfplotslibrary{fillbetween}
+\usepgfplotslibrary{groupplots}
+\usepackage{wrapfig}
+\usepackage{xcolor, soul}
+\usepackage{listings}
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{listingsutf8,listings, skins} % Allows for listings support in tcolorbox\tcbuselibrary{listings, skins}
+\renewcommand*{\glstextformat}{\textbf}
+\usetikzlibrary{shadows}
+\sethlcolor{gray!5}
+\usepackage{shadowtext}
+\usepackage{caption}%needed to change caption alignment
+\captionsetup{justification=raggedright,singlelinecheck=false}
+\usepackage{fancyvrb} %fancy Verbatim stuff
+\usepackage{placeins} %dealing with floats like wrapfig
+\usepackage{enumitem}
+\usepackage[utf8]{inputenc}
+\usepackage{parcolumns}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{lmodern}
+
+\newcommand*{\button}[1]{\colorbox{gray!40}{\shadowtext{#1}}}
+
+%Chapter-specific Glossaries
+\newglossary[tlg]{datacollection}{tld}{tdn}{Glossary of Terms}
+
+\newglossary[tlg]{graphtheory}{tld}{tdn}{Glossary of Terms}
+
+%codeblock counter
+\newcounter{codeblock}[chapter]
+\newenvironment{codeblock}[1][]{\refstepcounter{codeblock}\par\medskip
+   \textbf{Code block~\thechapter.\thecodeblock #1} \rmfamily}{\medskip}
+
+%Two-column glossary style
+\newglossarystyle{twocolumn}{
+\setglossarystyle{list}% base this style on the list style
+\renewenvironment{theglossary}{
+\begin{multicols}{2}\begin{description}}{\end{description}\end{multicols}} 
+% the default environment for list is \begin{description} \end{description}
+} 
+\input{Glossary}
+\makeglossaries
+
+\raggedbottom
+
+\input{structure.tex} % Insert the commands.tex file which contains the majority of the structure behind the template
+\usepackage{csquotes}
+\usepackage{marginnote}
+\setlength{\marginparwidth}{2.5cm}
+\usepackage{multicol}
+%\hypersetup{pdftitle={Title},pdfauthor={Author}} % Uncomment and fill out to include PDF metadata for the author and title of the book
+\input{PersonalizedVariables}
+%Define WM Colors
+\definecolor{WMgreen}{RGB}{17,87,64}
+\definecolor{WMgold}{RGB}{185,151,91}
+
+%My special colored figure boxes
+\newtcblisting{mycode}[1][]{
+  listing only,
+  listing options={basicstyle=\ttfamily\small,language=#1},
+  colback=gray!10,      % Background color
+  colframe=black!75,    % Frame color
+  coltitle=WMgold,
+  fonttitle=\bfseries,
+  arc=4mm,              % Rounded corners
+  listing engine=listings,
+  breakable,            % Allow code to break across pages
+  title=#1 Code,        % Title for the code block
+  % Optional output section settings
+  lower separated=false,  % Don't show separator line by default
+  colbacklower=gray!20,  % Darker background for output
+  before lower={\textbf{Output:}}, % Label the output section
+}
+
+%\myfigure{title}{imagefile}{caption}{reflabel}{figwidth}{imagewidth}{captionwidth}
+\newcommand*{\myfigure}[7]{\begin{tcolorbox}[every float=\centering, drop shadow, title=#1, width=#5,colback=black!5,colframe=WMgreen,
+  colbacktitle=WMgreen]
+  \begin{minipage}{#6}
+  \includegraphics[width=\textwidth,center]{#2}
+  \end{minipage}
+  \begin{minipage}{#7}
+  \captionof{figure}{#3}
+  \label{#4}
+  \end{minipage}
+ \end{tcolorbox}}
+ 
+ \newcommand*{\myfigurecapbelow}[7]{%
+  \begin{tcolorbox}[every float=\centering, drop shadow, title=#1, width=#5,
+                    colback=black!5, colframe=WMgreen, colbacktitle=WMgreen]
+    \begin{center}
+      \includegraphics[width=#6]{#2}
+      \captionof{figure}{#3}
+      \label{#4}
+    \end{center}
+  \end{tcolorbox}%
+}
+ 
+
+%My special colored wrapfigure boxes
+%\mywrapfigure{title}{width}{imagefile}{caption}{reflabel}
+\newcommand*{\mywrapfigurealso}[5]{\begin{wrapfigure}{R}{#2}
+\begin{tcolorbox}[every float=\centering, drop shadow, title=#1 ,colback=white,colframe=WMgreen,
+  colbacktitle=WMgreen,]
+  \includegraphics[width=\textwidth,center]{#3}
+  \captionof{figure}{#4}
+  \label{#5}
+  \end{tcolorbox}
+  \end{wrapfigure}}
+ 
+ \newcommand*{\mywrapfiguretoo}[5]{%
+  \begin{wrapfigure}{R}{#2}
+    \begin{tcolorbox}[
+      enhanced,
+      drop shadow,
+      title=#1,
+      colback=white,
+      colframe=WMgreen,
+      colbacktitle=WMgreen,
+      boxrule=0.5pt,
+      fonttitle=\bfseries,
+      rounded corners,
+      width=\linewidth
+    ]
+      \centering
+      \includegraphics[width=\linewidth]{#3}
+      \captionof{figure}{#4}
+      \label{#5}
+    \end{tcolorbox}
+  \end{wrapfigure}%
+}
+
+\newcommand*{\mywrapfigure}[5]{%
+  \begin{wrapfigure}{R}{#2}
+    \begin{tcolorbox}[
+      enhanced,
+      drop shadow,
+      title=#1,
+      colback=white,
+      colframe=WMgreen,
+      colbacktitle=WMgreen,
+      boxrule=0.5pt,
+      fonttitle=\bfseries,
+      rounded corners,
+      width=\linewidth
+    ]
+      \centering
+      \includegraphics[width=\linewidth]{#3}
+      \vspace{-20pt}
+      \refstepcounter{figure}
+      {\begin{flushleft} Figure~\thefigure. #4 \end{flushleft}}
+      \label{#5}
+    \end{tcolorbox}
+  \end{wrapfigure}%
+}
+ 
+ 
+\newtcolorbox{terminal}{
+  colback=black,
+  coltext=green,
+  fontupper=\ttfamily,
+  boxrule=0pt,
+  sharp corners,
+  enhanced,
+  left=2mm,
+  right=2mm,
+  top=1mm,
+  bottom=1mm
+}
+% Define commands for input and output lines
+\newcommand{\terminalinput}[1]{\textcolor{green!80!lime}{\texttt{\$ #1}}}
+\newcommand{\terminaloutput}[1]{\textcolor{gray!40}{\texttt{#1}}}
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+%PARAMETERS
+\setlength{\epigraphwidth}{0.5\textwidth}
+%----------------------------------------------------------------------------------------
+%  COVER
+%----------------------------------------------------------------------------------------
+
+\begingroup
+\thispagestyle{empty} % Suppress headers and footers on the title page
+\begin{tikzpicture}[remember picture,overlay]
+\node[inner sep=0pt] (background) at (current page.center) {\includegraphics[width=\paperwidth]{Cover.pdf}};
+\draw (current page.center) node [fill=black,fill opacity=0.0,text opacity=1,inner sep=1cm,yshift=2cm]{\Huge\centering\bfseries\sffamily\parbox[c][][t]{\paperwidth}{\centering\color{white} Research in Practice:\\ {\Large A Methods Handbook for Research\\ in the Psychological Sciences\\}% Book title
+% Subtitle
+\vspace{.5cm}
+{\small Paul D. Kieffaber, Ph.D. \\ {\color{gray!40} College of} {\color[rgb]{.06,.339,.25} William} {\color{gray!40} \&} {\color[rgb]{.722,.589,.355} Mary}}}}; % Author name
+\end{tikzpicture}
+\vfill
+\endgroup
+
+%----------------------------------------------------------------------------------------
+%	COPYRIGHT PAGE
+%----------------------------------------------------------------------------------------
+
+\newpage
+~\vfill
+\thispagestyle{empty}
+
+\noindent Copyright \copyright  2021 Paul D. Kieffaber\\ % Copyright notice
+
+\noindent \textsc{Published by Publisher} \\ % Publisher
+
+\noindent \textsc{https://wmpeople.wm.edu/site/page/pdkieffaber/home}\\ % URL
+
+\noindent Licensed under the Creative Commons Attribution-NonCommercial 3.0 Unported License (the ``License''). You may not use this file except in compliance with the License. You may obtain a copy of the License at \url{http://creativecommons.org/licenses/by-nc/3.0}. Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \textsc{``as is'' basis, without warranties or conditions of any kind}, either express or implied. See the License for the specific language governing permissions and limitations under the License.\\ % License information, replace this with your own license (if any)
+
+\noindent \textit{First printing, March 2019} % Printing/edition date
+
+%----------------------------------------------------------------------------------------
+%	Author Credits
+%----------------------------------------------------------------------------------------
+\newpage
+\thispagestyle{empty}
+\begin{center}Author Credits\end{center}
+\begin{itemize}
+    \item Sensation \& Perception - Parts of the chapter were adapted by material originally developed with support from the William \& Flora Hewlett Foundation, Bill \& Melinda Gates Foundation, Michelson 20MM Foundation, Maxfield Foundation, Open Society Foundations, and Rice University. Powered by OpenStax CNX.
+    \item Hello
+\end{itemize}
+
+
+
+%----------------------------------------------------------------------------------------
+%	TABLE OF CONTENTS
+%----------------------------------------------------------------------------------------
+
+%\usechapterimagefalse % If you don't want to include a chapter image, use this to toggle images off - it can be enabled later with \usechapterimagetrue
+
+\chapterimage{ChapterCover.pdf} % Table of contents heading image
+
+\pagestyle{empty} % Disable headers and footers for the following pages
+\dominitoc% Initialization of minitoc
+\tableofcontents % Print the table of contents itself
+
+\cleardoublepage % Forces the first chapter to start on an odd page so it's on the right side of the book
+
+\pagestyle{fancy} % Enable headers and footers again
+
+%----------------------------------------------------------------------------------------
+%	SECTIONS/CHAPTERS
+%----------------------------------------------------------------------------------------
+%\part{Essential Computing Competencies}
+
+\include{PsyToolkit/PsyToolkit}
+
+%\include{Introduction2Spreadsheets/Introduction2Spreadsheets}
+
+%\part{Methods in Context}
+
+%\include{Sensation And Perception/SensationAndPerception}
+%\include{FeatureProcessing/FeatureProcessing}
+
+%\include{ThePerceptron/thePerceptron}
+
+
+\part{PSYC672}
+
+\include{ReproducibleResearch/Intro2Git}
+
+
+
+\include{LinearMixedModels/LinearMixedModels}
+
+
+
+\include{GraphTheory/GraphTheory}
+
+%\part{Advanced Research Computing}
+
+%\part{Miscellany}
+
+%\include{Zoom}
+
+%\include{GoogleGroups}
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+\printglossary[style=twocolumn]
+\bibliography{bibliography}
+%\chapter*{Bibliography}
+%\addcontentsline{toc}{chapter}{\textcolor{ocre}{Bibliography}} % Add a Bibliography heading to the table of contents
+
+%------------------------------------------------
+
+%\section*{Articles}
+%\addcontentsline{toc}{section}{Articles}
+%\printbibliography[heading=bibempty,type=article]
+
+%------------------------------------------------
+
+%\section*{Books}
+%\addcontentsline{toc}{section}{Books}
+%\printbibliography[heading=bibempty,type=book]
+
+%----------------------------------------------------------------------------------------
+%	INDEX
+%----------------------------------------------------------------------------------------
+
+\cleardoublepage % Make sure the index starts on an odd (right side) page
+\phantomsection
+\setlength{\columnsep}{0.75cm} % Space between the 2 columns of the index
+\addcontentsline{toc}{chapter}{\textcolor{ocre}{Index}} % Add an Index heading to the table of contents
+\printindex % Output the index
+
+%----------------------------------------------------------------------------------------
+
+\end{document}

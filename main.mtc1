@@ -1,0 +1,25 @@
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {1.1}Software for Generating Experiments}{\reset@font\mtcSfont 8}{section.1.1}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {1.1.1}Choosing the Right Software}{\reset@font\mtcSSfont 8}{subsection.1.1.1}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Commercial Vs. Open Source}{\reset@font\mtcSSSfont 8}{section*.2}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Flexibility Vs. Ease of Use}{\reset@font\mtcSSSfont 8}{section*.3}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Online Data Collection}{\reset@font\mtcSSSfont 10}{section*.5}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {1.2}Research in Practice}{\reset@font\mtcSfont 12}{section.1.2}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {1.3}PsyToolkit}{\reset@font\mtcSfont 14}{section.1.3}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {1.3.1}Getting Started with PsyToolkit}{\reset@font\mtcSSfont 14}{subsection.1.3.1}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {1.3.2}Create Your First Survey}{\reset@font\mtcSSfont 14}{subsection.1.3.2}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Test Your Survey}{\reset@font\mtcSSSfont 17}{section*.8}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Check the Survey Data}{\reset@font\mtcSSSfont 18}{section*.9}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Deploy Your Survey}{\reset@font\mtcSSSfont 19}{section*.11}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {1.3.3}Create Your First Experiment}{\reset@font\mtcSSfont 19}{subsection.1.3.3}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Creating the Stimuli}{\reset@font\mtcSSSfont 21}{section*.13}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode The Experiment Script}{\reset@font\mtcSSSfont 22}{section*.15}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Testing and Deploying Your Experiment}{\reset@font\mtcSSSfont 24}{section*.16}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {1.3.4}Intermediate Experiment Generation}{\reset@font\mtcSSfont 25}{subsection.1.3.4}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode The Go\_No-Go Task}{\reset@font\mtcSSSfont 25}{section*.17}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Random Selection of Tasks}{\reset@font\mtcSSSfont 26}{section*.18}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {1.3.5}Retrieving Experiment Data from PsyToolkit}{\reset@font\mtcSSfont 28}{subsection.1.3.5}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {1.3.6}Advanced Experiment Generation}{\reset@font\mtcSSfont 30}{subsection.1.3.6}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Introducing Randomness}{\reset@font\mtcSSSfont 30}{section*.20}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode PsyToolkit Tables}{\reset@font\mtcSSSfont 32}{section*.22}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Conditional Execution}{\reset@font\mtcSSSfont 35}{section*.24}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Tying Up the Loose Ends}{\reset@font\mtcSSSfont 36}{section*.26}}

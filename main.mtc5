@@ -1,0 +1,16 @@
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {5.1}What is Reproducible Research?}{\reset@font\mtcSfont 90}{section.5.1}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {5.2}Introduction to Git}{\reset@font\mtcSfont 90}{section.5.2}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Installing Git on Windows}{\reset@font\mtcSSSfont 91}{section*.67}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Git on macOS Option 1: Using Xcode Command Line Tools (Recommended)}{\reset@font\mtcSSSfont 91}{section*.68}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Git on macOS Option 2: Install via Homebrew}{\reset@font\mtcSSSfont 91}{section*.69}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Navigation Using the Terminal or Command Prompt}{\reset@font\mtcSSSfont 92}{section*.72}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Creating a Repository}{\reset@font\mtcSSSfont 93}{section*.73}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Connect to a Remote Repository}{\reset@font\mtcSSSfont 94}{section*.74}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Cloning a Repository}{\reset@font\mtcSSSfont 96}{section*.76}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Example Workflow}{\reset@font\mtcSSSfont 98}{section*.80}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {5.3}Collaboration with Git}{\reset@font\mtcSfont 100}{section.5.3}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {5.4}Version Control for Experiments and Data Analysis}{\reset@font\mtcSfont 101}{section.5.4}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {5.5}Using Markdown with Git/GitHub}{\reset@font\mtcSfont 103}{section.5.5}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {5.6}Tracking \& Reviewing Changes}{\reset@font\mtcSfont 103}{section.5.6}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {5.7}Handy Tips and Best Practices for Using Git and GitHub}{\reset@font\mtcSfont 105}{section.5.7}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {5.8}Assignment}{\reset@font\mtcSfont 107}{section.5.8}}

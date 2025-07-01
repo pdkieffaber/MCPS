@@ -1,0 +1,12 @@
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.1}Background: Introduction to Statistical Modeling}{\reset@font\mtcSfont 42}{section.2.1}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.2}The Need for Mixed-Effects Models}{\reset@font\mtcSfont 44}{section.2.2}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Fixed Effects: Population-Level Relationships}{\reset@font\mtcSSSfont 44}{section*.29}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.3}Definition: Linear Mixed-Effects Models}{\reset@font\mtcSfont 47}{section.2.3}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.4}Assumptions About Random Effects in Linear Mixed Effects Models}{\reset@font\mtcSfont 48}{section.2.4}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.5}Covariance Structure in Linear Mixed Effects Models}{\reset@font\mtcSfont 48}{section.2.5}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.6}Model Fitting and Estimation}{\reset@font\mtcSfont 49}{section.2.6}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {2.6.1}Maximum Likelihood Estimation (MLE) in Linear Mixed Effects Models}{\reset@font\mtcSSfont 49}{subsection.2.6.1}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {2.6.2}Restricted Maximum Likelihood}{\reset@font\mtcSSfont 51}{subsection.2.6.2}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.7}Model Assumptions in LMM}{\reset@font\mtcSfont 51}{section.2.7}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.8}A Complete Working Example}{\reset@font\mtcSfont 54}{section.2.8}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.9}Visualizing the Results of a LMM}{\reset@font\mtcSfont 61}{section.2.9}}

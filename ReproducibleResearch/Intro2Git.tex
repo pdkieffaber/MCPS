@@ -1,0 +1,812 @@
+%----------------------------------------------------------------------------------------
+%	The Perceptron CHAPTER 
+%----------------------------------------------------------------------------------------
+\chapterimage{ChapterCover.pdf} % Chapter heading image
+\chapter{Reproducible Research with GIT \& Git-HUB}
+
+\epigraph{\textit{An article about computational science in a scientific publication is not the scholarship itself, it is merely advertising of the scholarship. The actual scholarship is the complete software environment and the complete set of instructions which generated the figures.}}{\rightline{{\rm --- \href{https://en.wikipedia.org/wiki/Marvin_Minsky}{David Donoho}}}}
+
+\minitoc
+\newpage
+\section{What is Reproducible Research?}
+The quote by David Donoho (Stanford University, 1988) at the top of this chapter is widely cited in discussions of scientific transparency, often paraphrased to emphasize that published articles are merely ``advertisements'' for the actual scholarship, which lies in the data, the code used to process those data, and the computational methods used to generate the results. In the context of reproducible research, this means that sharing raw data, analysis scripts, and documentation—ideally along with information about software versions and computing environments—is essential for others to be able to verify findings, replicate analyses, or extend the work. Without access to these materials, even well-intentioned scientists cannot fully evaluate the integrity or robustness of the original conclusions. True reproducibility goes beyond publishing results; it requires open and structured sharing of the entire analytic workflow.
+
+\subsection*{Historical Significance}
+Reproducibility has long been considered a cornerstone of the scientific method, dating back to the Enlightenment era, when thinkers like Francis Bacon and later Karl Popper emphasized the importance of empirical verification. In its most basic form, reproducibility refers to the ability of independent researchers to arrive at the same results using the same data and methodology. This principle ensures that scientific claims are not the result of chance, bias, or unrecognized error. Over time, particularly with the rise of computational science, the concept of reproducibility has evolved to include not only replication of experiments but also transparency in analytical workflows—sharing raw data, statistical code, and computational environments.
+
+Reproducibility is often confused with generalizability, but the concepts are distinct. Generalizibility concerns whether a finding holds true in new settings, populations, or under different conditions. In contrast, reproducibility is narrower: it tests whether the same result can be obtained when the original procedures are followed exactly. A study can be reproducible but not generalizable (e.g., if it was conducted in a very specific sample), or it can be broadly generalizable but not reproducible if the analytic process was not transparent or cannot be followed precisely. Both qualities are important, but without reproducibility, we can’t be confident in the validity of the original finding to begin with.
+
+A notable case that highlights the importance of reproducibility and transparency is the 2010 study by Reinhart and Rogoff, which claimed a strong negative relationship between national debt and economic growth. The study was widely cited in economic policy debates around austerity measures. However, when a group of graduate students attempted to replicate the findings, they discovered major coding errors and selective data exclusion in the original Excel spreadsheet \cite{cassidy2013reinhart}. Once corrected, the negative relationship between debt and growth was much weaker than originally reported. This episode not only damaged the authors’ reputations but also revealed how the absence of transparent, reproducible methods can lead to widespread misinformation and misguided policy decisions.
+
+Such examples underscore the broader consequences of irreproducible research—not just for scientific integrity, but for public trust, policy, and the allocation of resources. As modern research becomes increasingly complex and data-driven, reproducibility is no longer optional; it is a professional obligation.
+
+\subsection*{Methods to Improve Reproducibility}
+fill in later
+
+\section{Introduction to Git}
+Git is a popular and powerful open-source, version control software.  Version control software manages changes in files as they are edited over time and by different users.  With Git, users can track changes made to files and back up old versions of files. When multiple variants of a product need to be managed or different people make changes, Git tracks the differences across branches.
+
+\subsection*{Installing Git}
+\subsubsection{Installing Git on Windows}
+\begin{enumerate}
+\item Download Git for Windows
+	\begin{itemize}
+		\item Visit the official Git website: \weblink{https://git-scm.com/}
+		\item Click Download for Windows. This will download an .exe installer.
+	\end{itemize}
+\item Run the Installer
+	\begin{itemize}
+		\item Double-click the downloaded .exe file.
+		\item When prompted by Windows, allow the installer to make changes.
+		\item Proceed through the setup wizard. The default options are fine for most users, but pay attention to these key choices:
+		\begin{enumerate}
+			\item Choose ``Git from the command line and also from 3rd-party software.''
+			\item Select ``Use Git Bash only” unless you prefer integrating with Windows Command Prompt.
+			\item Use the default: “Use the OpenSSL library.''
+			\item Choose ``Checkout Windows-style, commit Unix-style line endings'' (default).
+		\end{enumerate}
+		\item Click Install, then Finish to complete the setup.
+	\end{itemize}
+\item Open Git Bash
+	\begin{itemize}
+	\item Git Bash is a terminal emulator that gives you a Unix-style shell on Windows. Find it in the Start Menu under ``Git'' $\rightarrow$ ``Git Bash.'' Open it to start using Git
+	\end{itemize}
+\end{enumerate}
+
+\subsubsection{Git on macOS Option 1: Using Xcode Command Line Tools (Recommended)}
+\begin{enumerate}
+\item Open the Terminal application (in Applications > Utilities).
+\item Type the following command:
+\begin{terminal}
+\terminalinput{git --version}
+\end{terminal}
+
+If Git is not yet installed, macOS will prompt you to install Command Line Developer Tools. Click Install.
+This will install Git along with compilers and other tools needed for software development.
+
+Once the install is complete, try the ``git --version'' command again. You should now see a version number (e.g., git version 2.39.1).
+\end{enumerate}
+
+\subsubsection{Git on macOS Option 2: Install via Homebrew}
+\begin{enumerate}
+\item Open Terminal.
+
+Install Git by typing:
+\begin{terminal}
+\terminalinput{brew install git}
+\end{terminal}
+
+After installation, verify with:
+\begin{terminal}
+\terminalinput{git --version}\\
+\terminaloutput{git version 2.39.1}
+\end{terminal}
+\end{enumerate}
+
+\subsection*{Configuring Git (All Platforms)}
+After installing Git, configure your identity so your commits (changes) are properly attributed.
+
+In your terminal (Git Bash or macOS Terminal), run:
+\begin{terminal}
+\terminalinput{git config --global user.name ``Your Name''}|\\
+\terminalinput{git config --global user.email ``your.email@example.com''}
+\end{terminal}
+
+You can confirm your settings with:
+\begin{terminal}
+\terminalinput{git config --list}\\
+\terminaloutput{Your Name}\\
+\terminaloutput{your.email@example.com}
+\end{terminal}
+These values will be stored in a global configuration file (usually located at ~/.gitconfig).
+
+
+\subsection*{Repositories}
+A Git repository (or repo) is a structured folder that tracks changes to files using Git. Think of it as a time machine for your project: it stores snapshots of your code, documents, or data at various points in time. You can revisit, compare, or restore earlier versions whenever needed. A Git repository can be ``local'', meaning that is only stored on your computer, or it can be stored on a shared platform like GitHub, GitLab, or Bitbucket where it can be shared with others.
+
+\noindent A Git repository contains:
+\begin{itemize}
+\item Your project files (code, notebooks, scripts, etc.)
+\item A hidden .git folder that stores all the version history
+\item Metadata like commit messages, author info, and timestamps
+\item Branches for parallel development
+\end{itemize}
+
+Git repositories are powerful tools used to manage and track the evolution of a project’s files over time. At their core, they enable users to keep a detailed record of changes, making it easy to see what was modified, when, and by whom. This is especially valuable in collaborative settings, where multiple people are working on the same files—Git helps prevent accidental overwrites by keeping each contributor’s work organized and coordinated. Repositories also support the use of branches, which allow individuals to experiment with new features or ideas without affecting the main project. If a mistake is made or a change is no longer needed, Git makes it easy to revert to an earlier version.
+
+In data science and research, Git repositories are commonly used to organize R or Python scripts, data cleaning routines, analysis code, manuscripts, reports, figures, and supplementary materials like README files. By storing all of these elements in a version-controlled environment, researchers can ensure transparency, reproducibility, and efficient collaboration throughout the lifecycle of a project.
+
+\subsubsection{Navigation Using the Terminal or Command Prompt}
+
+Even when using a shared platform like GitHub, you will want to designate a location for a repository on your computer.  To do this, simply navigate to the desired location on your computer using the terminal.
+
+\begin{enumerate} 
+\item On macOS or Linux
+	\begin{itemize}
+		\item Open the Terminal
+		
+		Press Cmd + Space to open Spotlight Search.\\
+		Type Terminal and press Enter.\\
+
+		\item See where you currently are
+
+		When the terminal opens, you're usually in your home directory.  You can check using the ``pwd'' (print working directory) command:
+		\begin{terminal}
+		\terminalinput{pwd}
+		\end{terminal}
+		This prints the current working directory (e.g., /Users/yourname).
+
+		You can list files and folders in the current directory using the ``ls'' (list):
+		\begin{terminal}
+		\terminalinput{ls}
+		\end{terminal}
+		
+		Navigate to another directory using the ``cd'' (change directory) command:
+		\begin{terminal}
+		\terminalinput{cd Documents/Projects}
+		\end{terminal}
+
+		This moves you to the Projects folder inside Documents.
+
+		To move up one level, type:
+		\begin{terminal}
+		\terminalinput{cd ..}
+		\end{terminal}
+
+		To go directly to your Desktop, type:
+		\begin{terminal}
+		\terminalinput{cd ~/Desktop}
+		\end{terminal}
+		
+		Again, use pwd to verify where you are.
+	\end{itemize}
+	
+\item{On Windows (Using Command Prompt)}
+	\begin{itemize}
+	\item Open Git Bash or Command Prompt
+
+	Press Windows + S, type Git Bash or cmd, and press Enter.
+
+	\item See where you currently are
+	
+	When the terminal opens, you're usually in your home directory.  You can check using the ``cd'' (current directory) command:
+	\begin{terminal}
+	\terminalinput{cd}
+	\end{terminal}
+	
+	You can list files and folders in the current directory using the ``ls'' (list):
+	\begin{terminal}
+	\terminalinput{dir}
+	\end{terminal}
+
+	Navigate to another directory using the ``cd'' (change directory) command:
+	\begin{terminal}
+	\terminalinput{cd C:\\Users\\YourUsername\\Documents\\Projects}
+	\end{terminal}
+	(Replace YourUsername with your Windows username.)
+
+	This moves you to the Projects folder inside Documents.
+
+	To move up one level, type:
+	\begin{terminal}
+	\terminalinput{cd ..}
+	\end{terminal}
+
+	To go to a specific location, like the Desktop:
+	\begin{terminal}
+	\terminalinput{cd ~/Desktop}
+	\end{terminal}
+	
+	\end{itemize}
+\end{enumerate}
+
+\subsubsection{Creating a Repository}
+\begin{enumerate}
+\item Create a Project Folder
+Once you have found a suitable location for your repository, you can create a new folder to hold its contents using the ``mkdir'' (make directory) command, then navigate to the newly created folder/repository:
+\begin{terminal}
+\terminalinput{mkdir my-first-repo}\\
+\terminalinput{cd my-first-repo}
+\end{terminal}
+Once you are inside the newly created folder, you can initialize it as a Git repository using:
+\begin{terminal}
+\terminalinput{git init}\\
+\terminaloutput{Initialized empty Git repository in /Users/paul/Documents/PSYC672/.git/}
+\end{terminal}
+This creates a .git folder and marks the directory as a Git repository.
+
+\item Add Files
+Create or copy some files into the folder. Then stage the files for your first commit. To ``stage files for commit'' in Git means to mark specific changes (files or parts of files) that you want to include in your next commit. Staging acts like a buffer zone between editing files and permanently recording those changes in the project’s history. Imagine you’re packing a box to mail. You don’t just throw everything in the box and seal it right away. First, you select the items you want to include --- that’s the staging area. Once you’re sure, you seal the box and ship it that’s the commit.
+\begin{terminal}
+\terminalinput{git add .}
+\end{terminal}
+This stages all files for commit.
+
+You can stage only some changes from multiple files—useful for separating unrelated changes into clean, logical commits. It helps ensure that only reviewed and intentional edits are committed. Git lets you review what’s staged (git diff --staged) before committing.
+
+\item Make Your First Commit
+\begin{terminal}
+\terminalinput{git commit -m ``Initial commit''}
+\end{terminal}
+In Git, to ``commit'' files means to permanently record a snapshot of your staged changes into the repository’s history. Think of it as saving a version of your project that you can always go back to.  The ``-m'' flag allows you to add a comment describing this commit, in this case ``initial commit.''
+
+\item View History
+As you commit changes to a project as it evolves, you can always view a record of those changes by viewing the repository's ``log.''
+\begin{terminal}
+\terminalinput{git log}
+\end{terminal}
+
+\end{enumerate}
+
+\subsubsection{Connect to a Remote Repository}
+Assuming you’re using GitHub:
+\begin{enumerate}
+\item Create a free account at \weblink{https://github.com}
+	
+	As of 2019, the free account will allow you to create and share unlimited repositories (both public and private), however, private repositories will have some limited functionality when using a free GitHub account.
+	\newpage
+	
+\item Create a new GitHub repository
+\end{enumerate}
+	\myfigurecapbelow{Create a new repository in GitHub}{ReproducibleResearch/images/GitHub1.png}{To create a new repository, first click the ``Repositories'' tab on the top left of the page, then click the ``New'' button.}{fig:github1}{\linewidth}{\linewidth}{.1\linewidth}
+
+	
+	\mywrapfigure{Initial Repo Parameters}{.5\linewidth}{ReproducibleResearch/Images/GitHub2.PNG}{Give your new repository a name and designate it as public or private.}{fig:GitHub2}
+	
+	Click the ``New'' button on the ``Repositories'' tab (See Figure \ref{fig:GitHub1}) to create a new repository. You’ll be prompted to name your repository, optionally add a description, choose whether it will be public or private, and select initialization options (See Figure \ref{fig:GitHub2}.  These include adding a README.md file (useful for describing the project), a .gitignore file (to exclude certain files or folders from version control), and a license (to define how others can use your code). If you initialize with a README, your repository will start with that file already committed to the main branch. This setup provides a clean starting point for managing and sharing your project. 
+	
+	Note that at this point in the process, you have simply created one repository on your computer and another in GitHub.  The next step is to connect and synchronize your local repository with the one you created on GitHub.  This can sometimes be a bit tricky because the two repositories are, at this point, completely different.  The first thing you will need is to generate a personal access token. A personal access token is a secure, user-specific alternative to a password that allows you to authenticate with Git hosting services like GitHub when using the command line or external tools. Because GitHub removed password authentication for Git operations over HTTPS in 2021, a personal access token is now required to push, pull, or clone repositories via HTTPS. This token functions like a temporary password and can be granted specific scopes or permissions, such as access to public repositories, private repositories, or workflow automation. You generate it from your GitHub account settings, and once created, you can use it in place of a password when prompted during Git operations. For security, tokens should be stored securely and rotated periodically.
+
+	%\myfigure{Create a new repository in GitHub}{ReproducibleResearch/Images/GitHub2.PNG}{To create a new repository, first click the ``Repositories'' tab on the top left of the page, then click the ``New'' button.}{fig:githubnewrepo2}{.5\linewidth}{\linewidth}{\linewidth}
+
+\newpage
+\begin{enumerate}[start=3]
+	\item Generate a personal access token.
+		\begin{enumerate}
+			\item Verify your email address if it hasn't been verified yet.
+ 			\item Click your profile photo in the upper-right corner of any GitHub page, then click Settings.
+			\item In the left sidebar, click Developer settings.
+			\item Under Personal access tokens, click Tokens (classic).
+			\item Click Generate new token, then Generate new token (classic).
+			\item Enter a name for the token in the "Note" field.
+			\item Select an expiration date under Expiration.
+			\item Choose the scopes to grant the token. For example, select repo to access repositories from the command line.
+			\item Click Generate token.
+		\end{enumerate}
+		\emph{Be sure to save the token somewhere discrete.  Remember, it is like your private Git password.}
+		
+\end{enumerate}
+		
+				
+\begin{enumerate}[start=4]
+\item Sync Local and Remote Repositories
+
+You might think of your local copy of the repository as your first ``branch.'' A branch in Git is essentially a parallel version of your project. It is like a timeline of your project, where each branch represents a different line of development. The default branch is usually named ``main'' (or ``master'' in older repositories). Branches are created in order to do things like try out new features, fix bugs, or work on different versions of a project without changing the main version. Importantly, each branch tracks its own history of commits.  Because the main branch in the newly created repository on GitHub is empty, you are going to move/copy your current branch (what is in your local repository) to the ``main'' branch on GitHub, overwriting the existing main branch if necessary.
+	\begin{itemize}
+	\item Copy the GitHub repo URL (e.g., https://github.com/username/my-first-repo.git)
+	\item Set your local branch to be the main branch.
+		\begin{terminal}
+		\terminalinput{git branch -M main}
+		\end{terminal}
+
+	\item ``Push'' your Main Branch to the Remote Repository
+		\begin{terminal}
+		\terminalinput{git remote add origin https://github.com/username/my-first-repo.git}\\
+		\terminalinput{git push -u origin main}
+		\end{terminal}
+	\end{itemize}
+The command above will push your local commits to GitHub. The -u flag sets the upstream (tracking) relationship between your local branch and the remote branch. After running this, your local main branch ``knows'' it corresponds to origin/main remotely. 
+
+When you git clone, git fetch, git pull, or git push to a private remote repository using HTTPS URLs on the command line, Git will ask for your GitHub username and password. When Git prompts you for your password, enter your personal access token. Password-based authentication for Git has been removed in favor of more secure authentication methods.
+\end{enumerate}
+
+\subsubsection{Cloning a Repository}
+The previous example illustrated the process of moving an existing local repository to a GitHub repository that can be shared with others. To begin working on a project that is already hosted on GitHub (or another Git server), you can just clone the repository to your local machine using the git clone command. This creates a complete copy of the remote repository, including its history and all tracked files. For example:
+\begin{terminal}
+\terminalinput{git clone https://github.com/yourrepo.git}
+\end{terminal}
+This command sets up a folder on your computer containing the project files and a .git directory for tracking changes. It also links your local copy to the original remote repository, making it easy to fetch updates or push your own changes. In fact, if you are setting up a new repository from scratch, it would be more straightforward to create a new repository on GitHub, then clone that repository to your local machine.
+
+\subsection*{The Basic Git Workflow}
+
+\begin{figure}[h]
+\centering
+\scalebox{0.85}{
+\begin{tikzpicture}[
+  node distance=1cm and 1.5cm,
+  every node/.style={font=\sffamily},
+  process/.style={rectangle, draw=black, thick, minimum width=3.5cm, minimum height=1cm, text centered, fill=blue!10},
+  io/.style={trapezium, trapezium left angle=70, trapezium right angle=110, draw=black, thick, text centered, fill=orange!15},
+  terminator/.style={ellipse, draw=black, thick, text centered, fill=green!15},
+  arrow/.style={thick, ->, >=Stealth}
+]
+
+% Nodes
+\node (remote)     [terminator] {GitHub Repo};
+\node (pull)       [process, right=of remote] {git pull};
+\node (edit)       [io, right=of pull] {Edit Files};
+\node (status)     [process, right=of edit] {git status};
+\node (add)        [process, below=of status] {git add};
+\node (commit)     [process, left=of add] {git commit};
+\node (push)       [process, left=of commit] {git push};
+
+% Arrows
+\draw [arrow] (remote) -- (pull);
+\draw [arrow] (pull) -- (edit);
+\draw [arrow] (edit) -- (status);
+\draw [arrow] (status) -- (add);
+\draw [arrow] (add) -- (commit);
+\draw [arrow] (commit) -- (push);
+\draw [arrow] (push) -- (remote);
+\end{tikzpicture}}
+\caption{Recommended Git Workflow: Pull → Edit → Status → Add → Commit → Push}
+\end{figure}
+\begin{enumerate}
+\item Staying Up to Date
+
+When working with collaborators (i.e., multiple people accessing the same repository), or even if it is just you working on multiple computers, it is important that you are working with the most recent version of the repository before you try to make any changes. By running ``git pull'' before making any changes to a repository you update your local branch with any new commits from GitHub and avoid accidentally overwriting someone else’s work. Git will try to automatically merge the remote changes with your local changes and alert you if any conflicts exist, and let you know if you are already up to date!
+
+You can pull the most updated version of a branch using:
+\begin{terminal}
+\terminalinput{git pull origin main}\\
+\terminaloutput{From https://github.com/pdkieffaber/PSYC672}\\
+\terminaloutput{ * branch            main       -> FETCH\_HEAD}\\
+\terminaloutput{ Already up to date.}
+\end{terminal}
+
+\item Making Changes
+
+Once the repository is synchronized/cloned, you can begin making changes. This typically involves editing existing files or creating new ones using your preferred text editor or integrated development environment (IDE). Changes might include writing code, updating documentation, or adding figures and data files. Git will keep track of these modifications automatically, but nothing is saved to version control until you explicitly stage and commit the changes.
+
+\item Checking Status
+
+At any point, you can check which files have been modified, added, or deleted using the git status command. This provides a quick overview of the current state of your working directory. It highlights which changes are untracked (new files), which have been modified but not yet staged, and which are ready to be committed. Regularly running git status is a good habit, as it helps avoid confusion and ensures you’re aware of everything that’s changed.
+\begin{terminal}
+\terminalinput{git status}
+\end{terminal}
+
+\item Staging Files
+
+Before committing changes, you need to stage them with the git add command. Staging tells Git which changes you want to include in your next commit. You can stage individual files (e.g., git add report.md) or all modified files at once using ``git add .''. This step allows you to group related changes together for clarity and cleaner commit history. \emph{Only staged changes will be included in the next commit.}
+\begin{terminal}
+\terminalinput{git add .}
+\end{terminal}
+
+\item Committing Changes
+
+Once your changes are staged, use git commit to save them to your local repository. A commit is like a snapshot of your project at a specific point in time. You’ll include a descriptive message with each commit using the -m flag, such as:
+\begin{terminal}
+\terminalinput{git commit -m ``Fix typo in introduction and add conclusion section.''}
+\end{terminal}
+This message helps you (and your collaborators) understand the purpose of the changes later. Each commit is stored in the repository’s history, making it easy to review or revert if needed.
+
+\item Pushing to GitHub
+
+After committing your changes locally, you can upload them to the remote repository (e.g., GitHub) using git push. This command syncs your local branch with the corresponding branch on the server. Most commonly, you’ll use:
+\begin{terminal}
+\terminalinput{git push origin main}
+\end{terminal}
+Here, origin refers to the remote repository, and main is the branch you’re pushing to. This step makes your work available to collaborators and serves as a remote backup of your progress.
+
+\end{enumerate}
+
+\subsection*{Branching}
+Branching is one of Git’s most powerful features, allowing developers to diverge from the main line of development and continue work without affecting the main branch. A branch is essentially a pointer to a specific commit, allowing you to isolate changes for a particular feature, bug fix, or experiment. By default, a new Git repository starts with a single branch, often called main, which represents the official version of the project.
+
+When you create a new branch (e.g., git branch feature-login), you're creating a parallel version of your repository where you can make changes independently of the main branch. You can then switch to this branch using ``git switch.'' This makes branching especially useful for collaborative work: each contributor can develop features in their own branch without risk of introducing conflicts into the main project.
+
+After finishing work on a branch, changes can be merged back into the main branch. This is typically done using git merge, which combines the histories of both branches. In cases where changes conflict, Git will prompt the user to resolve these conflicts manually. This ensures that only well-tested and intentional changes are added to the main branch.
+
+Importantly, pushing a new branch to GitHub (e.g., git push) does not overwrite the main branch. Each branch exists independently on the remote as well as locally. This setup supports pull requests and code reviews, which are best practices in team-based development. By maintaining a clean and organized branching strategy, such as Git Flow or GitHub Flow, teams can work more efficiently and with fewer integration headaches.
+
+For example, let's assume you are working with a research team on a project containing some data and an analysis script using R. The current code is working fine for now, but you have been tasked with coding a bootstrapping procedure in R that will enhance the analysis. With Git branching, you can begin developing your code without interfering with any the core analysis pipeline that will still be used by your collaborators while you are developing your part of the project. Also, by cloning your branch, other team members can implement, test, and revise the bootstrapping logic independently. Once complete and validated, the branch can be merged back into the main branch, integrating the improvements into the official project codebase while maintaining a clean development history. This workflow helps ensure transparency, reproducibility, and minimal disruption to ongoing analyses.
+
+\subsubsection{Example Workflow}
+Assuming you have already cloned the repository to your local machine, the first step in an example workflow would be to execute a pull to make sure you are up to date. Make sure you're on the main branch and up to date:
+\begin{terminal}
+\terminalinput{git checkout main}\\
+\terminaloutput{Already on `main'}\\
+\terminaloutput{Your branch is up to date with `origin/main'.}\\
+\terminalinput{git pull origin main}\\
+\terminaloutput{From https://github.com/pdkieffaber/PSYC672}\\
+\terminaloutput{ * branch            main       -> FETCH\_HEAD}\\
+\terminaloutput{ Already up to date.}
+\end{terminal}
+Now you are ready to start a new branch called ``bootstrap-procedure''. Let's say you're currently on the main branch and want to start developing bootstrapping the code:
+\begin{terminal}
+\terminalinput{git checkout -b bootstrap-procedure}\\
+\terminaloutput{Switched to a new branch `bootstrap-procedure'}
+\end{terminal}
+You're now on your new branch, ready to start making changes—Git will keep these changes isolated from main until you're ready to merge.
+
+Now edit your R scripts (or create new ones) in your local repository to include the new bootstrapping procedure.  When you want to make them available to your collaborators on GitHub you'll just need to stage the necessary file(s):
+\begin{terminal}
+\terminalinput{git add bootstrap\_code.R}
+\end{terminal}
+Note that you can use git add . to stage all changed files if appropriate.
+
+Commit the changes you've made in the bootstrap-procedure branch.
+\begin{terminal}
+\terminalinput{git commit -m ``Add initial version of bootstrapping procedure''}
+\terminaloutput{\texttt{[}bootstrap-procedure 03f6df2\texttt{]} Add initial version of bootstrapping procedure}\\
+ \terminaloutput{1 file changed, 1 insertion(+)}\\
+ \terminaloutput{create mode 100644 bootstrap\_code.R}
+\end{terminal}
+You can commit multiple times as you iteratively make changes to and test your new code.
+
+\newpage
+\noindent Now push your branch to GitHub if you would like others to be able to work on it simultaneously:
+\begin{terminal}
+\terminalinput{git push -u origin bootstrap-procedure}\\
+\terminaloutput{Enumerating objects: 4, done.}\\
+\terminaloutput{Counting objects: 100\% (4/4), done.}\\
+\terminaloutput{Delta compression using up to 12 threads}\\
+\terminaloutput{Compressing objects: 100\% (2/2), done.}\\
+\terminaloutput{Writing objects: 100\% (3/3), 315 bytes | 315.00 KiB/s, done.}\\
+\terminaloutput{Total 3 (delta 0), reused 0 (delta 0), pack-reused 0}\\
+\terminaloutput{remote: Create a pull request for 'bootstrap-procedure' on GitHub by visiting:}\\
+\terminaloutput{remote: https://github.com/pdkieffaber/PSYC672/pull/new/bootstrap-procedure}\\
+\terminaloutput{remote: To https://github.com/pdkieffaber/PSYC672}\\
+\terminaloutput{ * \texttt{[}new branch\texttt{]}      bootstrap-procedure -> bootstrap-procedure}\\
+\terminaloutput{branch `bootstrap-procedure' set up to track `origin/bootstrap-procedure'.}
+\end{terminal}
+This workflow ensures that the main branch always reflects stable code, while branches provide safe spaces for iterative development. 
+
+Once you have finished developing the bootstrapping\_code.R file and you have completed all testing, your changes can be seamlessly integrated back into the main branch. After merging, the feature branch can be deleted or kept for record-keeping.
+
+Start the merge process by first switching back to the main branch and pull the latest changes:
+\begin{terminal}
+\terminalinput{git checkout main}
+\terminalinput{git pull origin main}
+\end{terminal}
+
+Next, use git merge to merge the changes from your branch:
+\begin{terminal}
+\terminalinput{git merge bootstrap-procedure}
+\end{terminal}
+If there are no conflicts, Git will automatically merge the changes.
+
+Finally, push the updated main branch to GitHub:
+\begin{terminal}
+\terminalinput{git push origin main}
+\end{terminal}
+
+Once merged and verified, you can (optionally) delete the branch locally:
+\begin{terminal}
+\terminalinput{git branch -d bootstrap-procedure} 
+\end{terminal}
+
+...and remotely:
+\begin{terminal}
+\terminalinput{git push origin --delete bootstrap-procedure}
+\end{terminal}
+
+\section{Collaboration with Git}
+\subsection*{Forking Vs. Branching}
+Branching is the standard approach for managing changes within a single Git repository, especially when working on new features, bug fixes, or experiments. A branch is like a parallel version of your project where you can make changes without affecting the main codebase. When you're ready, you can merge your changes back into the main branch (often called main or master). Branches are lightweight and designed for collaborative development within a shared repository --- they're perfect for teams working closely together with shared write access.
+
+Forking, on the other hand, creates a personal copy of an entire repository under your own GitHub account. It’s commonly used in open-source or large-scale collaborative projects where contributors do not have write access to the original repository. When you fork a repo, you can make changes freely in your copy and later submit a pull request to suggest your changes to the original project. Forking is ideal for contributing to public projects, exploring changes independently, or creating a personal adaptation of a tool or dataset.
+
+In short, use branches when you're collaborating within a team or organization where everyone has access to the same repository. Use forks when you’re contributing to someone else’s project or want to maintain a separate version. Both support experimentation and version control, but forks provide an additional layer of ownership and permission separation.
+
+You cannot create a fork directly from the Git command line --- forking is a feature specific to GitHub (and similar platforms like GitLab or Bitbucket), not Git itself.
+
+\noindent To fork a repository (via GitHub):
+\begin{enumerate}
+\item Go to the repository page on GitHub.
+\item Click the ``Fork'' button in the upper right corner.
+\item GitHub creates a copy of the repository under your own account.
+\end{enumerate}
+
+\noindent After you've forked it on GitHub, you can clone your forked repository to your computer:
+\begin{terminal}
+\terminalinput{git clone https://github.com/your-username/forked-repo-name.git}\\
+\terminalinput{cd forked-repo-name}
+\end{terminal}
+
+\subsection*{Pull Requests}
+A pull request (PR) is a way to propose changes you've made in a branch (or forked repository) to be merged into another branch, typically the main branch of the original project. Pull requests are central to collaboration on GitHub, allowing teams to review, discuss, and integrate code changes in a structured and trackable way.
+
+Before you can create a pull request, your changes must be pushed to a branch on GitHub. For example, if you've created a new branch locally called feature/bootstrap-analysis:
+\begin{terminal}
+\terminalinput{git checkout -b feature/bootstrap-analysis}\\
+\# MAKE YOUR CONTRIBUTIONS...\\
+\terminalinput{git add .}\\
+\terminalinput{git commit -m ``Add bootstrap analysis to R script''}\\
+\terminalinput{git push origin feature/bootstrap-analysis}
+\end{terminal}
+
+Once your branch has been pushed to GitHub, go to your repository's GitHub page in your browser. GitHub will often show a banner suggesting you create a pull request for the newly pushed branch. Click ``Compare \& pull request''. If no banner appears, go to the ``Pull requests'' tab and click ``New pull request''. Choose the branch you want to merge into (typically main) and the branch you want to merge from (e.g., feature/bootstrap-analysis).
+
+When prompted, give your pull request a descriptive title and detailed description of the changes you made. This helps reviewers understand the intent of your changes. For example:
+
+\texttt{Title: Add bootstrapping functionality to analysis pipeline}\\
+\texttt{Description:This PR adds a bootstrapping procedure to the analysis.R file for\\
+ resampling reaction times. It uses 10,000 resamples and returns 95\% confidence\\
+ intervals. Also includes updated unit tests in test\_analysis.R.}
+
+Finally, click ``Create pull request''. You can now request specific reviewers, assign labels, and link related issues.
+
+\section{Version Control for Experiments and Data Analysis}
+Version control is not just for software developers, it can help to manage the evolution of analysis scripts, experimental materials, and documentation. Researchers can leverage Git and GitHub to make every stage of the scientific process more organized, transparent, and reproducible. By versioning analysis scripts, experimental code, stimuli, and lab notebooks, researchers create an audit trail that enhances collaboration and scientific rigor. This section explains how Git can be used to manage different aspects of experimental research.
+
+\subsection*{Tracking Analysis Scripts with Git}
+In many areas of research, analysis scripts often evolve over time as analytic strategies change, new datasets are collected, or new subjects are added to an existing dataset. Without version control, tracking the provenance of an analysis pipeline or understanding the impact of a small code change can become almost impossible. Git allows researchers to:
+\begin{enumerate}
+\item Track line-by-line changes in R, Python, or MATLAB scripts.
+\item Experiment with new methods in branches without disrupting the main pipeline.
+\item Revert to previous versions when errors or regressions are discovered.
+\item Tag important milestones, such as versions used in a submitted manuscript.
+\end{enumerate}
+
+\noindent \emph{Example Workflow:}
+\noindent Add and commit your new script:
+\begin{terminal}
+\terminalinput{git add analysis\_v1.R}\\
+\terminalinput{git commit -m ``Initial version of analysis script''}
+\end{terminal}
+
+\noindent Make updates and track changes:
+\begin{terminal}
+\terminalinput{git add analysis\_v2.R}\\
+\terminalinput{git commit -m ``Refactored script to include new preprocessing step''}
+\end{terminal}
+
+\noindent Tag manuscript version:
+\begin{terminal}
+\terminalinput{git tag -a v1.0 -m ``Version used in preprint submission''}
+\end{terminal}
+
+\subsection*{Managing Experimental Designs and Stimuli}
+In behavioral and cognitive experiments, stimuli files (images, audio clips, text), presentation scripts (e.g., in PsychoPy, E-Prime, jsPsych), and configuration settings change frequently during the development and piloting phases. Using Git to manage these files helps you avoid the confusion of having multiple folders labeled ``Final'', ``Final2'', or ``Final\_final'', makes collaboration with lab members or co-authors more transparent, and allows you to roll-back to working versions if bugs are introduced.
+
+When using Git to manage experimental designs and stimuli, it is generally recommended that you follow a standard repository structure with separate folders for stimuli, data, scripts, and results.
+
+\noindent Suggested Repository Structure for Experiments:
+
+\begin{verbatim}experiment-project/
+|
+|-- stimuli/
+|    |-- images/
+|    |-- audio/
+|    |-- text/
+|
+|-- data/
+|    |-- (add to .gitignore if large)
+|
+|-- scripts/
+|    |-- present_experiment.py
+|    |-- experiment_config.json
+|
+|-- results/
+|    |-- (add to .gitignore if large or auto-generated)
+|
+|-- README.md
+|-- LICENSE
+\end{verbatim}
+
+\section{Using Markdown with Git/GitHub}
+\subsection*{What is Markdown?}
+Markdown is a lightweight markup language created by John Gruber in 2004 to make writing formatted text simple and readable in plain text. Markdown files use the .md file extension and are widely adopted for technical documentation, README files, project wikis, and more. The appeal of Markdown lies in its easy-to-learn syntax and its ability to be rendered as rich HTML or PDF documents by a variety of tools and platforms.
+
+\subsection*{Why Use Markdown with Git?}
+Markdown and Git are a natural pairing for scientific and technical documentation:
+\begin{itemize}
+\item Version Control: Git tracks every change to your Markdown files, letting you revert, compare, or collaborate on documentation just as you would with code.
+
+\item Transparency: All edits are timestamped and attributed, supporting reproducibility and accountability.
+
+\item Collaboration: Multiple users can work on the same files, resolve conflicts, and review changes via pull/merge requests.
+
+\item Web Integration: Many platforms (e.g., GitHub, GitLab) automatically render .md files as formatted web pages, making your documentation instantly readable.
+\end{itemize}
+
+
+Features Included:
+Headings
+
+Bold and Italic text
+
+Lists (ordered and unordered)
+
+Links
+
+Images
+
+Inline code
+
+Code blocks
+\section{Tracking \& Reviewing Changes}
+Once you start version-controlling your work with Git, it's important to understand how to inspect changes, compare revisions, and understand the history of your project. These capabilities are essential for debugging, documenting, and collaborating in scientific research. Git offers a suite of powerful tools for reviewing file changes, commit history, and differences between branches.
+
+\subsection*{Checking What Has Changed: \texttt{git status}}
+The first step in tracking changes is to ask Git what’s new, modified, or staged for commit:
+\begin{terminal}
+\terminalinput{git status}
+\end{terminal}
+This command will show:
+\begin{itemize}
+\item Untracked files: new files not yet added to Git
+\item Modified files: tracked files that have changed but not yet staged
+\item Staged changes: files that are ready to be committed
+\end{itemize}
+
+SHOW EXAMPLE OUTPUT AND EXPLAIN
+
+\subsection*{Seeing the Details of Your Changes: \texttt{git diff}}
+Sometimes you may want to see exactly what lines have changed in your files:
+\begin{terminal}
+\terminalinput{git diff}
+\end{terminal}
+\noindent This will display the changes in the working directory that are not staged. Once you stage them (git add), the changes disappear from git diff. To see staged changes:
+\begin{terminal}
+\terminalinput{git diff --cached}
+\end{terminal}
+\noindent You can also compare specific files:
+\begin{terminal}
+\terminalinput{git diff analysis\_script.R}
+\end{terminal}
+\noindent Or compare different commits or branches:
+\begin{terminal}
+\terminalinput{git diff main experiment-branch}
+\end{terminal}
+
+SHOW EXAMPLE OUTPUT AND EXPLAIN
+
+\subsection*{Reviewing Commit History: \texttt{git log}}
+\noindent To see a record of commits, \texttt{git log} shows commit hashes, authors, dates, and messages:
+\begin{terminal}
+\terminalinput{git log}
+
+\textcolor{white}{commit 3a81b2f3018d2cbbd540e8d1e0db457ca170c9c4 (HEAD -> main)\\
+Author: Paul Kieffaber <paul@example.edu>\\
+Date:   Tue Jun 18 14:03:00 2025 -0400\\
+    Refactored bootstrapping code into separate function\\
+commit c71ae6c8481732ccf7c993dcfcdf5e1a24c5fd9c\\
+Date:   Mon Jun 17 16:20:34 2025 -0400\\
+    Added initial analysis script for Cognitive Control Study
+   }
+\end{terminal}
+\noindent For a simpler view:
+\begin{terminal}
+\terminalinput{git log --oneline}
+\end{terminal}
+\noindent Or with a graphical view of branches:
+\begin{terminal}
+\terminalinput{git log --oneline --graph --all}
+\end{terminal}
+
+\subsection*{Viewing Specific File History}
+\noindent If you want to see the history of a single file:
+\begin{terminal}
+\terminalinput{git log -- analysis\_script.R}
+\end{terminal}
+\noindent To view changes made to that file:
+\begin{terminal}
+\terminalinput{git diff HEAD\textasciicircum HEAD -- analysis\_script.R}
+\end{terminal}
+\noindent To see who last edited each line of a file:
+\begin{terminal}
+\terminalinput{git blame analysis\_script.R}
+\end{terminal}
+\noindent This can be helpful when debugging or reviewing collaborative contributions.
+
+\section{Handy Tips and Best Practices for Using Git and GitHub}
+While Git’s core functionality—tracking changes and managing versions—is already powerful, several features and best practices can make your workflow cleaner, more efficient, and easier to manage, especially in collaborative or research-focused projects.
+
+\subsection*{Use \texttt{.gitignore} to Exclude Unwanted Files}
+In most projects, there are files that should not be tracked by Git—such as temporary outputs, compiled files, or large datasets. A \texttt{.gitignore} file can be created using any text editor and it tells Git to ignore the files and folders designated in that file. Create a .gitignore file in the root of your repository, and Git will apply these rules when adding and committing files. This helps keep your version history clean and prevents accidentally uploading sensitive or unnecessary data.
+
+\noindent Below is an example of a \texttt{.gitignore} file for a research project:\\
+\footnotesize{NOTE: the hashtag symbol indicates a descriptive comment}
+\begin{verbatim}
+# Ignore everything in the results folder and all .log files
+/results/
+/*.log
+
+# Ignore all .csv and .tsv files in the data folder
+/data/*.csv
+/data/*.tsv
+\end{verbatim}
+
+\subsection*{Commit Often and Write Clear Messages}
+Frequent commits make it easier to track changes and revert specific modifications if needed. A good commit message should be concise but descriptive, stating what was changed and why.
+
+\noindent Poor message:
+\begin{terminal}
+\terminalinput{git commit -m ``05/23/26 - updated file''}
+\end{terminal}
+\noindent Better message:
+\begin{terminal}
+\terminalinput{git commit -m ``05/23/26 - Added log transformation to reaction time analysis for normality''}
+\end{terminal}
+
+\subsection*{Use \texttt{git tag} to Mark Significant Milestones}
+Git tags are a powerful way to mark specific points in your repository's history—typically used to indicate releases, milestones, or versions (e.g., v1.0, paper-submission, final-analysis).
+
+\noindent What Does Git Tag Actually Do?
+\begin{itemize}
+\item Git tags a specific commit, not a branch or a file directly.
+\item It does not tag individual files (like marking one .R or .py file)—instead, it marks the snapshot of the entire repository at a particular commit.
+\item Because tags point to commits, and branches also point to commits, a tag can be thought of as a ``bookmark'' for a particular state of your repo, regardless of which branch it was on.
+\end{itemize}
+
+\noindent There are two types of tags, lightweight tags and annotated tags.\\
+\noindent Lightweight Tag $\rightarrow$Just a name that points to a commit
+\begin{terminal}
+\terminalinput{git tag manuscript-submission}
+\end{terminal}
+
+\noindent Annotated Tag$\rightarrow$Contains a message, tagger name, and date—useful for documentation and releases.
+\begin{terminal}
+\terminalinput{git tag -a manuscript-submission -m ``Version for journal submission''}
+\end{terminal}
+
+\noindent If you are working on a local repository, you will need to push the tag to GitHub:
+\begin{terminal}
+\terminalinput{git push origin manuscript-submission}
+\end{terminal}
+
+\noindent To go back to a tagged version in Git, you can use the git checkout command---but how you do it depends on what you want to achieve. 
+
+\noindent \textbf{Case 1:} Temporarily inspect a tagged version (detached HEAD)\\
+\noindent If you just want to look at or run the code at the tagged state (without making changes):
+\begin{terminal}
+\terminalinput{git checkout manuscript-submission}
+\end{terminal}
+\noindent NOTE: This puts you in a ``detached HEAD'' state. In Git, HEAD is a pointer that tells you where you currently are in your repository---specifically, it points to the latest commit on the current branch. In other words, ``HEAD'' is your current location in the project history. For example, If you're on the main branch, HEAD points to the latest commit on main. A ``Detached HEAD'' state is when HEAD is pointing directly to a commit, not to a branch. When you checkout a tagged commit from the past, you’re not on a branch, so you can’t commit changes unless you create a new branch. This state is useful only for inspecting exactly what the repo looked like at the time of the tag.
+
+\noindent \textbf{Case 2:} Create a new branch from the tag (to make changes)\\
+\noindent If you want to modify code based on a tagged version:
+\begin{terminal}
+\terminalinput{git checkout -b manuscript-revision manuscript-submission}
+\end{terminal}
+\noindent This creates a new branch called manuscript-revision starting from the commit the tag manuscript-submission points to. You can now make changes (i.e., commits, merge changes, etc.) to this new branch.
+
+\newpage
+\section{Assignment}
+\begin{enumerate}
+\item Initial Setup by Instructor
+
+Create a GitHub repo (public or private) with:
+		\begin{itemize}
+		\item A LaTeX template
+		\item A bibliography file (refs.bib)
+		\item A repo with the folder structure:
+
+research-report/\\
+|---- intro.tex\\
+|---- methods.tex\\
+|---- results.tex\\
+|---- discussion.tex\\
+|---- report.tex\\
+|---- refs.bib\\
+|---- README.md
+
+		\end{itemize}
+\item Student Instructions
+	\begin{enumerate}
+	\item Fork the repo https://github.com/pdkieffaber/PSYC672.
+	\item Create a new branch of your fork using:
+	\begin{terminal}
+	\terminalinput{git checkout -b yourname-intro}
+	\end{terminal}
+	\footnotesize{Replace yourname with your name.}
+	\item Add .tex section (e.g., intro.tex) and cite at least one source using BibTeX.
+	\item Add a comment to the log file PSYC470.md
+	\item Commit changes and push:
+	\begin{terminal}
+	\terminalinput{git add intro.tex}\\
+	\terminalinput{git commit -m ``Added my introduction section''}\\
+	\terminalinput{git push origin yourname-intro}
+	\end{terminal}
+	\end{enumerate}
+\end{enumerate}
+
+\printglossary[type=datacollection,style=twocolumn]
+%\printglossary
+%\glsresetall
+\newpage
+\bibliographystyle{apalike}
+\renewcommand{\bibname}{References}
+\bibliography{bibliography}
