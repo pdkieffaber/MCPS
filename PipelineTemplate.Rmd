@@ -1,0 +1,206 @@
+---
+title: "Investigating Changing Atlantic Storm Intensity Over Time"
+author: "Paul Kieffaber"
+date: "2025-10-09"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  fig.width = 6,    # default plot width in inches
+  fig.height = 4,   # default plot height in inches
+  fig.align = "center"  # optional, centers all figures
+  )
+#Load libraries
+library(tidyverse) #includes dplyr, ggplot2, and more
+library(janitor)
+library(skimr)
+library(broom)
+# Just a little function to convert ratios to percent for printing
+pct <- function(x, digits = 1) paste0(round(100*x, digits), "%")
+```
+
+# Research Question
+Has the intensity of Atlantic storms changed over the decades?
+
+## Dataset
+To answer this, we'll use the storms dataset. The storms dataset is a built-in dataset included in the dplyr package (which is part of the Tidyverse). It provides a clean, tidy version of a subset of the NOAA Atlantic hurricane database (HURDAT2). It contains data on named storms (tropical storms and hurricanes) in the Atlantic Ocean. The version included in dplyr covers the years 1975 to 2015.
+
+Unit of Observation: Each row represents a single observation of a named storm at a specific point in time and location (usually every 6 hours during the storm's life).
+
+Key Variables:
+
+ * `name`: The name of the storm (e.g., "Katrina").
+ 
+ * `year`, `month`, `day`, `hour`: The date and time of the observation.
+ 
+ * `lat`, `long`: The geographical coordinates (latitude and longitude) of the storm's center.
+ 
+ * `status`: The storm's classification (e.g., "hurricane", "tropical storm", "tropical depression").
+ 
+ * `wind`: The maximum sustained wind speed in knots.
+ 
+ * `pressure`: The central air pressure in millibars.
+
+I defined "intensity" using two key metrics: Maximum Wind Speed and Minimum Air Pressure. The goal is to wrangle the data, calculate summary statistics, visualize the trends, and then apply more formal statistical models to test our hypotheses and explore the data's structure.
+
+# Setup and Initial Data Exploration
+## The 'storms' dataset is built into the dplyr package.
+```{r}
+head(storms)
+```
+
+```{r}
+glimpse(storms)
+```
+
+## Interpretation:
+Okay, glimpse() shows 19,537 rows and 13 columns. The key variables for our analysis include year, wind (knots), and pressure (millibars), which are all already numeric, which is great. The data runs from 1975 to 2015.
+
+## Visualize Raw Data:
+Create a scatterplot of wind against year to see if any obvious trends stick out.
+
+```{r}
+# Now, create the plot.
+ggplot(storms, aes(x = year, y = wind, group = status)) +
+  geom_point(alpha=0.1) +
+  geom_smooth(method='lm') +
+  labs(
+    title = "Storm Intensity over Time",
+    subtitle = "Data from Atlantic storms, 1970s-2020s",
+    x = "Decade",
+    y = "Wind Speed"
+  ) +
+  theme_minimal(base_size = 14)
+```
+
+## Interpretation:
+No obvious trends.  Probably need to wrangle the data a bit.
+
+# Data Wrangling
+
+Our research question is about trends over decades, but the dataset only has a year column. So, my first wrangling task is to create a new decade column. I'll calculate the decade and then select only the columns we need for the initial analysis.
+
+```{r}
+# We'll use a pipe (%>%) to chain our wrangling steps together.
+storms_wrangled <- storms %>%
+  mutate(decade = factor((year %/% 10) * 10)) %>% # factor() is better for modeling
+  select(year, decade, wind, pressure) %>% # selecting relevant columns
+  # Let's also remove rows with missing data for our key variables
+  drop_na(wind, pressure)
+
+glimpse(storms_wrangled)
+```
+The storms_wrangled data frame now includes our new decade variable, which I've converted to a factor. Each storm is tagged with the decade it belongs to.
+
+# Data Analysis and Aggregation
+Now, let's calculate the average intensity metrics for each decade. The group_by() and summarise() combination is the perfect tool for this. This gives us a high-level overview before we dive into formal modeling.
+
+```{r}
+# Group by decade and then calculate summary statistics.
+decade_summary <- storms_wrangled %>%
+  group_by(decade) %>%
+  summarise(
+    n_obs = n(), # Get the number of observations in each group (decade)
+    avg_wind = mean(wind, na.rm = TRUE), # average wind speed
+    sd_wind = sd(wind, na.rm = TRUE), # standard deviation of wind speed
+    se_wind = sd_wind / sqrt(n_obs), # standard error wind speed
+    avg_pressure = mean(pressure, na.rm = TRUE), # average pressure
+    sd_pressure = sd(pressure, na.rm = TRUE), # standard deviation pressure
+    se_pressure = sd_pressure / sqrt(n_obs), # standard error pressure
+    .groups = 'drop' # Good practice to ungroup after summarising
+  )
+
+print(decade_summary)
+```
+
+
+## Interpretation:
+The summary table shows a potential trend: avg_wind seems to rise between 1970 and 1990 then decrease until 2020. avg_pressure seems to decrease more consistently over the decades. A plot is the best way to confirm this visually.
+
+# Data Visualization
+
+Used ggplot2 to create a line plot showing how our two intensity metrics have changed over time. To make this efficient, I'll first pivot_longer() the summary data. This allows me to create two separate plots (one for wind, one for pressure) using facet_wrap(), which is much cleaner than making two separate plots.
+
+```{r}
+# Pivot the data to a "long" format.
+# Using names_sep creates separate columns for the value type (avg, se) and the metric (wind, pressure).
+decade_summary_long <- decade_summary %>%
+  pivot_longer(
+    cols = -c(decade, n_obs), #pivot all columns except decade and n_obs
+    names_to = c(".value", "metric"), #split column names into two parts.  first part will be come values of a                                            column called "metric"
+    names_sep = "_" # character to split the column names
+  )
+
+# Now, create the plot with error bars.
+ggplot(decade_summary_long, aes(x = decade, y = avg, group = 1)) +
+  # Add the error bars first, so they are behind the points/lines.
+  geom_errorbar(aes(ymin = avg - se, ymax = avg + se), width = 0.2, color = "gray50") +
+  geom_line(size = 1.2, color = "steelblue") +
+  geom_point(size = 3, color = "steelblue") +
+  facet_wrap(~ metric, scales = "free_y", labeller = as_labeller(c(pressure = "Average Pressure (mb)", wind = "Average Wind Speed (knots)"))) +
+  labs(
+    title = "Average Storm Intensity Has Increased Over the Decades",
+    subtitle = "Data from Atlantic storms, 1975-2015. Error bars represent +/- 1 Standard Error.",
+    x = "Decade",
+    y = "Average Value"
+  ) +
+  theme_minimal(base_size = 14)
+```
+
+## Interpretation
+The plot strongly suggests that the mean wind speed differs across decades, but is this difference statistically significant? An Analysis of Variance (ANOVA) was used to test the null hypothesis that the mean wind speed is the same for all decades.
+
+# Analysis of Variance (ANOVA)
+
+Does 'wind' differ significantly by 'decade'?
+
+```{r}
+# Using the Rbase aov() function
+wind_anova <- aov(wind ~ decade, data = storms_wrangled)
+
+# Use the tidy() function from the 'broom' package to get a clean summary.
+tidy(wind_anova)
+```
+
+```{r}
+# Follow up with pairwise comparisons ---
+
+# Perform Tukey's HSD test
+pairwise_results <- TukeyHSD(wind_anova)
+
+# Print results using tidy()
+tidy(pairwise_results)
+```
+
+## Interpretation:
+The results are clear. The p-value (p.value) is extremely small (9.44e-6), which is far less than our typical significance level of 0.05. Therefore, we reject the null hypothesis. There is a statistically significant difference in the mean wind speed of storms across the decades. This gives us confidence that the trend we see in the plot is not just due to random chance.
+
+#Linear Regression
+
+The ANOVA confirmed that a difference exists, but it doesn't quantify the trend over time. A linear regression model is perfect for this. I'll build two simple models to see how much wind and pressure change, on average, for each one-year increase.
+
+```{r}
+# Model 1: How does wind speed change with year?
+wind_model <- lm(wind ~ year, data = storms_wrangled)
+
+# Model 2: How does pressure change with year?
+pressure_model <- lm(pressure ~ year, data = storms_wrangled)
+
+# Display tidy summaries of both models
+tidy(wind_model)
+tidy(pressure_model)
+```
+
+## Interpretation:
+Both models show statistically significant trends (the p-values for the year coefficient are tiny).
+
+Wind Model: The estimate for year is -0.049. This means that, on average, the wind speed of a storm observation decreased by about 0.049 knots each year from the 1970s to the 2020s.
+
+Pressure Model: The estimate for year is -0.027. This means that, on average, the central pressure of a storm observation decreased modestly by about 0.027 millibars each year.
+
+Looking at the data, it appears there may be a non-linear trend.  Further analyses are warranted.
+

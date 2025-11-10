@@ -1,0 +1,325 @@
+---
+title: "LinearModels_Assignment"
+author: "YOUR_NAME"
+date: "Computer Applications in the Psychological Sciences"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE, message = FALSE, warning = FALSE,
+  fig.width = 7, fig.height = 4.8, dpi = 150
+)
+```
+
+# Objective
+You are a data analyst for a major global nongovernmental organization (NGO). You have been tasked with investigating the complex factors that drive key development outcomes around the world.
+
+You will first run a script that automatically assigns you a "research portfolio" consisting of one key outcome (your Dependent Variable) and three potential explanatory factors (your Independent Variables). You will then conduct a full analysis, from simple regression to advanced mixed-effects modeling, to understand the relationships in your specific portfolio.
+
+# Deliverable
+A single, "knitted" HTML or PDF file. This file must contain all your *annotatted* R code, all R output (including the output from Part 1 - your research portfolio assignment), appropriate visualizations, and your written interpretations for each part.
+
+# Part 1: Your Personalized Research Assignment
+Scenario: Before you can begin, you must be assigned your research portfolio.
+
+1) Get Your Assignment
+2) Create a new R Markdown file.
+3) Copy the entire code block below into a single R code chunk.
+4) Change the value assigned to YOUR_NAME to your actual full name.
+  * Run the chunk.
+  * *Note that it may take a minute or two to prepare your data*
+  * Your data assignment will look something like the output below.
+
+```{r echo=FALSE}
+# --- Part 1: Your Personalized Assignment ---
+# --- Run this block ONCE to get your variables ---
+
+# Load libraries (you may need to install first)
+library(WDI)
+library(tidyverse)
+library(lme4)
+library(lmerTest)
+library(car)
+library(GGally)
+library(lattice)
+library(digest)
+library(plyr)
+library(broom.mixed)
+
+# --- !! ENTER YOUR NAME !! ---
+# Type your full name inside the quotes, replacing the text "STUDENT NAME GOES HERE".
+YOUR_NAME <- "REPLACE_ME_WITH_YOUR_FULL_NAME" 
+# --- !! (No, really, change it to your name) !! ---
+
+if (YOUR_NAME == "REPLACE_ME_WITH_YOUR_FULL_NAME") {
+  warning("Please change YOUR_NAME to your actual name to get your unique assignment.")
+}
+
+# Convert name to a number
+# Create a unique, reproducible seed 
+# 1. Get the hex hash as a string
+hex_hash <- digest(YOUR_NAME, algo = "crc32", serialize = FALSE)
+# 2. Take the first 7 digits (this prevents an integer overflow)
+hex_substr <- substr(hex_hash, 1, 7)
+# 3. Convert the hex string (base-16) to a standard integer
+student_seed <- strtoi(hex_substr, base = 16L)
+set.seed(student_seed)
+
+#Define the variable pools
+dv_pool <- c(
+  "SP.DYN.LE00.IN",  # Life Expectancy
+  "SH.STA.SUIC.P5", # Suicide Rate
+  "SP.DYN.IMRT.IN" # Infant Mortality
+)
+dv_map<-c("SP.DYN.LE00.IN"="LifeExpectancy","SH.STA.SUIC.P5"="SuicideRate","SP.DYN.IMRT.IN"="InfantMortality")
+
+continuous_iv_pool <- c(
+  "NY.GDP.PCAP.CD", #GDP per capita
+  "SE.PRM.ENRR",    #School enrollment
+  "SP.DYN.TFRT.IN",  #Fertility rate
+  "SH.XPD.CHEX.GD.ZS", #Health expenditure GDP
+  "EG.USE.ELEC.KH.PC" #Electric Consumption
+)
+iv_map<-c("NY.GDP.PCAP.CD"="Per Capita GDP", "SE.PRM.ENRR"="School Enrollment", "SP.DYN.TFRT.IN"="Fertility Rate", "SH.XPD.CHEX.GD.ZS"="Health Expenditure GDP", "EG.USE.ELEC.KH.PC"="Electricity Consumption")
+
+# 2. Assign variables
+selected_dv_code <- sample(dv_pool, 1)
+selected_iv_codes <- sample(continuous_iv_pool, 3)
+
+my_dv_code <- selected_dv_code[[1]]
+my_iv1_code <- selected_iv_codes[[1]]
+my_iv2_code <- selected_iv_codes[[2]]
+my_iv3_code <- selected_iv_codes[[3]]
+
+# These are your personalized variable NAMES (for R code)
+# We will use these as column names
+YOUR_DV <- revalue(selected_dv_code,dv_map)
+YOUR_IV1 <- revalue(selected_iv_codes[1],iv_map)
+YOUR_IV2 <- revalue(selected_iv_codes[2],iv_map)
+YOUR_IV3 <- revalue(selected_iv_codes[3],iv_map)
+
+# Categorical variables are assigned to everyone
+YOUR_CAT_MULTI <- "region"
+YOUR_CAT_BINARY <- "income_binary"
+
+# 3. Print the assignment
+cat("--- YOUR UNIQUE ASSIGNMENT ---",
+    "\nYour Name:", YOUR_NAME,
+    "\nYour Reproducible Seed:", student_seed,
+    "\n\n--- YOUR VARIABLES ---",
+    "\n1. Your Dependent Variable (DV) is:", YOUR_DV, "(", my_dv_code, ")",
+    "\n2. Your first Continuous IV is:", YOUR_IV1, "(", my_iv1_code, ")",
+    "\n3. Your second Continuous IV is:", YOUR_IV2, "(", my_iv2_code, ")",
+    "\n4. Your third Continuous IV is:" , YOUR_IV3, "(", my_iv3_code, ")",
+    "\n5. Your Multi-level Categorical IV is: region",
+    "\n6. Your Binary Categorical IV will be: income_binary (you will create this)",
+    "\n"
+)
+    # --- These are all the indicators we need to pull ---
+my_indicators <- c(
+  my_dv_code,
+  my_iv1_code,
+  my_iv2_code,
+  my_iv3_code
+)
+
+# Pull the data from 2000-2020
+data_raw <- WDI(
+  indicator = indicators,
+  start = 2000,
+  end = 2020,
+  extra = TRUE # This adds region and income
+)
+
+clean_data=data_raw %>%
+  filter(region != "Aggregates") %>%
+  mutate(region=factor(region), income_binary=factor(ifelse(income=="High income","High Income","Low Income"))) %>%
+  na.omit()
+
+region_summary <- clean_data %>%
+  group_by(region) %>%
+  dplyr::summarise(
+    avg = mean(SP.DYN.IMRT.IN, na.rm = TRUE)
+  )
+test=lm(SP.DYN.IMRT.IN ~ region*income_binary, data=clean_data)
+summary(test)
+car::Anova(test,type=3)
+```
+
+# Part 2: Data Cleaning and Renaming 
+
+**This is a critical, multi-step process.**
+
+Your dataset "data_raw" has now been pulled using the WDI package
+
+Now, you will create a new data_clean dataframe by piping data_raw through the following steps:
+
+* Filter out aggregates: Remove all non-country rows where region == "Aggregates".
+
+* Rename columns: Use rename() to change the WDI codes to your personalized variable names in the output from Part 1.
+  * EXAMPLE OUTPUT: Your first Continuous IV is: Per Capita GDP ( NY.GDP.PCAP.CD ) 
+  * Your rename() will look like: rename(Per Capita GDP = NY.GDP.PCAP.CD, ...)
+
+* Create binary factor: Create the income_binary column. It should be "High Income" if income == "High income", and "Not High Income" for all other levels. Make it a factor.
+
+* Handle missing data: Drop all rows with NA values using na.omit().
+
+* Use the summary(), glimpse(), and/or str() functions to inspect your data.
+  * Note any issues you see
+
+* Visualize: 
+  * Create a pairs plot of all your analysis variables (YOUR_DV, YOUR_IV1, YOUR_IV2, Your_IV3, region, income_binary).
+    * Hint: ggpairs(data_clean, columns = c(YOUR_DV, YOUR_IV1, YOUR_IV2, "region", "income_binary")).
+    * Write a brief comment, describing any patterns you see.
+  * Create one or more plots showing the distribution of your variables (i.e., histogram, boxplot, probability density function, etc.)
+    * Write a brief comment, describing any patterns you see. Do they look normally distributed, or skewed?
+    
+# Part 3: Analysis Portfolio
+
+## Question 1
+
+Your director wants to start simple. She asks you "Just tell me about the relationship between [Your DV] and [Your IV1]."
+
+**Check for Linearity:**
+
+* Plot YOUR_DV vs. YOUR_IV1. Does the relationship look linear?
+
+**Conduct the Analysis**
+
+* Run a simple linear regression
+
+* Visualize: Add the geom_smooth(method = "lm") layer to your scatterplot to show the regression line.
+
+* Look at the summary() of your model. 
+  * Is the relationship statistically significant?
+  * Interpret the coefficient for YOUR_IV1 in one plain-English sentence.
+  * What is the R-squared of your model? In one sentence, explain what this means to your director?
+  
+**Check the Assumption of Normality of the Residuals**
+
+* First, check the normality of each of your variables
+* Next, check the assumption of normality of the model residuals
+  * Note any difference in the outcome of these two kinds of normality tests
+  
+## Question 2
+
+The Director now wants to know about how income level is related to your DV. What's the difference in [Your DV] between "High Income" and "Not High Income"?
+
+* Use the t.test() function with the "var.equal = TRUE" option.
+  * Write a 1-2 sentence interpretation of the ouput
+
+* Visualize: Create a boxplot with jittered data points showing YOUR_DV by income_binary.
+
+* Run the equivalent analysis using lm().
+  * Compare the t.test output to the lm() summary. 
+  * What is the (Intercept) in your lm and what does it represent?
+  * What is the coefficient for income_binary Not High Income? 
+    * Explain to your director how does this value relate to the means of the two groups shown in your t.test output?
+    
+## Question 3
+
+Your director has decided that this 'High Income' binary is too simple and that geography is also very important.  She asks you to conduct an analyses to determine if there are any differences in [Your DV] between the global regions?"
+
+* Use lm() to model YOUR_DV as a function of region.
+
+* Use car::Anova(your_model, type = 3) to get the overall F-test for region.
+
+* The summary() of your model gives you many t-tests. The car::Anova() output gives you one F-test. Explain to your director what question each of these answers.
+
+* Visualize: Create a boxplot of YOUR_DV by region.
+
+* Based on the car::Anova() result, what conclusion would you present to the director about the relationship between YOUR_DV and region?
+
+## Question 4
+
+You propose a more complex idea to your director: "Director, maybe the effect of being 'High Income' is different in 'Sub-Saharan Africa' than it is in 'Europe & Central Asia'. Maybe income status matters more in some regions?"
+
+* Build a factorial model using lm() that includes YOUR_DV as the dependent variable and both income_binary and region (along with their interaction) as independent variables.
+
+* Use car::Anova(your_model, type = 3) to get the F-tests.
+
+* Visualize: Create an interaction plot (stat_summary(fun = mean, geom = "line")) showing the relationship between income_binary and YOUR_DV, with different colored lines for region. Add something to this plot to impress your director (e.g., error bars, jittered data, etc.)
+
+* Look at your car::Anova() output. Is the income_binary:region interaction significant?
+
+* Look at your interaction plot. Are the lines parallel? In plain English, describe the ANOVA output and the the plot to your director.
+
+
+## Question 5
+
+As with all data analyses, this is getting complicated. Your director asks you to build one model for a single year to understand the key relationships. For 2019, what really predicts [Your DV]? Is it [Your IV1], [Your IV2], [Your IV3], or region?"
+
+* Filter: Create a new dataframe data_2019 that only contains data where year == 2019.
+
+* Inspect: Inspect the distribution and interrelationships among your variables using graphs.
+
+* Model: Build a "main effects" only multiple regression model using lm().
+
+* Use car::Anova(your_model, type = 3) to get the results.
+
+* Look at the car::Anova() output. When controlling for all factors simultaneously (Type 3 MSE), which ones are significant?
+
+* Synthesis: Look at the summary() output. Compare the coefficient for region here to the one you got in Question 4. Has its significance or size changed? Why might that be? (Hint: What other variable in your model is region likely correlated with?)
+
+* Repeat this analysis for year == 2001 and compare the two sets of results.
+
+## Question 6
+
+You realize a major flaw in all your previous models (other than Question 5). Your data_clean dataframe has multiple entries for each country (from 2000-2020). These observations are not independent! You must use a mixed-effects model.
+
+* Model 1 (Fixed effects only): Using the full data_clean dataset, build an lm() model. Predict YOUR_DV with the fixed effects of YOUR_IV1, YOUR_IV2, YOUR_IV3, and year. 
+
+* Model 2 (Random Intercept): Using the full data_clean dataset, build an lmer() model. Predict YOUR_DV with the fixed effects of YOUR_IV1, YOUR_IV2, YOUR_IV3, and year. Include a random intercept for country.
+
+* Model 3 (Add Random Slope): Using the full data_clean dataset, build an lmer() model. Predict YOUR_DV with the fixed effects of YOUR_IV1, YOUR_IV2, YOUR_IV3, and year. Add a random slope for year by country. (This model will have both random intercepts and slopes)
+
+* Compare Models: Use anova(model_1, model_2) to see which is a better fit.
+
+* Visualize: Check the normality of residuals and random effects of your best model.
+
+* Based on your anova() comparison, which model is better? How do you know?
+
+* Look at the summary() of your best and final model.
+
+* Fixed Effects: What is the coefficient for year? What does this tell you about the general trend of [Your DV] worldwide, even after accounting for your other IVs?
+
+* Random Effects: Look at the "Random effects" variance table.
+  * What does the (Intercept) variance for country tell you?
+  * What does the year variance for country (the random slope) tell you?
+
+* Final Synthesis: Write a final, 3-4 sentence paragraph to your director. What are the key drivers of [Your DV]? And what important, real-world story (about the differences between countries) did our simple models completely miss that our LMM was able to find?
+
+## Question 7
+
+Intrigued by your LMM analysis, the director asks you to create a spaghetti plot of your random slopes model to help make the abstract concept of "random slope variance" from lmer() more concrete. This "spaghetti plot" plots the fitted model line for every single country. It's the best way to visualize what the LMM is doing.
+
+* First, you fit the full lmer() model with a random slope for year (you just did this in Question 6). 
+
+* Then, you use the augment() (from broom.mixed) to get the .fitted (predicted) value for each country at each time point. Plotting these fitted lines shows the unique trajectory you've modeled for each country.
+
+```{r}
+# Use broom.mixed::augment() to get fitted values
+#fitted_data <- augment(lmm_model)
+
+#Use GGplot to plot the fitted slopes
+#ggplot(fitted_data, aes(x = year, y = .fitted, group = country)) +
+  # The geom_line() connects the dots for each "group" (country)
+#  geom_line(alpha = 0.5) +
+  
+  # Add the "average" (fixed effect) line in red
+#  geom_smooth(aes(group = 1), method = "lm", se = FALSE, color = "red", linewidth = 2) +
+  
+#  labs(
+#    title = "The 'Spaghetti Plot' of Random Slopes",
+#    subtitle = "Each line is a country. The red line is the 'average' fixed effect.",
+#    x = "Year",
+#    y = "Fitted (Predicted) DV"
+#  )
+```
+
+* Summarize this plot in 1-2 sentences
+
+## Question 8
+
+The director has asked you to suggest an analysis that might help to understand the interrelationships between your variables.  Conduct and present the results of that analysis in the space below.

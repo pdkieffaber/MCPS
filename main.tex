@@ -66,17 +66,21 @@
 \usepgfplotslibrary{fillbetween}
 \usepgfplotslibrary{groupplots}
 \usepackage{wrapfig}
-\usepackage{xcolor, soul}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{soul}
 \usepackage{listings}
 \usepackage[most]{tcolorbox}
 \tcbuselibrary{listingsutf8,listings, skins} % Allows for listings support in tcolorbox\tcbuselibrary{listings, skins}
+\usepackage{tabularx}
+\usepackage{multirow}
+
 \renewcommand*{\glstextformat}{\textbf}
 \usetikzlibrary{shadows}
 \sethlcolor{gray!5}
 \usepackage{shadowtext}
 \usepackage{caption}%needed to change caption alignment
 \captionsetup{justification=raggedright,singlelinecheck=false}
-\usepackage{fancyvrb} %fancy Verbatim stuff
+\usepackage{fancyvrb} %fancy Verbatim sutff
 \usepackage{placeins} %dealing with floats like wrapfig
 \usepackage{enumitem}
 \usepackage[utf8]{inputenc}
@@ -84,7 +88,16 @@
 \usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{siunitx}
+\sisetup{
+  round-mode          = places, % Rounds numbers
+  round-precision     = 2,      % to 2 places
+  table-format=4.3, detect-all % optional: controls decimal formatting
+}
+%\newcolumntype{C}{S}
 
+\pagecolor{white}
 \newcommand*{\button}[1]{\colorbox{gray!40}{\shadowtext{#1}}}
 
 %Chapter-specific Glossaries
@@ -309,7 +322,7 @@
 %----------------------------------------------------------------------------------------
 %\part{Essential Computing Competencies}
 
-\include{PsyToolkit/PsyToolkit}
+%\include{PsyToolkit/PsyToolkit}
 
 %\include{Introduction2Spreadsheets/Introduction2Spreadsheets}
 
@@ -324,14 +337,14 @@
 \part{PSYC672}
 
 \include{ReproducibleResearch/Intro2Git}
+\include{Introduction2Latex/Intro2Latex}
+
+
+%\include{LinearMixedModels/LinearMixedModels}
 
 
 
-\include{LinearMixedModels/LinearMixedModels}
-
-
-
-\include{GraphTheory/GraphTheory}
+%\include{GraphTheory/GraphTheory}
 
 %\part{Advanced Research Computing}
 

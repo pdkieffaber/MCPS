@@ -1,12 +1,22 @@
-{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.1}Background: Introduction to Statistical Modeling}{\reset@font\mtcSfont 42}{section.2.1}}
-{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.2}The Need for Mixed-Effects Models}{\reset@font\mtcSfont 44}{section.2.2}}
-{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Fixed Effects: Population-Level Relationships}{\reset@font\mtcSSSfont 44}{section*.29}}
-{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.3}Definition: Linear Mixed-Effects Models}{\reset@font\mtcSfont 47}{section.2.3}}
-{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.4}Assumptions About Random Effects in Linear Mixed Effects Models}{\reset@font\mtcSfont 48}{section.2.4}}
-{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.5}Covariance Structure in Linear Mixed Effects Models}{\reset@font\mtcSfont 48}{section.2.5}}
-{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.6}Model Fitting and Estimation}{\reset@font\mtcSfont 49}{section.2.6}}
-{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {2.6.1}Maximum Likelihood Estimation (MLE) in Linear Mixed Effects Models}{\reset@font\mtcSSfont 49}{subsection.2.6.1}}
-{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {2.6.2}Restricted Maximum Likelihood}{\reset@font\mtcSSfont 51}{subsection.2.6.2}}
-{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.7}Model Assumptions in LMM}{\reset@font\mtcSfont 51}{section.2.7}}
-{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.8}A Complete Working Example}{\reset@font\mtcSfont 54}{section.2.8}}
-{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.9}Visualizing the Results of a LMM}{\reset@font\mtcSfont 61}{section.2.9}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.1}What is \LaTeX {} ?}{\reset@font\mtcSfont 30}{section.2.1}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.2}\LaTeX {} Preliminaries}{\reset@font\mtcSfont 32}{section.2.2}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.3}Creating a \LaTeX {} Document}{\reset@font\mtcSfont 35}{section.2.3}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.4}Images in \LaTeX {}}{\reset@font\mtcSfont 37}{section.2.4}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Captions}{\reset@font\mtcSSSfont 41}{section*.47}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Labels and References}{\reset@font\mtcSSSfont 41}{section*.48}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.5}Tables in \LaTeX {}}{\reset@font\mtcSfont 42}{section.2.5}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.6}APA Style in \LaTeX {}}{\reset@font\mtcSfont 46}{section.2.6}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode The Preamble}{\reset@font\mtcSSSfont 47}{section*.52}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Maketitle}{\reset@font\mtcSSSfont 47}{section*.53}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.7}Headings}{\reset@font\mtcSfont 47}{section.2.7}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.8}Reference Management}{\reset@font\mtcSfont 48}{section.2.8}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Basic Commands}{\reset@font\mtcSSSfont 48}{section*.56}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Multiple Authors}{\reset@font\mtcSSSfont 49}{section*.58}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Partial Citations}{\reset@font\mtcSSSfont 49}{section*.60}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.9}Drawing with TikZ}{\reset@font\mtcSfont 50}{section.2.9}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Experimental Design Layouts}{\reset@font\mtcSSSfont 56}{section*.75}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.10}Tips \& Tricks}{\reset@font\mtcSfont 56}{section.2.10}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.11}Additional Resources}{\reset@font\mtcSfont 57}{section.2.11}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.12}Assignment}{\reset@font\mtcSfont 59}{section.2.12}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Overview}{\reset@font\mtcSSSfont 59}{section*.78}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Instructions}{\reset@font\mtcSSSfont 59}{section*.79}}

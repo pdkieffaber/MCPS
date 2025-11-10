@@ -1,0 +1,326 @@
+---
+title: "Random Sampling Assignment"
+author: "YOUR_NAME"
+subtitle: "Computer Applications in the Psychological Sciences"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: true
+      toc_depth: 3
+    theme: cosmo
+  pdf_document:
+    toc: true
+    toc_depth: 2
+  word_document: default
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE, message = FALSE, warning = FALSE,
+  fig.width = 7, fig.height = 4.8, dpi = 150
+)
+```
+
+# The Education Data Challenge
+
+**Overview**
+
+You will first run a script that creates a personalized "slice" of a dataset just for you. You will then perform a full analysis on your unique data.
+
+
+**Deliverable**
+A "knitted" HTML. This file must contain:
+
+- All R code chunks, including the "Setup"  chunks.
+- Your personalized output from Part 1.
+- Your complete analysis (code, output, and commentary (if requested)) for all six tasks.
+
+## Objective
+You are a data analyst for a global NGO focused on public health and well-being. You have been tasked with investigating the complex factors that predict key psychological and social outcomes around the world.
+
+*This assignment is unique to you. You will first run a script that randomly assigns you a "research portfolio"*
+
+You will then conduct analyses including:
+
+1) Bootstrapping: To build a confidence interval for a parameter.
+2) Permutation Testing: To get an assumption-free p-value for a key relationship.
+3) Cross-Validation: To test the predictive power of a model.
+
+**Deliverable**
+
+A single, "knitted" HTML file. This file must contain all R code, all R output (including the output from Part 1), all visualizations, and your written interpretations for each part.
+
+
+## Part 1: Your Personalized Data & Setup
+
+- Use this R Markdown file or start a new one.
+- Copy the entire code block below into your setup chunk.
+- Change `STUDENT NAME GOES HERE` to your actual full (First Last) name.
+- Run the chunk. This will generate your unique "my_data" dataset.
+- You will use **my_data** for all analysis.
+
+```{r DataAssignment, include=FALSE, echo=FALSE}
+# --- 1. Load all required libraries ---
+library(mlmRev)      # For the Hsb82 dataset
+library(tidyverse)   # For all data manipulation
+library(lme4)        # For Linear Mixed Models (lmer)
+library(lmerTest)    # For LMM p-values
+library(car)         # For Anova()
+library(digest)      # For hashing your name to a seed
+
+# --- 2. !! ENTER YOUR NAME HERE !! ---
+YOUR_NAME <- "STUDENT NAME GOES HERE" 
+# --- !! (No, really, change it to your name) !! ---
+
+if (YOUR_NAME == "STUDENT NAME GOES HERE") {
+  warning("Please change YOUR_NAME to your actual name to get your unique assignment.")
+}
+
+# --- 3. Generate your unique seed ---
+hex_hash <- digest(YOUR_NAME, algo = "crc32", serialize = FALSE)
+hex_substr <- substr(hex_hash, 1, 7)
+student_seed <- strtoi(hex_substr, base = 16L)
+
+# --- 4. Set the seed ---
+set.seed(student_seed) 
+
+# --- 5. Load and create your unique dataset ---
+data(Hsb82) # Load the dataset
+
+# This is your unique "slice" of the data
+my_data <- Hsb82 %>% 
+  sample_frac(0.90) # Take a 90% random slice
+
+# --- 6. Print a verification message ---
+cat("--- DATASET GENERATED ---",
+    "\nYour Name:", YOUR_NAME,
+    "\nYour Seed:", student_seed,
+    "\nYour unique dataset 'my_data' has", nrow(my_data), "rows.",
+    "\nUse 'my_data' for all analysis.")
+```
+The variable 'my_data' contains 8 variables:
+
+* school - an ordered factor designating the school that the student attends.
+* minrty - a factor indicating whether an individual is considered part of a minority group (Yes/No)
+* sx - a factor with levels Male and Female
+* ses - a numeric vector of socio-economic scores
+* mAch - a numeric vector of Mathematics achievement scores
+* meanses - a numeric vector of mean ses for the school
+* sector - a factor with levels Public and Catholic
+* cses - a numeric vector of centered ses values where the centering is with respect to the meanses for the school.
+
+---
+
+# Part 2: The Analysis
+
+Complete the following tasks using your my_data dataset.
+
+
+## Task 1: Inspect Your Data 
+
+Describe your data: 
+"my_data contains data from *N_subjects* students across *N_schools* schools. *N_female* of the students were female and *N_male* were male.  *N_public* of the schools were public sector and *N_catholic* schools were private sector. *N_minority* of the students were considered to be part of a minority racial/ethnic group while *N_majority* individuals were considered not to be part of a minority group.
+
+Visualize your data:
+Create visual summaries for socioeconomic status (ses) and mathematics achievement (mAch).
+
+```{r}
+# INSERT YOUR CODE HERE
+
+```
+
+## Task 2: lm (Linear Model)
+
+1) Run a simple linear model (lm) predicting mAch from ses.
+
+2) Save this value (hint: use `task1_ses_coef <- coef(YOUR MODEL FIT)[2]` to store the coefficient)
+
+3) Use the `confint()` function to get parametric 95% confidence intervals for the "ses" coefficient (e.g., `confint(YOUR_MODEL_FIT)`)
+
+4) Save the upper and lower bounds as `task1_ci_lower` and `task1_ci_upper`
+
+5) Comment briefly on the results of the analysis
+
+```{r}
+# INSERT YOUR CODE HERE
+
+```
+
+**ADD YOUR COMMENTARY HERE**
+
+---
+
+## Task 3: Bootstrap CI
+
+1) Use a for loop (1000 iterations) to find the bootstrapped 95% CI for the "ses" coefficient in Task #2.
+
+2) Set your personalized random seed (`set.seed(student_seed)`) right before the loop.
+
+3) On each iteration, resample the rows of my_data (with replacement!), recompute the "ses" coefficient and store it for later.
+
+4) When the iterations are finished:
+  a) use the `quantile()` function to find the bootstrap coefficient values at the 2.5% and 97.5% quantile.
+  b) create a labeled histogram of the bootstrapping coefficients.
+  c) label the 2.5% and 97.5% quantiles on your histogram (hint: `geom_vline(xintercept = 4, color = "red", linewidth = 1.2, linetype = "dashed"` will create a vertial, red, dashed line on the plot that crosses at X=4)
+
+5) Save the upper and lower bounds as `task2ci_lower` and `task2_ci_upper`
+
+6) Briefly comment on a comparison of the confidence intervals from Task #1 and Task #2.  Are the confidence intervals different from one another? How?
+
+```{r}
+# INSERT YOUR CODE HERE
+
+```
+
+**ADD YOUR COMMENTARY HERE**
+
+---
+
+## Task 4: car::Anova (Factorial ANOVA)
+
+1) Run a factorial ANOVA model testing the interaction between School Type (`sector`) and Sex (`sx`) on Mathematical Achievement (`mAch`). Use car::Anova() to get the Type III F-statistic and probability value for the interaction.
+
+2) Save the F and p values as `task4_Fstat` and `task4_Pval` (hint: `YOUR_MODEL_FIT$`F value`[2]` will return the F statistic)
+
+3) Comment briefly on the results of the analysis
+
+```{r}
+# INSERT YOUR CODE HERE
+
+```
+
+**ADD YOUR COMMENTARY HERE**
+
+---
+
+## Task 5: Permutation Test (p-value)
+
+1) Use a `for` loop (1000 iterations) to conduct a permutation test in order to get an assumption-free p-value for the F-test of the interaction between School Type and Sex in Task #2.
+
+2) Be sure to set your personalized random seed (`set.seed(student_seed)`) immediately before the loop.
+
+Each iteration should:
+
+3) Shuffle the sex label
+
+4) Calculate and *save* the permuted F-statistic
+
+5) When the iterations are finished, calculate the p-value by finding the proportion of "null" F-stats that are equal to or more extreme than your observed F-statistic.
+
+6) Save this value as `task5_perm_p_value` <- ... (your final calculated p-value)
+
+7) Generate a histogram showing the distribution of all "null" F-stats and add a vertical line showing the value of your observed F-stat.
+
+8) Comment on your comparison of the parametric p-value returned by the lm() function and your distribution-free, permutation p-value.
+
+```{r}
+# INSERT YOUR CODE HERE
+
+```
+
+**ADD YOUR COMMENTARY HERE**
+
+---
+
+## Task 6: Cross-Validation RMSE
+
+Write a for loop to perform a 10-fold cross-validation on a simple lm predicting mAch from ses and sector.
+
+1) Set your personalized random seed (`set.seed(student_seed)`) and create a fold column (hint: use the sample function to create your fold column)
+
+2) Write your for loop to iterate from i = 1 to 10.
+
+3) Inside the loop, create train_data (fold != i) and test_data (fold == i).
+
+4) Run your lm().
+
+5) Use predict() to get predictions for test_data.
+
+6) Calculate the SS_resid (sum of squared residuals)
+
+7) Calculate the R-squared `1-(SS_resid/SS_total)` and store it in a vector.
+
+8) When the loop is finished, you should have 10 estimates of the R-squared. Calculate the average of these 10 values to get your 10-fold cross-validated R^2.
+
+9) Save this cross-validated R^2 as `task6_cv_r2` <- ... (the mean() of your 10 R^2 results)
+
+10) Briefly comment on your comparison of the cross-validated $R^2$ with the original $R^2$ from Task #2
+
+```{r}
+# INSERT YOUR CODE HERE
+
+```
+
+**ADD YOUR COMMENTARY HERE**
+
+## Task #6 Choose Your Own Adventure
+
+For this last set of analyses we will use the Australian AIDS Survival Data containing data on patients diagnosed with AIDS in Australia before 1 July 1991.
+
+The data frame consists of the following variables:
+
+- state: Grouped state of origin: "NSW "includes ACT and "other" is WA, SA, NT and TAS
+- sex: Sex of patient.
+- diag: (Julian) date of diagnosis.
+  - Number of days since January 1st, 1970
+- death: (Julian) date of death or end of observation.
+  - Number of days since Janurary 1st, 1970
+- status: "A" (alive) or "D" (dead) at end of observation.
+- T.categ: Reported transmission category.
+  - hs: Homosexual/Bisexual (transmission via same-sex contact)
+  - haem: Haemophiliac (transmission via contaminated blood products for haemophilia)
+  - other: Other or Unknown (a catch-all category)
+  - hsid: Homosexual/Bisexual and Intravenous Drug User (a person in both risk categories)
+  - het: Heterosexual (transmission via heterosexual contact)
+  - id: Intravenous Drug User (transmission via shared needles)
+  - mother: Mother-to-Child (vertical transmission, from mother to baby)
+  - blood: Blood Transfusion (transmission via a contaminated blood transfusion)
+- age: Age (years) at diagnosis.
+
+```{r}
+# MASS is a core R package, it should be installed.
+library(MASS) 
+library(tidyverse)
+
+# Load the dataset
+data(Aids2)
+```
+
+One of the first things you will notice about these data is that some of the measures are highly skewed. For example, take a look at the histogram below showing the distribution of the number of days between diagnosis and death.
+
+```{r, echo=FALSE}
+Aids2 %>%
+  mutate(SurvivalDays=death-diag) %>%
+  ggplot(aes(x = SurvivalDays)) +
+    geom_histogram(binwidth = 100, alpha = 0.5, position = "identity") +
+    labs(title = "Days from Diagnosis to Death",
+       x = "Days from Diagnosis to Death",
+       subtitle = "NOTE: Data is extremely positively-skewed") +
+    theme_minimal() 
+```
+
+Your task is to conduct two separate analyses in order to determine the factors that might be related to increased survival time.
+
+**Analysis #1**
+
+1) State a hypothesis that involves comparing means across conditions (e.g, t-test or ANOVA).
+2) Create a summary plot for your analysis (e.g., bar chart, violin plot, etc.)
+3) Conduct a standard parametric statistical analysis (e.g., `t.test()`, `lm()`, `car::Anova()`) to test the hypothesis.
+4) Conduct a non-parametric permutation analysis using the mean to test the same hypothesis
+5) Conduct a non-parametric permutation analysis using the median to test the same hypothesis
+6) Write a few sentences describing your comparison of the three results and explain why they are or are not different.
+
+**Analysis #2**
+
+1) State a hypothesis that involves assessing the relationship between two continuous variables (e.g, `lm()`).
+  - *NOTE: You are welcome to use categorical predictors to test interactions, but this is not required*
+2) Create a summary plot for your analysis (e.g., scatterplot)
+3) Conduct a standard parametric statistical analysis (e.g.,`lm()`) to test the hypothesis.
+4) Use bootstrapping to estimate the 95% confidence interval for the parameter central to your hypothesis.
+5) Write a few sentences describing your comparison of the 95% CI from the parametric and nonparametric analyses.
+

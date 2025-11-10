@@ -1,0 +1,1884 @@
+---
+title: "Linear Models in R"
+author: "Data Science for the Psychological Sciences"
+date: "Paul D. Kieffaber, Ph.D."
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: true
+    toc_depth: 3
+    theme: cosmo
+  pdf_document:
+    toc: true
+    toc_depth: 2
+  word_document:
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r echo=FALSE}
+# This chunk sets up the R environment for the rest of the document
+knitr::opts_chunk$set(
+  echo = TRUE,       # Show the R code
+  message = FALSE,   # Hide messages
+  warning = FALSE,   # Hide warnings
+  fig.align = "center", # Center plots
+  out.width = '70%'
+)
+```
+
+```{r echo=FALSE}
+# Load required libraries
+library(tidyverse) # For ggplot2, dplyr, and more
+library(broom)     # For tidying model output
+```
+# Introduction to Statistical Modeling
+
+In many fields of research, from psychology and education to medicine and social sciences, the primary goal is to understand and explain relationships between variables. Often, researchers collect data that involves complex relationships, where outcomes (dependent variables) are influenced by several factors (independent variables). Statistical modeling provides the tools needed to quantify these relationships, identify patterns, and make predictions based on data. Without a structured approach to data analysis, researchers risk making inaccurate conclusions, or even worse, overlooking important relationships that could drive insights or interventions.
+
+At its core, statistical modeling is a way of representing data through mathematical equations, allowing researchers to describe, explain, and predict real-world phenomena. These models help simplify complex systems by providing a framework for analyzing the effects of multiple variables simultaneously, while also accounting for random variation and uncertainty. For example, in psychology, statistical models are used to examine how different cognitive, emotional, or environmental factors influence behavior. In education, models might be used to study how teaching methods or school environments affect student performance. In medicine, researchers might use statistical models to identify factors that influence the progression of a disease or the effectiveness of a treatment. And in social sciences, models can help understand complex social behaviors and the impact of policy changes or societal trends.
+
+# The Foundation
+
+### Quantitative Reasoning
+
+The fundamental question of simple linear regression is: How does a continuous outcome variable (Y) change as a continuous predictor variable (X) changes?
+
+We are looking for a linear relationship. We want to find the single straight line that best describes the trend in our data.
+
+*Key Concepts:*
+
+- The Model: Our model for this relationship is a straight line, defined by the formula:
+
+$$Y_i = \beta_0 + \beta_1X_i + \epsilon_i$$
+Let's break this down:
+
+* $Y_i$ (Outcome): The *i*-th observation of our continuous dependent variable (e.g., the stopping distance for car *i*).
+* $X_i$ (Predictor): The *i*-th observation of our continuous independent variable (e.g., the speed of car *i*).
+* $\beta_0$ (Intercept): The *parameter* representing the value of $Y$ when $X$ is 0. This is where the line crosses the y-axis.
+* $\beta_1$ (Slope): The *parameter* representing the change in $Y$ for a one-unit change in $X$. This is the steepness of the line.
+* $\epsilon_i$ (Error/Residual): The *unexplained variance* for the *i*-th observation. This is the vertical distance from the observed data point ($Y_i$) to the line predicted by the model ($\hat{Y}_i$). It's the part of $Y_i$ that our model *doesn't* explain.
+
+* Our goal is to find the best possible *estimates* for the unknown parameters $\beta_0$ and $\beta_1$.
+
+*How are the Parameters Solved? (Ordinary Least Squares)*
+
+We find the "best" line using a method called **Ordinary Least Squares (OLS)**. The "best" line is the one that minimizes the total error. Let's use the built-in R dataset cars (which has speed and stopping dist). We can fit a model and then use ggplot2 to visualize these squared errors that OLS minimizes.
+
+Note that we will need to use R's conventional model notation to design the linear model.  In R, the model describing how variable `Y` is predicted by `X` is designated by `Y ~ X`, which can be verbally described as `Y` is being modeled as a function of `X`.
+
+```{r}
+# Use the built-in 'cars' dataset
+data(cars)
+
+# 1. Run the linear model
+model_cars <- lm(dist ~ speed, data = cars)
+
+# 2. Use broom::augment() to get model results (like .fitted and .resid)
+#    back in a data frame with the original data.
+model_aug <- broom::augment(model_cars)
+
+# 3. Plot the data, the line, and the residuals
+ggplot(model_aug, aes(x = speed, y = dist)) +
+  geom_point(color = "darkblue", alpha = 0.7) +  # The raw data points (Y_i)
+  geom_smooth(method = "lm", se = FALSE, color = "red") + # The regression line (Y_hat)
+  geom_segment(
+    aes(xend = speed, yend = .fitted), 
+    color = "black", 
+    alpha = 0.5, 
+    linetype = "dashed"
+  ) + # The residuals (epsilon_i)
+  labs(
+    title = "Visualizing Residuals (the 'Error' Term)",
+    subtitle = "OLS finds the red line that minimizes the sum of the squares of the dashed lines.",
+    x = "Speed (mph)",
+    y = "Stopping Distance (ft)"
+  ) +
+  theme_bw()
+```
+
+
+Note that some errors ($\epsilon_i$) will be positive (point above the line) and some negative (point below the line). If we just summed them, they would cancel out. To fix this, we **square** each error term. This makes all errors positive and heavily penalizes large mistakes.
+
+OLS finds the specific values of $\beta_0$ and $\beta_1$ that ***minimize the sum of the squared residuals (RSS)***.
+
+$$RSS = \sum_{i=1}^{n} \epsilon\_i^2 = \sum_{i=1}^{n} (Y_i - \hat{Y}_i)^2 = \sum_{i=1}^{n} (Y_i - (\beta_0 + \beta_1X_i))^2$$
+
+### The Model Parameters
+
+**1. The Slope ($\beta_1$):**
+
+The slope is the covariance of X and Y divided by the variance of X. It measures how much Y changes, on average, for each one-unit change in X.
+
+$$\beta_1 = \frac{\sum_{i=1}^{n} (X_i - \bar{X})(Y_i - \bar{Y})}{\sum_{i=1}^{n} (X_i - \bar{X})^2} = \frac{\text{Cov}(X, Y)}{\text{Var}(X)}$$
+
+**2. The Intercept ($\beta_0$):**
+
+Once we have the slope, the intercept is calculated to ensure the line passes through the "center of mass" of the data, which is the point $(\bar{X}, \bar{Y})$ (the mean of X and the mean of Y).
+
+$$\beta_0 = \bar{Y} - \beta_1\bar{X}$$
+
+
+## R Implementation
+
+Now, let's look at how to get the results in R. We use the lm() function, which stands for "linear model".
+
+We will again need R's model notation. Recall that the formula `y ~ x` means "y is predicted by x" or "y is modeled as a function of x".
+
+```{r}
+model_cars <- lm(dist ~ speed, data = cars)
+
+# Use summary() to get the detailed results
+summary(model_cars)
+```
+
+**Reading the summary() Output**
+
+The most important part is the Coefficients table.
+
+- `(Intercept)`: This is our $\beta_0 = -17.58$. This means at 0 mph, the model predicts a stopping distance of -17.58 ft. This is a good example of an intercept that is not practically meaningful (you can't have negative distance), but it is mathematically necessary to position the line correctly.
+
+- `speed` Estimate: This is our $\beta_1 = 3.93$. This is the key result! For every 1 mph increase in speed, the model predicts a 3.93 ft increase in stopping distance.
+
+- `Pr(>|t|)` (p-value): This is the p-value for the hypothesis test.
+
+### Hypothesis Testing
+
+For our slope, the null hypothesis ($H_0$) is that there is no relationship:
+
+$H_0: \beta_1 = 0$
+
+The alternative hypothesis ($H_a$) is that there is a relationship:
+
+$H_a: \beta_1 \neq 0$
+
+Our p-value for speed is 1.49e-12, which is extremely small (0.00000000000149). This is much less than our standard significance level of $\alpha = 0.05$.
+
+**Conclusion:** We reject the null hypothesis and conclude that there is a statistically significant positive linear relationship between speed and stopping distance.
+
+### Final Visualization
+
+Finally, we create our publication-quality graph. geom_smooth(method = "lm") will run the exact same OLS regression for us and plot the line, including a 95% confidence interval by default.  
+
+```{r}
+# Now, the plot code you provided, with the annotation added
+ggplot(cars, aes(x = speed, y = dist)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", color = "blue", fill = "blue", alpha = 0.1) +
+  labs(
+    title = "Stopping Distance Increases Linearly with Speed",
+    subtitle = "Based on the 'cars' dataset",
+    x = "Speed (mph)",
+    y = "Stopping Distance (ft)",
+    caption = "Shaded area represents the 95% confidence interval of the regression line."
+  ) +
+  theme_bw()
+```
+
+---
+
+**Tips & Tricks - Accessing Data in Model Output **
+
+The `summary()` output is great for humans, but hard for R to use. The broom package helps. Below are some examples of how you would go about accessing data from the model outputs.
+
+```{r}
+# --- Create APA Annotation ---
+summary_cars=summary(model_cars)
+# 1. Extract R-squared
+r_squared <- summary_cars$r.squared
+
+
+# 2. Extract the F-statistic and degrees of freedom
+f_stat <- summary_cars$fstatistic
+f_value <- f_stat[1]
+df1 <- f_stat[2]
+df2 <- f_stat[3]
+
+# 3. Get the model's p-value from the F-statistic
+# We can't just pull it from the summary easily.
+# This is where broom comes in handy...
+lm_result=broom::tidy(model_cars)
+p_value <- lm_result %>% filter(term == "speed") %>% pull(p.value)
+
+# 4. Format p-value using scales::pvalue()
+p_formatted <- scales::pvalue(p_value, accuracy = 0.001)
+
+# 5. Create the APA output
+apa_annotation <- paste0(sprintf("R^2= %.2f | F(%.i,%.i)=%.2f, p%s", r_squared, df1, df2, f_value, p_formatted))
+print(apa_annotation)
+
+broom::tidy(model_cars)
+```
+---
+
+
+# The t-test & Regression
+
+Now that we have a solid foundation in simple linear regression, our next step is to see how this framework is far more powerful than it first appears. We'll start with one of the most common statistical tests: the t-test. Although t-tests are almost always taught as a separate tool for comparing two groups, they are, in fact, just another special case of the General Linear Model. This section will connect the dots and show you how running a t-test is mathematically identical to running a regression with a single, two-level categorical predictor.
+
+### Quantitative Reasoning (QR)
+
+The quantitative question for a two-sample t-test is simple: Is the mean of a continuous variable (Y) different between two groups (A and B)?
+
+Our standard null hypothesis ($H_0$) is that the means are the same:
+
+$$H_0: \mu_A = \mu_B$$
+
+And our alternative hypothesis ($H_a$) is that they are not:
+
+$$H_a: \mu_A \neq \mu_B$$
+
+This is the exact same question we can ask (and answer) using linear regression.
+
+**The Conceptual Link: Dummy Coding**
+
+To see how this works, we have to revisit our regression model from Part 1:
+
+$$Y_i = \beta_0 + \beta_1X_i + \epsilon_i$$
+Earlier, $X$ was continuous (like `speed`). Now, $X$ is a **categorical predictor** (a factor) with two levels, "Group A" and "Group B".
+
+A computer can't "do math" on a text string like "Group A". To solve this, R (and all statistical software) performs **dummy coding** under the hood. It creates a new numeric variable, let's call it $X_{dummy}$, that represents the group:
+
+1.  **Reference Group:** R first picks one level as the "reference" group. This is usually the level that comes first alphabetically (e.g., "Group A"). This group gets a value of 0.
+
+* If `Group` is "Group A", then $X_{dummy} = 0$
+
+2.  **Contrast Group:** The other group gets a value of 1.
+
+* If `Group` is "Group B", then $X_{dummy} = 1$
+
+Now, let's plug this dummy variable $X_{dummy}$ into our regression equation and see what happens for each group.
+
+**Case 1: A person in "Group A" ($X_{dummy} = 0$)**
+
+The model for any person in Group A becomes:
+
+$$Y\_i = \beta\_0 + \beta\_1(0) + \epsilon\_i
+ \\ 
+Y\_i = \beta\_0 + \epsilon\_i$$
+
+This means that, *on average*, the predicted value for a person in Group A is just $\beta_0$. Therefore, **$\beta_0$ (the intercept) is the mean of the reference group (Group A).**
+
+$$\beta_0 = \mu_A$$
+
+**Case 2: A person in "Group B" ($X_{dummy} = 1$)**
+
+The model for any person in Group B becomes:
+
+$$Y_i = \beta_0 + \beta_1(1) + \epsilon_i$$
+$$Y_i = (\beta_0 + \beta_1) + \epsilon_i$$
+
+This means the predicted value for a person in Group B is $\beta_0 + \beta_1$. We already know $\beta_0 = \mu_A$, so:
+
+$$\mu_B = \mu_A + \beta_1$$
+If we rearrange that, we get the meaning of $\beta_1$:
+
+$$\beta\_1 = \mu\_B - \mu\_A$$
+Therefore, **$\beta_1$ (the slope) is the *difference* between the mean of Group B and the mean of Group A.**
+
+**A-ha\! Moment**
+
+Now, look at the null hypothesis for our regression model:
+
+$H_0: \beta_1 = 0$
+
+If we substitute what we just learned about what $\beta_1$ means:
+
+$H_0: (\mu_B - \mu_A) = 0$
+
+...which is the same as:
+
+$H_0: \mu_B = \mu_A$
+
+This is the **identical null hypothesis** from our t-test. The regression model is literally testing if the difference in means is equal to zero.
+
+## R Implementation:
+
+Let's prove this using the built-in `ToothGrowth` dataset. It has a continuous outcome `len` (tooth length) and a 2-level factor `supp` (supplement type: "VC" or "OJ").
+
+```{r set-factor-levels}
+# Let's use the ToothGrowth dataset
+data(ToothGrowth)
+str(ToothGrowth)
+
+# R will automatically make "OJ" the reference group because it's first alphabetically.
+# To make it clearer, let's re-level 'supp' so "VC" is the reference.
+ToothGrowth$supp <- factor(ToothGrowth$supp, levels = c("VC", "OJ"))
+levels(ToothGrowth$supp)
+```
+
+### The Traditional Way: `t.test()`
+
+Let's run a standard t-test. **NOTE**, we must set `var.equal = TRUE`. A standard `lm()` model assumes *homoscedasticity* (equal variances), just like a Student's t-test.
+
+```{r t-test}
+# Run the t-test, assuming equal variances
+ttest_result <- t.test(len ~ supp, data = ToothGrowth, var.equal = TRUE)
+ttest_result
+```
+
+Look at the key results:
+
+  * **t-statistic:** -1.915
+  * **p-value:** 0.06039
+  * **Difference in means (`mean(VC) - mean(OJ)`):** -3.7
+
+### The GLM Way: `lm()`
+
+Now, let's run the exact same analysis as a linear model.
+
+```{r lm-test}
+model_t <- lm(len ~ supp, data = ToothGrowth)
+summary(model_t)
+```
+
+Now, look at the `Coefficients:` table, specifically the row for `suppOJ` (this is $\beta_1$, the coefficient for the "OJ" group):
+
+  * **`Estimate`:** 3.700
+  * **`t value`:** 1.915
+  * **`Pr(>|t|)`:** 0.06039
+
+### Compare The Outputs
+
+  * **p-value:** `lm()` p-value (0.06039) is **identical** to the `t.test()` p-value (0.06039).
+  * **t-statistic:** `lm()` t-value (1.915) is **identical** to the `t.test()` t-value (1.915). (Note: `t.test` gave -1.915 because it calculated `VC - OJ`, while `lm` gave 1.915 because it calculated `OJ - VC`. The magnitude is identical, and the sign just depends on the reference level\!)
+  * **Estimate vs. Difference:** The `lm()` estimate for `suppOJ` is 3.7. This is the *difference* in means ($\mu_{OJ} - \mu_{VC}$). The `t.test()` also found the difference to be 3.7.
+  * **Intercept vs. Group Mean:** The `lm()` intercept is 16.99. This is $\beta_0$, which we said is the mean of the reference group ("VC"). Let's check:
+    ```{r}
+    mean(ToothGrowth$len[ToothGrowth$supp == "VC"])
+    ```
+    It matches exactly.
+
+This shows that a t-test is just a special case of a linear regression where the predictor variable is a two-level factor.
+
+## Visualization (`ggplot2`)
+
+For this kind of data, a boxplot with jittered raw data points is perfect. It shows the distribution (the box) and the individual observations (the points).
+
+```{r viz}
+ggplot(ToothGrowth, aes(x = supp, y = len, fill = supp)) +
+  geom_boxplot(alpha = 0.5, outlier.shape = NA) +
+  geom_jitter(width = 0.1, height = 0, alpha = 0.7) +
+  # We can also add points for the means, which is what the model estimates
+  stat_summary(
+    fun = "mean", 
+    geom = "point",
+    shape = "X",
+    size = 5,
+    color = "red"
+  ) +
+  geom_smooth(method = "lm", color = "blue", fill = "blue", alpha = 0.1,
+              aes(group=1) #need to tell geom_smooth to use all points.
+              ) +
+  labs(
+    title = "Tooth Growth by Supplement Type",
+    subtitle = "A t-test is just a regression on these two groups.",
+    x = "Supplement Type",
+    y = "Tooth Length (len)",
+    fill = "Supplement"
+  ) +
+  theme_bw()
+```
+
+# ANOVA is also a Regression
+
+In the last section, we saw how a two-group t-test is just a special case of a linear model. Now, we'll extend that same exact logic to situations with three or more groups. This is the foundation of ANOVA (Analysis of Variance), and as we'll see, it's still just a linear regression using a slightly more complex set of dummy variables.
+
+## Quantitative Reasoning
+
+The quantitative question for a one-way ANOVA (Analysis of Variance) is: Is the mean of a continuous variable (Y) different among three or more groups (e.g., A, B, C)?
+
+The traditional ANOVA null hypothesis ($H_0$) is that all group means are equal:
+
+$H_0: \mu_A = \mu_B = \mu_C$
+
+The alternative hypothesis ($H_a$) is that at least one group mean is different from the others.
+
+Once again, we can answer this exact question using our friend, the General Linear Model (GLM).
+
+**The Conceptual Link:** More Dummy Variables
+
+When we had two groups (Part 2), R created one dummy variable ($X_1$). When we have k groups, R creates k-1 dummy variables.
+
+Let's stick with our 3-group example (A, B, C).
+
+- Reference Group: R picks one level as the reference (e.g., "Group A").
+
+- Dummy Variables: R creates one dummy variable for each other group.
+
+$X_1$ (let's call it groupB): = 1 if the person is in Group B, 0 otherwise.
+
+$X_2$ (let's call it groupC): = 1 if the person is in Group C, 0 otherwise.
+
+Now our regression model looks like this:
+
+$$Y_i = \beta_0 + \beta_1X_1 + \beta_2X_2 + \epsilon_i$$
+Let's plug in the dummy codes to see what each coefficient means.
+
+***Case 1: A person in "Group A" (Reference)***
+
+For this person, $X_1 = 0$ and $X_2 = 0$.
+
+$$Y\_i = \beta\_0 + \beta\_1(0) + \beta\_2(0) + \epsilon\_i
+ \\ 
+Y\_i = \beta\_0 + \epsilon\_i$$
+This means the predicted value for a person in Group A is just $\beta_0$.
+
+**Conclusion: $\beta_0$ (the intercept) is the mean of the reference group (Group A).**
+
+$$\beta_0 = \mu_A$$
+
+***Case 2: A person in "Group B"***
+
+For this person, $X_1 = 1$ and $X_2 = 0$.
+
+$$Y_i = \beta_0 + \beta_1(1) + \beta_2(0) + \epsilon_i
+\\
+Y_i = (\beta_0 + \beta_1) + \epsilon_i$$
+
+The predicted value is $\beta_0 + \beta_1$. Since we know $\beta_0 = \mu_A$:
+Conclusion: $\beta_1$ is the difference between the mean of Group B and the mean of Group A.
+
+$$\beta_1 = \mu_B - \mu_A$$
+### Case 3: A person in "Group C"
+
+For this person, $X_1 = 0$ and $X_2 = 1$.
+
+$$Y\_i = \beta\_0 + \beta\_1(0) + \beta\_2(1) + \epsilon\_i
+ \\ 
+Y\_i = (\beta\_0 + \beta\_2) + \epsilon\_i$$
+
+The predicted value is $\beta_0 + \beta_2$.
+
+**Conclusion: $\beta_2$ is the *difference* between the mean of Group C and the mean of Group A.**
+
+$$\beta_2 = \mu_C - \mu_A$$
+
+## The "A-ha!" Moment: summary() vs. anova()
+
+This is the most critical concept in this section. When you run lm() with a factor, you get two different ways to see the results, and they answer different questions.
+
+We'll use the built-in iris dataset. We want to know if Sepal.Length is different among the three Species.
+
+```{r}
+# 'iris' is built-in
+data(iris)
+str(iris) # Species is a 3-level factor
+
+# Run the linear model
+model_aov <- lm(Sepal.Length ~ Species, data = iris)
+```
+
+## 1. The summary() Output (The t-tests)
+
+Let's look at the summary() first.
+```{r}
+summary(model_aov)
+```
+
+The Coefficients: table shows you the $\beta$ estimates.
+
+`(Intercept)`: 5.006. This is $\beta_0$, the mean Sepal.Length for the reference group (setosa).
+
+`Speciesversicolor`: 0.930. This is $\beta_1$, the difference between versicolor and setosa ($\mu_{versicolor} - \mu_{setosa}$).
+
+`Speciesvirginica`: 1.582. This is $\beta_2$, the difference between virginica and setosa ($\mu_{virginica} - \mu_{setosa}$).
+
+Question Answered by summary():
+The p-values here are for t-tests comparing each group to the reference.
+
+"Is versicolor different from setosa?" (p < 8.77e-16). Yes.
+
+"Is virginica different from setosa?" (p < 2e-16). Yes.
+
+Missing Question: This output does not tell us if versicolor and virginica are different from each other!
+
+## 2. The anova() Output (The F-test)
+
+Now, let's run the anova() function on the same model.
+
+```{r}
+anova(model_aov)
+```
+
+This gives the classic ANOVA table. The key line is the Species row.
+
+F value: 119.27
+
+Pr(>F): < 2.2e-16
+
+Question Answered by anova():
+This F-test answers the overall ANOVA question: "Does the Species variable as a whole explain a significant amount of variance in Sepal.Length?" Or, "Is there any difference among the means of setosa, versicolor, and virginica?"
+The p-value (p < 2.2e-16) says Yes, absolutely.
+
+This F-test is comparing your full model (lm(Sepal.Length ~ Species)) against a "null" model that only has an intercept (lm(Sepal.Length ~ 1)), which is just the grand mean.
+
+In short:
+
+summary(model): Gives you the coefficients (t-tests vs. reference group).
+
+anova(model): Gives you the overall F-test (are there differences between groups?).
+
+### How the F-test Comparison Works
+
+The F-test is a model comparison. It compares two models:
+
+- The Full Model: model_aov <- lm(Sepal.Length ~ Species, data = iris)
+
+    - This model "believes" that the Species groups are different. Its "prediction" for any point is the mean of that point's species group (e.g., 5.006 for setosa, 5.936 for versicolor).
+
+- The Null Model: model_null <- lm(Sepal.Length ~ 1, data = iris)
+
+    - This is the model that "believes" the null hypothesis ($H_0: \mu_A = \mu_B = \mu_C$) is true.
+
+    - The ~ 1 formula tells lm() to fit an intercept-only model. The single best prediction for all points, if you can't use Species, is the grand mean of all Sepal.Length data.
+
+The F-test calculates the error (Sum of Squares) for both models.
+
+* Error (Full Model): The sum of squared distances from each point to its group mean (SS_Residuals or SS_Within).
+
+* Error (Null Model): The sum of squared distances from each point to the grand mean (SS_Total).
+
+The F-test asks: "Is the reduction in error we get by using the Full Model significantly better than the simple Null Model, after accounting for the extra 'degrees of freedom' we spent?"
+
+### Illustrating the Model Comparison in R
+
+Let's prove this. We can build the null model ourselves and manually compare it to our full model.
+
+```{r}
+# 1. Build the null model (intercept-only)
+model_null <- lm(Sepal.Length ~ 1, data = iris)
+
+# 2. Look at its summary
+summary(model_null)
+```
+```{r}
+# 3. Prove the intercept is the grand mean
+mean(iris$Sepal.Length)
+```
+
+As you can see, the Intercept (5.8433) is exactly the grand mean of Sepal.Length.
+
+Now, let's use the anova() function to explicitly compare the two models:
+
+```{r}
+# Compare the null model (model_null) to the full model (model_aov)
+anova(model_null, model_aov)
+```
+Now, let's look at the output of anova(model_aov) again...
+```{r}
+anova(model_aov)
+```
+
+Look at that output! It is the identical ANOVA table we got from just running anova(model_aov).
+
+Res.Df (Residual Df)
+
+RSS (Residual Sum of Squares)
+
+Df (Degrees of Freedom for the Species term)
+
+Sum of Sq (Sum of Squares for the Species term)
+
+F (F-value)
+
+Pr(>F) (p-value)
+
+This proves that calling anova(model_aov) is just a shortcut for building an intercept-only null model and comparing it to your full model.
+
+In short:
+
+summary(model): Gives you the coefficients (t-tests vs. reference group).
+
+anova(model): Gives you the overall F-test by comparing your model to a null (grand mean) model.
+
+## Visualization (ggplot2)
+
+As before, a boxplot with jittered points is perfect. Let's add the "Null Model" (grand mean) to our plot to visualize the comparison.
+
+```{r}
+# Let's prove our coefficient logic
+iris_means <- iris %>%
+group_by(Species) %>%
+summarise(mean_sepal_len = mean(Sepal.Length))
+print(iris_means)
+# Note: setosa mean is 5.006 (our Intercept)
+# versicolor mean is 5.936. 5.936 - 5.006 = 0.930 (our Speciesversicolor coef)
+# virginica mean is 6.588.  6.588 - 5.006 = 1.582 (our Speciesvirginica coef)
+
+# Get the grand mean for our plot
+grand_mean <- mean(iris$Sepal.Length)
+
+ggplot(iris, aes(x = Species, y = Sepal.Length, fill = Species)) +
+geom_boxplot(alpha = 0.4, outlier.shape = NA) +
+geom_jitter(width = 0.1, alpha = 0.5) +
+
+# This is the "Full Model" prediction (the group means)
+stat_summary(
+fun = "mean", 
+geom = "point",
+shape = "X",
+size = 5,
+color = "black"
+) +
+geom_smooth(method = "lm", color = "blue", fill = "blue", alpha = 0.1,
+        aes(group=1) #need to tell geom_smooth to use all points.
+        ) +
+
+# This is the "Null Model" prediction (the grand mean)
+geom_hline(
+yintercept = grand_mean, 
+linetype = "dashed", 
+color = "red", 
+linewidth = 1.2
+) +
+
+# Label the grand mean line
+annotate(
+"text", 
+x = "setosa", 
+y = grand_mean + 0.15, 
+label = "Grand Mean (Null Model)", 
+color = "red",
+hjust = "left"
+) +
+
+labs(
+title = "Sepal Length by Iris Species",
+subtitle = "F-test compares the fit of the 'Full Model' (group means, 'x') vs. the 'Null Model' (grand mean line).",
+x = "Species",
+y = "Sepal Length (cm)"
+) +
+theme_bw() +
+theme(legend.position = "none") # The x-axis already has the info
+```
+
+
+### From Two General Linear Models to F-values & P-values
+The p-value for the overall ANOVA comes from an F-statistic. This F-statistic is fundamentally a ratio that answers the question:"How much better is our 'Full Model' at explaining the data than a simple 'Null Model'?"
+
+Here's the breakdown:
+
+**Step 1: Define the Two Models and Their Errors**
+
+- The Null Model (Model 0 or "Intercept-Only")Formula: lm(y ~ 1)
+  - Hypothesis: This model represents the "Null Hypothesis" ($H_0$). It assumes all group means are the same.
+  - Prediction: Its single best prediction for every data point is the Grand Mean ($\bar{Y}_{total}$).
+  - Error (SSE_0): The error for this model is the "Total Sum of Squares" (SST). It's the sum of the squared distances from every point to the Grand Mean.
+  
+  $$  SSE_0 = \sum (Y_i - \bar{Y}_{total})^2$$
+  
+- The Full Model (Model 1 or "Groups Model")Formula: lm(y ~ group)
+  - Hypothesis: This model represents the "Alternative Hypothesis" ($H_a$). It assumes the group means are different.
+  - Prediction: Its "best" prediction for a data point is the mean of that point's own group ($\bar{Y}_{group(i)}$).Error (SSE_1): The error for this model is the "Sum of Squared Errors" (SSE) or "Sum of Squares Within" (SSW). It's the sum of the squared distances from every point to its group mean.
+  
+  $$  SSE_1 = \sum (Y_i - \bar{Y}_{group(i)})^2$$
+  
+**Step 2: Calculate the "Mean Squares" (the Variances)**
+
+The F-statistic doesn't just compare the total error; it compares the average error (the variance, or "Mean Square"), which accounts for how many predictors we added.
+
+- Mean Square Error (MSE): This is the residual, unexplained variance from our "Full Model". It's the $SSE_1$ averaged by its degrees of freedom ($df_1$). $df_1 = n - k$ (where $n$ is sample size, $k$ is number of groups).
+
+$$MSE = \frac{SSE_1}{n-k}$$
+
+- Mean Square Model (MSM): This is the variance explained by our "Full Model". It's the reduction in error from Model 0 to Model 1, averaged by the number of "parameters" we spent to get that reduction ($df_{model}$).$df_{model} = df_0 - df_1 = (n-1) - (n-k) = k-1$.
+
+$$MSM = \frac{SSE_0 - SSE_1}{k-1}$$
+
+**Step 3: Calculate the F-statistic**
+
+The F-statistic is the ratio of the explained variance to the unexplained variance.
+
+$$F = \frac{\text{Variance Explained by Groups}}{\text{Variance Unexplained (Residual)}} = \frac{MSM}{MSE}$$
+If the groups explain a lot of variance (MSM is big) and the residual variance is small (MSE is small), the F-statistic will be large. If the groups explain no more variance than random chance, $MSM \approx MSE$, and the F-statistic will be close to 1.0.
+
+**Step 4: Find the p-value (The Connection to Normality)**
+
+To know if our F-value (e.g., F = 119) is "big", we need to compare it to a null distribution. Under the null hypothesis, the F-statistic follows a specific F-distribution.This mathematical F-distribution is defined by its two degrees of freedom, $df_1 = k-1$ and $df_2 = n-k$.
+
+But why? The F-distribution is, by definition, the ratio of two independent chi-squared ($\chi^2$) distributions.
+
+- MSE (the denominator) can be shown to be a $\chi^2$ variable... IF the things we are squaring to get it, the residuals ($Y_i - \bar{Y}_{group(i)}$), are normally distributed.
+
+- MSM (the numerator) can also be shown to be a $\chi^2$ variable... IF those same residuals are normally distributed.
+
+This is the key: The entire F-test, which gives us our p-value, is only mathematically valid if the residuals ($\epsilon_i$) are normally distributed. The p-value, then, is the probability of getting an F-statistic as large as (or larger than) the one we calculated, assuming the null hypothesis is true. A huge F-value (like 119) is so far in the tail of the F-distribution that its probability (p-value) is tiny, leading us to reject the null model.
+
+
+# Factorial ANOVA (Interactions)
+
+What if you have two categorical predictors (e.g., group1, group2)? This is a Factorial ANOVA. In factorial ANOVA we are interested in the main (i.e., overall) effect of each predictor separately AND the interaction between them (e.g., Does the effect of group1 on y depend on the level of group2?)
+
+Earlier you learned that OLS regression works by finding the line that minimizes the Sum of Squared Errors (SSE). You also learned that the F-test for a simple regression is a comparison between two models:
+
+The "Full" Model: $y = \beta_0 + \beta_1x + \epsilon$ (a sloped line)
+
+The "Null" Model: $y = \beta_0 + \epsilon$ (a horizontal line at the grand mean)
+
+The F-test asks: "Is the SSE from our Full Model significantly smaller than the SSE from the Null Model?"
+
+This exact same logic applies to a Factorial ANOVA. The F-tests for main effects and interactions are just a series of model comparisons, where we compare the SSE of a more complex model to the SSE of a simpler one.
+
+Let's use a 2x3 Factorial ANOVA as our example, using the ToothGrowth dataset from Part 2. dose has 3 levels (0.5, 1, 2) and supp has 2 levels (VC, OJ). .
+
+Research Question: How does len (tooth length) depend on supp (supplement type) and dose?
+
+### Define All Your "Candidate" Models
+
+We will build a "ladder" of models, from the simplest (the Null) to the most complex (the Full Interaction Model).
+
+In R's model notation, use the `*` symbol in lm() to include all main effects and the interaction:
+
+**lm(y ~ group1 * group2)** is shorthand for **lm(y ~ group1 + group2 + group1:group2)**
+
+```{r}
+# Although dose contains numeric values, we want to convert it to a factor for the ANOVA.
+ToothGrowth$dose <- as.factor(ToothGrowth$dose)
+
+# Model 0: The "Null" Model (Grand Mean)
+# This is our baseline. It assumes no predictors matter.
+model_0 <- lm(len ~ 1, data = ToothGrowth)
+sse_0 <- sum(residuals(model_0)^2)
+df_0 <- df.residual(model_0)
+
+# Model 1: The "supp Main Effect" Model
+# Assumes 'supp' matters, but 'dose' doesn't.
+model_1 <- lm(len ~ supp, data = ToothGrowth)
+sse_1 <- sum(residuals(model_1)^2)
+df_1 <- df.residual(model_1)
+
+# Model 2: The "dose Main Effect" Model
+# Assumes 'dose' matters, but 'supp' doesn't.
+model_2 <- lm(len ~ dose, data = ToothGrowth)
+sse_2 <- sum(residuals(model_2)^2)
+df_2 <- df.residual(model_2)
+
+# Model 3: The "Additive" Model (Both Main Effects)
+# Assumes 'supp' and 'dose' both matter, but don't interact.
+model_3 <- lm(len ~ supp + dose, data = ToothGrowth)
+sse_3 <- sum(residuals(model_3)^2)
+df_3 <- df.residual(model_3)
+
+# Model 4: The "Interaction" Model (The Full Factorial Model)
+# Assumes the effect of 'dose' depends on 'supp'.
+model_4 <- lm(len ~ supp * dose, data = ToothGrowth)
+sse_4 <- sum(residuals(model_4)^2)
+df_4 <- df.residual(model_4)
+```
+
+### Compare the Models to Get the F-tests
+
+The Anova() function in R (specifically car::Anova(..., type = 3)) does all these comparisons for you, but we can also do them manually using the anova() function to see exactly what's happening.
+
+Let's use anova(model_a, model_b) which compares a "Smaller" model (model_a) to a "Larger" model (model_b).
+
+**The F-test for the Interaction (supp:dose)**
+
+This is the most important test. It asks: "Is our Full Interaction Model (Model 4) significantly better than the Additive Model (Model 3)?"
+```{r}
+# Does adding the interaction term (supp:dose) significantly reduce the SSE?
+anova(model_3,model_4)
+```
+**Interpretation:**
+
+Look at the output. This is the F-test for the interaction.
+
+It compares the SSE from model_3 (SSE = 820.43) to model_4 (SSE = 712.11).
+
+The F value (4.1) and Pr(>F) (0.022) tell us that YES, adding the interaction term significantly reduced the error. The SSE drop was not just due to chance.
+
+### The F-test for the Main Effect of supp
+
+This asks: "Does supp explain variance above and beyond what dose already explains?"
+
+To test this, we compare the "Additive" model (Model 3) to a model that only has dose (Model 2).
+
+```{r}
+# Does adding 'supp' to a model that already has 'dose' help?
+anova(model_2, model_3)
+```
+
+**Interpretation:**
+
+This compares model_2 (SSE = 1025.78) to model_3 (SSE = 820.43).
+
+The F-value (14.02) and tiny p-value tell us that YES, supp explains a significant amount of variance even after we've already accounted for dose.
+
+### The F-test for the Main Effect of dose
+
+This asks: "Does dose explain variance above and beyond what supp already explains?"
+
+To test this, we compare the "Additive" model (Model 3) to a model that only has supp (Model 1).
+
+```{r}
+# Does adding 'dose' to a model that already has 'supp' help?
+anova(model_1, model_4)
+```
+
+**Interpretation:**
+
+This compares model_1 (SSE = 3246.9) to model_3 (SSE = 820.4).
+
+The F-value (82.81) and tiny p-value tell us that YES, dose explains a significant amount of variance even after we've already accounted for supp.
+
+### Conclusion: The Anova() table is just a shortcut
+
+Now, let's run the car::Anova() function. This function automatically performs these comparisons.
+
+```{r}
+# Use Type 3 SS to match SPSS and our logic
+supXdose_anova <- car::Anova(model_4)
+broom::tidy(supXdose_anova, type=3)
+```
+
+The core takeaway is that every F-statistic you see in an ANOVA table is the result of a model comparison. It's just a test of whether adding a predictor (like supp or supp:dose) to a simpler model results in a statistically significant reduction in the Sum of Squared Errors (SSE).
+
+However, look at the F-values and p-values in this table. Notice that while they follow a similar pattern, and support the same conclusions, the numbers are different. That's because of subtle differences between the simplified examples illustrated by the individual model comparisons and the model comparisons used by the Anova() function related to how the sums of squared error is calculated (see Types of SSE below).
+
+
+### Overall Interpretation:
+
+`supp`: A significant main effect of supplement.
+
+`dose`: A significant main effect of dose.
+
+`supp:dose`: A significant interaction. This means the effect of the supplement (supp) on tooth length is different depending on the dose level. More recently, this is commonly referred to as a moderation analysis.
+
+### Visualization
+
+When you have an interaction, a boxplot is one of the the best ways to visualize it.
+
+```{r}
+ggplot(ToothGrowth, aes(x = dose, y = len, fill = supp)) +
+# Use dodge to put the boxes side-by-side
+geom_boxplot(position = position_dodge(width = 0.8)) +
+geom_jitter(
+position = position_jitterdodge(jitter.width = 0.1, dodge.width = 0.8),
+alpha = 0.3
+) +
+labs(
+title = "Tooth Growth by Supplement and Dose",
+subtitle = "The significant interaction (p=0.02) is visible:",
+caption = "The effect of 'supp' (OJ vs VC) is small at dose 2, but large at dose 1.",
+x = "Dose",
+y = "Tooth Length",
+fill = "Supplement"
+) +
+theme_bw()
+```
+
+## Mapping Factorial lm() Coefficients to Group Means in Factorial Designs
+
+This is more complex than the one-way ANOVA, but the logic is identical. The "main effect" coefficients (like suppOJ) now mean the simple main effect at the reference level of the other factor(s).
+
+Let's look at the summary() output.
+```{r}
+summary(model_4)
+```
+
+The reference level for supp is "OJ" and the reference level for dose is "0.5".
+
+(Intercept) = 13.230: This is the mean for the "all reference" group: OJ at dose 0.5.
+
+suppVC = -5.250: This is the simple effect of supp (OJ - VC) only at the reference level of dose (0.5).
+
+dose1 = 9.470: This is the simple effect of dose (1 - 0.5) only at the reference level of supp (OJ).
+
+dose2 = 12.830: This is the simple effect of dose (2 - 0.5) only at the reference level of supp (OJ).
+
+suppVC:dose1 = -0.68: This is the interaction term. It's the "adjustment" to the dose1 effect when you switch from supp "OJ" to "VC".
+
+suppVC:dose2 = 5.33: The "adjustment" to the dose2 effect when you switch from supp "OJ" to "VC".
+
+Let's prove this by mapping all 6 group means.
+
+First, let's get the actual group means so we have a target:
+
+Code snippet
+```{r}
+# Use dplyr to get the 6 group means
+mean_targets <- ToothGrowth %>%
+  group_by(supp, dose) %>%
+  summarise(mean_len = mean(len))
+print(mean_targets)
+```
+Now, let's build them with the coefficients:
+
+Group: VC, dose 0.5 (Reference)
+
+(Intercept)
+
+= 13.230 (Matches mean_len of 13.23)
+
+Group: OJ, dose 0.5
+
+(Intercept) + suppOJ
+
+= 13.230 + (-5.250)
+
+= 7.980 (Matches mean_len of 7.98)
+
+Group: VC, dose 1
+
+(Intercept) + dose1
+
+= 13.230 + 9.470
+
+= 22.700 (Matches mean_len of 22.70)
+
+Group: VC, dose 2
+
+(Intercept) + dose2
+
+= 13.230 + 12.830
+
+= 26.060 (Matches mean_len of 26.06)
+
+Group: OJ, dose 1
+
+(Intercept) + suppOJ + dose1 + suppOJ:dose1 (All 4 terms apply)
+
+= 13.230 + (-5.250) + 9.470 + 5.250
+
+= 22.700 (Matches mean_len of 22.70)
+
+Group: OJ, dose 2
+
+(Intercept) + suppOJ + dose2 + suppOJ:dose2 (All 4 terms apply)
+
+= 13.230 + (-5.250) + 12.830 + 5.220
+
+= 26.030 (Matches mean_len of 26.03)
+
+As you can see, the coefficients from lm() are a more complex but perfectly logical system for building the group means, even with interactions.
+
+## Types of SSE
+
+It may not be immediately obvious to you, but some of the results you will get from Rs `aov()` and `anova()` functions are different than what you would get if you were to analyze the exact same data using software like Jamovi or SPSS. This is a confusing and important difference between R and other programs like SPSS.
+
+The reason is that they use different default methods for calculating the of "Sum of Squared Error" (SSE).
+
+- R's anova() uses Type I (Sequential) Sum of Squares.
+
+  - This is what we have been using when we executed: anova(model_4).
+
+  - With Type I SS, the order of the variables in your formula (supp * dose) matters. R first calculates the SS for supp. Then, it calculates the SS for dose, after accounting for supp. Finally, it calculates the SS for the supp:dose interaction, after accounting for both supp and dose. This is why it's called "sequential."
+
+- SPSS's default for ANOVA is Type III Sum of Squares.
+
+  - Type III SS calculates the SS for each term after accounting for all other terms in the model.
+
+  - The F-test for supp looks at its unique contribution, as if it were added last.
+
+  - The F-test for dose looks at its unique contribution, as if it were added last.
+
+  - The order of terms in the model does not matter.
+
+This is generally what researchers mean when they talk about "main effects" in the presence of an interaction.
+
+- How to get SPSS-style (Type III) results in R:
+
+  - You can get Type III Sum of Squares in R, but you must use the Anova() function (with a capital A) from the car package.
+
+Code snippet
+
+```{r}
+# 1. Load the 'car' package
+# install.packages("car")
+library(car)
+
+# 2. Build the model
+model_factorial <- lm(len ~ supp * dose, data = ToothGrowth)
+
+# 3. Run the anova() function on the model
+anova(model_factorial)
+
+# 4. Run the Anova() function (capital A) on your model
+Anova(model_factorial, type = 3)
+```
+
+Look at that output! The F-values and p-values for supp and dose are different. The values for the interaction term are the same because it is last in the model so the Type I and Type III calculations are equivalent.
+
+### Which is better?
+
+Type I (R's default) is useful for nested designs or when you have a strong theoretical reason to test the variables in a specific order.
+
+Type III (SPSS's default) is what most social scientists are taught and is generally preferred for factorial ANOVA, as it tests the "pure" main effect of each variable, independent of the others.
+
+# Mixed Measures ANOVA (between + within)
+
+Up to this point, all of the GLM based ANOVAs we have been using are based on the assumption of independent observations (i.e., between-subjets observations)
+
+The mixed measures design is a very common design in psychology and other fields. It combines the elements of a between-subjects design (like a t-test or ANOVA) and a within-subjects design (like a repeated-measures ANOVA).
+
+**Design:** We measure an outcome y from a set of subjects at multiple time points. The subjects are also split into different treatment groups.
+
+**Key Question:** Does the change in y over time depend on which group the subject was in?
+
+**Example:** We give 50 people a new anxiety drug (Treatment Group) and 50 people a placebo (Control Group). We measure their anxiety (y) at Week 0 (time = 0) and Week 8 (time = 1).
+
+- group is the between-subjects factor.
+
+- time is the within-subjects factor.
+
+- subject is the clustering (random) variable.
+
+### The "Classic" Repeated Measures ANOVA (The SPSS GLM Approach)
+
+Before we explore more modern approaches, it's helpful to understand the "classic" method you may have seen in other statistics programs like SPSS (often under the GLM - Repeated Measures menu). This approach is an extension of the ANOVA framework. It works by partitioning the variance into different "Sum of Squares" buckets:
+
+- SS_Between (for the group effect)
+
+- SS_Within (for the time effect and the group:time interaction)
+
+- SS_Error
+
+The biggest challenge for this method is a strict mathematical assumption called **sphericity**. Sphericity assumes that the variance of the differences between all pairs of within-subject conditions (e.g., Pre vs. Post) is equal. This assumption is often violated in real-world data.
+
+When sphericity is violated, you have to apply corrections to your p-values (like the Greenhouse-Geisser or Huynh-Feldt corrections) to avoid an inflated Type I error. This method also struggles with missing data; it typically deletes a participant's entire data if even one time-point is missing (listwise deletion).
+
+Let's use the bfi (Big Five Inventory) dataset from the psych package. It's in "wide" format, so we need to reshape it. We will use the 5 "Agreeableness" items (A1-A5) as our 5 item (within-subjects) factor and create a fake group variable.
+
+```{r}
+# 1. Load the data
+library(psych)
+library(dplyr)
+library(tidyr)
+# We also need lme4 and lmerTest
+library(lme4)
+library(lmerTest) # This gives us p-values for lmer
+
+data(bfi)
+
+# 2. Create the dataset
+bfi_data <- bfi %>%
+  select(A1, A2, A3, A4, A5) %>%
+  mutate(
+    subject_id = factor(1:n()),
+    group = factor(rep(c("A", "B"), length.out = n()))
+  ) %>%
+  # We still need this for the `lmer` model
+  na.omit()
+
+# 3. Reshape from "wide" to "long"
+bfi_long <- bfi_data %>%
+  pivot_longer(
+    cols = A1:A5,
+    names_to = "item",
+    values_to = "score"
+  ) %>%
+  mutate(item = factor(item))
+
+# Take only the first 100 subjects for efficiency
+bfi_long_subset <- bfi_long %>%
+  filter(as.integer(subject_id) <= 100)
+
+# 4. Now run the model
+model_classic_subset <- aov(score ~ group * item + Error(subject_id / item), 
+                            data = bfi_long_subset)
+
+summary(model_classic_subset)
+```
+**Interpreting the aov() Output:**
+
+Look at the summary() output. You'll see it's split into "strata" (error buckets):
+
+Error: subject_id: This stratum contains the test for the between-subjects effect (group). The Residuals line here is the "between-subjects error term."
+
+Error: subject_id:time: This stratum contains the tests for the within-subjects effects (time) and the interaction (group:time). The Residuals line here is the "within-subjects error term."
+
+This is how aov() partitions the variance to run the test.
+
+The aov() function is essentially a wrapper for lm() that can handle the fact that our errors are not independent. It does this by asking you to explicitly define the error structure with the Error() term.
+
+- The Error(subject_id / time) syntax is the most confusing part. The forward slash (/) is shorthand for nesting. In the context of Error(subject_id / item), it's a compact way of writing: Error(subject_id + subject_id:item) and tells aov() that our data is clustered and that it needs to create two separate error "buckets" (or "strata") to test our different effects:
+
+- Between-Subjects Error: The formula first looks at the variance between subjects. This is the Error(subject_id) part. The SS_Error from this "bucket" is used as the denominator to test all between-subjects effects (in our case, group).
+
+- Within-Subjects Error: The formula then looks at the variance within each subject. This is the Error(subject_id:time) part. The SS_Error from this second "bucket" is used as the denominator to test all within-subjects effects (in our case, time and group:time).
+
+This is how the classic method separates the variance to account for the non-independence.
+
+### Major Limitations of Classical Repeated Measures and Mixed-measures ANOVA
+
+This approach has several significant limitations, which is why the lmer() method is now preferred:
+
+Sphericity: This is the biggest challenge. The aov() method assumes sphericity, which is like the homogeneity of variance assumption, but for the differences between all pairs of within-subject conditions (e.g., the variance of time1 - time2 should be equal to the variance of time1 - time3, etc.). This is often violated. When it is, you must apply corrections to your p-values (like the Greenhouse-Geisser or Huynh-Feldt corrections) to avoid an inflated Type I error.
+
+Type I Sum of Squares: A major difference from SPSS is that the base summary(aov()) function in R produces Type I (Sequential) Sum of Squares. This means the order of your formula (group * time vs. time * group) can change the F-values for your main effects. This is almost never what you want in a factorial design. SPSS defaults to Type III SS, which you can get in R using car::Anova().
+
+Missing Data: This method has no good way of handling missing data. If a subject is missing even one time point, their entire data (all time points) is typically dropped (listwise deletion). This reduces statistical power and can bias results.
+
+Inflexibility: The within-subjects variable (time) must be a categorical factor. You cannot use a continuous predictor (like "Days" or "Age") as a within-subjects variable in this framework, whereas lmer() handles this easily.
+
+**Afex - an alternative to aov() for complex ANOVA designs**
+
+The afex (Analysis of Factorial EXperiments) package is specifically designed to make running ANOVAs—especially complex repeated and mixed-measures designs—much easier and more statistically sound than using the base aov() function.
+
+Think of it as a smart and convenient "wrapper" that automates the best-practice steps you'd otherwise have to do manually.
+
+Key Features and Benefits
+- Defaults to Type III Sums of Squares: It uses car::Anova() in the background to automatically compute Type II or Type III SS, which are essential for unbalanced designs (which most real-world data is).
+
+- Simple, Unified Syntax: It provides one main function, aov_car(), that handles almost every design (between, within, or mixed). You simply tell it your dependent variable (dv), subject ID (wid), between-subjects factor(s) (between), and within-subjects factor(s) (within).
+
+- Rather than using aov(), Afex uses lme4 (linear mixed-effects models) for repeated and mixed designs: When it detects a mixed-design, it automatically uses lme4::lmer() to fit the model. This makes it far more powerful and faster than aov().
+
+- Automatic Sphericity Checks: It automatically runs Mauchly's test for sphericity and includes the Greenhouse-Geisser and Huynh-Feldt corrections in the main output table if the assumption is violated.
+
+- Easy Post-Hoc Tests: The models it produces are built to work perfectly with the emmeans package for easy and accurate post-hoc comparisons.
+
+# A Unified Way to Check Assumptions
+
+As we've discussed, the statistical tests for regression, t-tests, and ANOVAs all depend on the same set of core assumptions. Crucially, these assumptions apply to the model residuals (the errors, $\epsilon_i$), not to the raw outcome ($Y$) or predictor ($X$) variables.
+
+Once we have our lm() model object, we can easily check these assumptions. Let's use the model_aov from our ANOVA example (using the iris dataset), as it's a good general case.
+
+```{r}
+# We'll use the iris dataset from the ANOVA example
+data(iris)
+# Make sure "setosa" is the reference level
+iris$Species <- relevel(iris$Species, ref = "setosa")
+
+# Run the linear model (the ANOVA)
+model_aov <- lm(Sepal.Length ~ Species, data = iris)
+summary(model_aov)
+```
+
+The easiest way to get the residuals, fitted values, and other diagnostics is to use the broom::augment() function. This combines our original data with the model's diagnostics.
+
+```{r}
+# Get model diagnostics (residuals, fitted values, etc.)
+model_aug <- broom::augment(model_aov)
+
+# Let's see what this gives us
+head(model_aug)
+```
+
+We can now use the .resid (residuals) and .fitted (predicted values) columns to check our assumptions.
+
+### Assumption 1: Normality of Residuals
+
+**Method 1: Visual Check (Q-Q Plot) - Recommended**
+
+A Q-Q (Quantile-Quantile) plot is the best way to check for normality. It plots the quantiles of our residuals against the theoretical quantiles of a perfect normal distribution.
+
+If the points fall perfectly on the diagonal line, the residuals are perfectly normally distributed.
+
+If the points bow or "S" shape away from the line, the residuals are not normal (e.g., they are skewed or have "heavy tails").
+
+```{r}
+# Use the geom_qq geometry to view the Q-Q plot
+ggplot(model_aug, aes(sample = .resid)) +
+  geom_qq(color = "darkblue") +  # Plots the residuals
+  geom_qq_line(linetype = "dashed", color = "red") + # Adds the theoretical line
+  labs(
+    title = "Q-Q Plot of Model Residuals",
+    subtitle = "Points should fall close to the dashed red line.",
+    x = "Theoretical Quantiles (Normal)",
+    y = "Sample Quantiles (Residuals)"
+  ) +
+  theme_bw()
+```
+
+Interpretation: This plot looks excellent. The points are very close to the line, indicating our residuals are normally distributed.
+
+**Method 2: Statistical Test (Shapiro-Wilk)**
+
+The Shapiro-Wilk test provides a formal p-value for normality.
+
+$H_0$: The residuals are normally distributed.
+
+$H_a$: The residuals are not normally distributed.
+
+Warning: With large sample sizes, this test can become "over-powered" and find tiny, unimportant deviations from normality to be "statistically significant." For this reason, you should trust the Q-Q plot over the test.
+
+```{r}
+# Run the test on the residuals
+shapiro.test(model_aug$.resid)
+```
+
+Interpretation: Here, $p = 0.23$. Since $p > 0.05$, we fail to reject the null hypothesis. We conclude that the residuals are normally distributed, which matches our Q-Q plot.
+
+### Assumption 2: Homogeneity of Variance (Homoscedasticity)
+
+Is the variance (spread) of the residuals consistent across all groups (for ANOVA/t-test) or across all levels of the predictor (for regression)?
+
+If one group has a much larger variance than another (heteroscedasticity), the model can be biased, and our p-values may be untrustworthy.
+
+**Method 1: Visual Check (Residuals vs. Fitted Plot) - Recommended**
+
+This is the most important diagnostic plot. We plot the residuals (on the y-axis) against the fitted (predicted) values (on the x-axis).
+
+We want to see: A random, "starry night" shotgun blast of points centered horizontally on 0. There should be no pattern.
+
+Bad signs (Heteroscedasticity): A funnel or cone shape (e.g., points spread out more as the fitted value increases).
+
+```{r}
+# Generate the visual
+ggplot(model_aug, aes(x = .fitted, y = .resid)) +
+  #geom_point(color = "darkblue", alpha = 0.7) +
+  geom_jitter(color="darkblue",alpha=0.6, width=.1)+
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") + # Line at 0
+  labs(
+    title = "Residuals vs. Fitted Values",
+    subtitle = "Should look like a random cloud with no funnel shape.",
+    x = "Fitted (Predicted) Values",
+    y = "Residuals (Error)"
+  ) +
+  theme_bw()
+```
+
+Interpretation: This plot looks pretty good, but there are some clear differences in the vertical spread (variance) of the points across the three fitted values (which are just the three group means: setosa, versicolor, and virginica).
+
+**Method 2: Statistical Test (Levene's Test)**
+
+Levene's test is a formal test for homogeneity of variance.
+
+$H_0$: The variances of the residuals are equal across all groups.
+
+$H_a$: The variances of the residuals are not equal across all groups.
+
+The correct way to test the assumption on the residuals is to pass the linear model object (model_aov) to the function, but you can see below that passing the model residuals directly to the leveneTest() function yields the same results.
+
+```{r}
+# The car::leveneTest() function is very robust.
+# It tests if the residuals from the model have equal variance by group.
+# We can pass it our ANOVA model or...
+#car::leveneTest(model_aov)
+# We can pass it the residuals of our model directly
+car::leveneTest(.resid ~ Species, data = model_aug)
+```
+
+Interpretation: Here, $p = 0.002$. Since $p < 0.05$, we would reject the null hypothesis and conclude that the variances of the residuals are NOT homogeneous.
+
+Remember that, like the Shapiro-Wilk test, Leven's test can be sensitive to outliers, especially when sample sizes are larger.
+
+
+### Assumption 3: Independence of Errors
+
+Are the residuals (errors) independent of each other?
+
+This is the most important assumption. If errors are related (e.g., data from the same student over time, students from the same classroom), our model is specified incorrectly.
+
+**This is a study design issue, not a statistical test. You must ask: "Is any data point related to another?"**
+
+Example violations: 
+
+1. Repeated Measures (Longitudinal Data):
+
+- Example: You measure the depression scores of 50 participants at Week 1, Week 4, and Week 8 of a new therapy.
+
+- Violation: The score for "Participant 7" at Week 4 is not independent of their score at Week 1. All measurements within that participant are related to each other. The errors are clustered by participant.
+
+2. Nested/Hierarchical Data (e.g., Schools):
+
+- Example: You test a new reading intervention by sampling 20 students each from 10 different classrooms.
+
+- Violation: Students within the same classroom share a teacher, environment, and social dynamics. Their reading scores are likely more similar to each other than to students from another class. The errors are clustered by classroom.
+
+3. Dyadic Data (e.g., Couples, Twins):
+
+- Example: You study conflict resolution styles in 60 romantic couples, getting a score from each partner.
+
+- Violation: The score from Partner A is inherently linked to the score of Partner B. They influence each other. The individual scores are not independent; the couple is the true unit of independence.
+
+4. Group-Based Interventions:
+
+- Example: You compare a new group therapy (5 groups of 8 patients) to an individual therapy (40 patients).
+
+- Violation: The outcomes of the 8 patients within a single therapy group are not independent. They share a therapist and group dynamics. The errors are clustered by therapy group.
+
+
+**Solution: If your data is not independent, you must use a Linear Mixed Model (LMM), which is designed to handle this!**
+
+
+# Limitations of OLS Regression
+
+Traditional linear models, such as ordinary least squares (OLS) regression, have long been the foundation for statistical analysis due to their simplicity and interpretability. These models assume that the relationship between the independent variables (predictors) and the dependent variable (outcome) is linear, and that all observations in the dataset are independent of each other. Under these assumptions the dependent variable can be expressed as a weighted sum of the independent variables, plus an error term:
+
+$$y_i = \beta_0 + \beta_1 x_i + \epsilon_i$$
+Where:
+
+- $y_{i}$ is the dependent variable (response) for observation $i$
+- $x_{i}$ is the independent variable (predictor)
+- $\beta_0$  is the intercept (value of $y$ when $x=0$)
+- $\beta_1$ is the slope (change in $y$ for a one-unit change in $x$)
+- $\epsilon_i$ is the error term (random deviation)
+
+Multiple independent variables are possible too in this context. In multiple linear regression, we simply have $n$ more predictors:
+
+$$y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + ... \beta_n x_{in} + \epsilon_i$$
+The goal of OLS is to find the values of $\beta_0, \beta_1, \beta_2, ... \beta_n$ that minimize the sum of squared residuals (SSR). A residual is the difference between the observed value $y_i$ and the predicted value $\hat{y}_i$.
+ 
+ So, OLS minimizes:
+
+$$SSR=\sum_{i=1}^{n}(y_i - \hat{y}_i)^2$$
+
+This is why it's called ``least squares'': it finds the line (or hyperplane in multiple regression) that minimizes the squared distance from each data point to the regression line.
+
+OLS regression works well when the data points are independent and identically distributed, and when there is no clustering or grouping of observations. However, this idealized scenario is rare in real-world data, especially in fields like psychology, education, medicine, and social sciences, where nested or hierarchical data structures are common.
+
+In many research designs, data are inherently grouped. For example, in a longitudinal study of patients, multiple measurements are taken from the same individuals over time, creating repeated observations within each subject. Similarly, in educational research, students are nested within schools, and observations from students in the same school are likely to be more similar to one another than to students from different schools. This hierarchical structure introduces two key sources of variability that traditional linear models fail to account for: within-group variability (differences among individuals within the same group) and between-group variability (differences between groups themselves).
+
+The standard OLS model assumes that all data points are independent, which is violated in these hierarchical structures. When this assumption is not met, the model's estimates of regression coefficients can become biased or inefficient, leading to inaccurate conclusions. Specifically, by ignoring the clustering of data, the model treats all observations as if they are equally independent, which underestimates the true variability in the data. This often results in incorrect standard errors, leading to misleading significance tests and inflated Type I error rates (false positives). In other words, the model may indicate that certain relationships are statistically significant when, in fact, they may be due to the unaccounted-for correlation between observations within the same group.
+
+Furthermore, OLS regression cannot properly model the variability between groups. For instance, when multiple groups (e.g., schools, hospitals, or geographic regions) are involved, the assumption that all subjects respond the same way to predictors becomes unrealistic. Some schools may have inherently better academic outcomes due to local factors, and this variation needs to be explicitly modeled. Without accounting for this group-level variability, the OLS model does not allow for differences in intercepts or slopes between groups, thus simplifying the model to an unrealistic assumption that one set of coefficients applies universally across all levels of the data.
+
+The result of using a simple linear model on nested data is not only potential bias in estimates but also a loss of the ability to capture the complexities inherent in the data structure. This is where linear mixed-effects models (LMMs) provide an important advantage. By incorporating random effects to account for variability within and between groups, mixed-effects models offer a more flexible and accurate way to model hierarchical data, providing a better understanding of how predictors influence outcomes at both the individual and group levels.
+
+# Linear mixed-effects Models (LMMs)
+
+### Fixed vs. Random Effects
+In the context of linear mixed-effects models (LMMs), one of the key features is the distinction between fixed effects and random effects. These two types of effects allow researchers to model both the population-level relationship between predictors and the response variable, as well as the variability among groups or individuals that cannot be captured by fixed effects alone.
+
+**Fixed Effects: Population-Level Relationships**
+
+Fixed effects represent the systematic, population-level relationship between the predictors (independent variables) and the response variable (dependent variable). These effects are constant across all levels of the grouping factor and are typically used to estimate the average effect of a treatment or intervention, or the overall relationship between a predictor and the outcome. For example, in a study where the effect of a new teaching method on student performance is assessed, the fixed effect for the teaching method would represent the average difference in performance between the treatment group and the control group, across all students. This effect is the same for all individuals or groups in the dataset, and it reflects the population-level trend that one expects to see on average.
+
+In a simple linear regression model, all coefficients are considered fixed effects. In mixed-effects models, the fixed effects still represent the population-level effects, but they are combined with random effects to account for variability at different levels of the data hierarchy. For example, in a multilevel model examining students' test scores, fixed effects could include predictors like the student's age, gender, or teaching method, which are expected to have the same effect for every student across all schools.
+
+Mathematically, the fixed effect coefficients ($\beta_0,\beta_1, \dots$) are typically estimated from the data using methods like maximum likelihood estimation (MLE) or restricted maximum likelihood estimation (REML). These fixed effects are what we are most interested in when trying to understand the general trends or relationships in the data that apply across the entire population.
+
+**Random Effects: Group-Level and Individual-Level Variability**
+
+In contrast to fixed effects, random effects account for variability at the group or individual level. These effects capture the fact that different groups or individuals may respond differently to the same treatment or exposure. For instance, even if a new teaching method has an average positive effect on students' performance (captured by the fixed effect), some students might show a much stronger response, while others might show a weaker or even negative response. This variation among individuals, or among groups (such as schools), is modeled as random effects.
+
+In a typical mixed-effects model, random effects are included to model the variation in the intercept (random intercepts) or the variation in the slopes (random slopes) across groups or individuals. For example, in a longitudinal study of patient outcomes, the response variable might be influenced by both a fixed effect (e.g., treatment) and a random effect (e.g., individual patient differences). Random intercepts would allow each patient to have their own baseline level of the outcome variable, accounting for the fact that some patients start with higher or lower values. Random slopes could be included if the treatment effect varies across individuals, meaning some patients might benefit more from the treatment than others.
+
+Mathematically, random effects are often represented as deviations from the overall fixed effect, where the random effect term ($u_j$) is assumed to follow a normal distribution with a mean of zero and a variance of $\sigma_u^2$. These random effects are estimated along with the fixed effects and provide a way of partitioning the variance in the response variable into components that reflect both systematic effects (fixed) and individual or group-level variability (random).
+
+**Fixed vs. Random Effects: Complementary Roles**
+
+The distinction between fixed and random effects is essential for understanding the full range of variation in the data. Fixed effects tell us about the overall trend in the data, such as the effect of a treatment, whereas random effects tell us about the individual differences in how subjects or groups respond to that treatment. Together, they offer a more complete and nuanced understanding of the data, allowing for more accurate predictions and insights.
+
+### A Working Example:
+
+The lme4 package comes with a classic dataset, sleepstudy, that contains 10 days of reaction time data for 18 subjects who were sleep deprived.
+
+```{r}
+# Load the lme4 package (which has the data)
+library(lme4)
+# Load lmerTest for calculating p-values
+library(lmerTest)
+#broom.mixed allows us to use broom with lme4 objects
+library(broom.mixed)
+
+# Load the data
+data("sleepstudy")
+
+# Let's look at the first few rows
+head(sleepstudy)
+
+# Let's look at the structure
+str(sleepstudy)
+```
+
+We can see Reaction (our Y), Days (our X), and Subject (our grouping/clustering variable).
+
+**Why a Single Line (OLS) is Wrong**
+
+Let's first plot the raw data and see what it looks like. We can plot each subject as their own line.
+```{r}
+ggplot(sleepstudy, aes(x = Days, y = Reaction, group = Subject, color = Subject)) +
+  geom_point() +
+  geom_line(alpha = 0.5) +
+  theme_bw() +
+  labs(
+    title = "Reaction Time Increases with Sleep Deprivation",
+    subtitle = "Each subject has their own starting point and slope",
+    x = "Days of Deprivation",
+    y = "Reaction Time (ms)"
+  ) +
+  theme(legend.position = "none") # Hide the legend, it's too busy
+```
+
+This plot is the perfect illustration of the problem.
+
+- Different Intercepts: Some subjects start out much faster (e.g., see the line starting around 200ms) than others (e.g., the line starting around 280ms).
+
+- Different Slopes: The effect of sleep deprivation (Days) is stronger for some subjects (their lines are steeper) than for others (their lines are flatter).
+
+Now, let's see what happens if we ignore this structure and run a simple linear regression (OLS), just pooling all the data.
+
+### Model 1: OLS Regression
+
+This model assumes all 180 data points are independent.
+
+* Model: $Y = \beta_0 + \beta_1X + \epsilon$
+* R Code: `lm(Reaction ~ Days, data = sleepstudy)`
+
+```{r}
+# 1. Run the (incorrect) OLS model
+model_ols <- lm(Reaction ~ Days, data = sleepstudy)
+
+# 2. Get the coefficients
+tidy(model_ols)
+
+# 3. Add this OLS line to our plot
+ggplot(sleepstudy, aes(x = Days, y = Reaction)) +
+  geom_point(aes(color = Subject), alpha = 0.4) + # Show individual points
+  geom_line(aes(group = Subject, color = Subject), alpha = 0.4) + # Show subject lines
+  
+  # Add the OLS line
+  geom_smooth(method = "lm", se = FALSE, color = "black", linewidth = 2) +
+  
+  theme_bw() +
+  labs(
+    title = "Model 1: OLS Regression",
+    subtitle = "The black line ignores all subject-level differences.",
+    x = "Days of Deprivation",
+    y = "Reaction Time (ms)"
+  ) +
+  theme(legend.position = "none")
+```
+
+This single black line isn't a very good summary of the data. It doesn't represent any single subject well. It completely ignores the fact that data points are clustered by Subject.
+
+### Model 2: LME with Random Intercepts
+
+This is the simplest mixed model. We tell the model that Days has a "fixed effect" (the $\beta_1$ slope, which is the average slope for all subjects), but that each Subject should get their own random intercept (their own $\beta_0$ starting point).
+
+* Model: $Y = (\beta_0 + b_{0, subject}) + \beta_1X + \epsilon$
+
+* R Code: `lmer(Reaction ~ Days + (1 | Subject), data = sleepstudy)`
+
+(1 | Subject) is the R syntax for "give each Subject their own random intercept" (the 1 stands for the intercept).
+
+```{r}
+# 1. Run the random intercepts model
+model_intercepts <- lmer(Reaction ~ Days + (1 | Subject), data = sleepstudy)
+
+# 2. Get the "fixed effects" (the main beta coefficients)
+tidy(model_intercepts, effects = "fixed")
+
+# 3. Get the predictions
+sleepstudy$pred_intercepts <- predict(model_intercepts)
+
+# 4. Plot the predictions
+ggplot(sleepstudy, aes(x = Days, y = Reaction)) +
+  geom_point(aes(color = Subject), alpha = 0.4) +
+  
+  # Add the new predicted lines
+  geom_line(aes(y = pred_intercepts, group = Subject, color = Subject), linewidth = 1) +
+  
+  theme_bw() +
+  labs(
+    title = "Model 2: LME with Random Intercepts",
+    subtitle = "All lines have the same slope, but different starting points.",
+    x = "Days of Deprivation",
+    y = "Reaction Time (ms)"
+  ) +
+  theme(legend.position = "none")
+```
+
+This is much better! The model has captured the different starting points for each subject. However, it still forces every subject to have the exact same slope (all the lines are parallel). This doesn't match our raw data, where some slopes were steeper than others.
+
+### Model 3: LME with Random Slopes
+
+This is less common, but possible. We force all subjects to have the same intercept ($\beta_0$), but allow them to have their own random slope ($\beta_1$).
+
+* R Code: `lmer(Reaction ~ Days + (0 + Days | Subject), data = sleepstudy)`
+
+(0 + Days | Subject) is the R syntax for "give each Subject their own random slope for Days without a random intercept".
+
+```{r}
+# 1. Run the random slopes model
+model_slopes <- lmer(Reaction ~ Days + (0 + Days | Subject), data = sleepstudy)
+
+# 2. Get the fixed effects
+tidy(model_slopes, effects = "fixed")
+
+# 3. Get the predictions
+sleepstudy$pred_slopes <- predict(model_slopes)
+
+# 4. Plot the predictions
+ggplot(sleepstudy, aes(x = Days, y = Reaction)) +
+  geom_point(aes(color = Subject), alpha = 0.4) +
+  
+  # Add the new predicted lines
+  geom_line(aes(y = pred_slopes, group = Subject, color = Subject), linewidth = 1) +
+  
+  theme_bw() +
+  labs(
+    title = "Model 3: LME with Random Slopes",
+    subtitle = "All lines have the same starting point, but different slopes.",
+    x = "Days of Deprivation",
+    y = "Reaction Time (ms)"
+  ) +
+  theme(legend.position = "none")
+```
+
+This is also not great. It fails to capture the different starting reaction times.
+
+### Model 4: LME with Random Intercepts & Slopes
+
+This is the "full" or "maximal" model. We allow each subject to have both their own random intercept and their own random slope. This model best matches what we saw in the raw data plot.
+
+* Model: $Y = (\beta_0 + b_{0, subject}) + (\beta_1 + b_{1, subject})X + \epsilon$
+
+* R Code: `lmer(Reaction ~ Days + (Days | Subject), data = sleepstudy)`
+
+(Days | Subject) is the R shortcut for (1 + Days | Subject), which means "give each Subject a random intercept AND a random slope for Days, and estimate the correlation between them."
+
+```{r}
+# 1. Run the full random-intercepts-and-slopes model
+model_full <- lmer(Reaction ~ Days + (Days | Subject), data = sleepstudy)
+
+# 2. Get the fixed effects (the "average" line)
+tidy(model_full, effects = "fixed")
+
+# 3. Get the predictions
+sleepstudy$pred_full <- predict(model_full)
+
+# 4. Plot the predictions
+ggplot(sleepstudy, aes(x = Days, y = Reaction)) +
+  geom_point(aes(color = Subject), alpha = 0.4, size = 0.5) +
+  
+  # Add the new predicted lines
+  geom_line(aes(y = pred_full, group = Subject, color = Subject), linewidth = 1) +
+  
+  theme_bw() +
+  labs(
+    title = "Model 4: LME with Random Intercepts & Slopes",
+    subtitle = "The best fit: Each subject has their own starting point AND their own slope.",
+    x = "Days of Deprivation",
+    y = "Reaction Time (ms)"
+  ) +
+  theme(legend.position = "none")
+```
+
+**Conclusion**
+
+By comparing the plots, Model 4 is clearly the best representation of the data. It successfully models the two key sources of non-independence:
+
+Subjects have different baseline reaction times (random intercepts).
+
+Subjects are affected differently by sleep deprivation (random slopes).
+
+When you see clustered data like this, a simple lm() (Model 1) is typically invalid. A Linear Mixed-Effects Model (LMM) is the appropriate tool, and the lmer() function in R lets you specify how the data is clustered, giving you a much more accurate and powerful model.
+
+
+-----
+
+### Interpreting the Full Model Output
+
+Now that we have run the model, let's interpret the output.
+
+```{r}
+# Get the full summary of the model
+summary(model_full)
+```
+
+The output has two main sections: "Random effects" and "Fixed effects".
+
+#### Interpreting the "Random effects" Table
+
+This table tells us about the *variance* in our random intercepts and slopes.
+
+```
+Random effects:
+Groups   Name        Variance Std.Dev. Corr 
+Subject  (Intercept) 612.10   24.741        
+Days         35.07    5.922   0.07 
+Residual             654.94   25.592        
+Number of obs: 180, groups:  Subject, 18
+```
+
+* **`Subject (Intercept)`:**
+  * **`Variance = 612.10`:** This is the variance ($\sigma^2_{b_0}$) of the random intercepts. It tells us how much the subjects' *starting points* (at Day 0) vary from each other.
+  * **`Std.Dev. = 24.741`:** This is the standard deviation ($\sigma_{b_0}$) of the intercepts. It's the square root of the variance and is easier to interpret. It means that, roughly, 68% of subjects have a starting point within $\pm$ 24.7 ms of the *average* intercept (the fixed effect).
+* **`Subject Days`:**
+  * **`Variance = 35.07`:** This is the variance ($\sigma^2_{b_1}$) of the random slopes. It tells us how much the subjects' *slopes* (the effect of `Days`) vary from each other.
+  * **`Std.Dev. = 5.922`:** This is the standard deviation ($\sigma_{b_1}$) of the slopes. It means that 68% of subjects have a `Days` slope within $\pm$ 5.9 ms/day of the *average* slope.
+  * **`Corr = 0.07`:** This is the correlation between the random intercepts and random slopes. A value of 0.07 is very close to zero, suggesting there is little to no relationship between a subject's starting reaction time and how much they are affected by sleep deprivation. (A positive correlation would mean subjects who started slower also got worse faster).
+* **`Residual`:**
+  * **`Variance = 654.94` / `Std.Dev. = 25.592`:** This is the variance ($\sigma^2_{\epsilon}$) of the residuals—the "leftover" error after accounting for everything else. This is the $\epsilon_i$ from our model equation.
+
+#### Interpreting the "Fixed effects" Table
+
+This table is just like the output from `lm()`. It tells us about the *average* intercept and slope for the whole population.
+
+```
+Fixed effects:
+Estimate Std. Error     df t value Pr(>|t|)    
+(Intercept) 251.405      6.825  17.00 36.837  < 2e-16 ***
+Days         10.467      1.546  17.00  6.771 3.26e-06 ***
+```
+
+*(Note: P-values are provided by the `lmerTest` package)*
+
+* **`(Intercept)`:**
+  * **`Estimate = 251.405`:** This is our fixed intercept ($\beta_0$). It's the *average* reaction time for the *average* subject at Day 0.
+  * **`Pr(>|t|) = < 2e-16`:** This is a t-test for the intercept, testing the null hypothesis that $\beta_0 = 0$. It is highly significant, meaning the average reaction time at Day 0 is significantly different from zero (which we would expect).
+* **`Days`:**
+  * **`Estimate = 10.467`:** This is our fixed slope ($\beta_1$). It's the *average* effect of sleep deprivation. For every one additional day of deprivation, the average subject's reaction time increases by **10.47 ms**.
+  * **`Pr(>|t|) = 3.26e-06`:** This is the p-value we care most about. It tests the null hypothesis that $\beta_1 = 0$. This p-value is extremely small, so we conclude that sleep deprivation has a highly significant positive effect on reaction time.
+
+#### Putting It All Together: The Line for a Single Subject
+
+We can get the "average" line and the "adjustments" for each subject using `fixef()` and `ranef()`.
+
+```{r}
+# Get the average (fixed) effects
+fixef(model_full)
+
+# Get the subject-specific (random) adjustments
+ranef(model_full)
+```
+
+The line for any *specific* subject is the sum of the **fixed effects** and that subject's **random effects**.
+
+For example, the *predicted* line for **Subject 308** is:
+
+* **Intercept:** 251.405 (Fixed) + 1.514 (Subject 308's adjustment) = **252.919**
+* **Slope:** 10.467 (Fixed) + (-1.846) (Subject 308's adjustment) = **8.621**
+
+So, for Subject 308, the model predicts their reaction time is `Reaction = 252.9 + 8.6 * Days`.
+
+### Estimating Parameters in LMMs
+
+OLS is a so-called "closed-form" solution that only works when it can solve for the parameters ($\beta s$) in one step, which requires assuming all errors are independent.
+
+An LMM, on the other hand, is trying to solve for two different kinds of parameters at the same time, which breaks the OLS math.
+
+Here’s a more detailed breakdown:
+
+1. OLS Has One Job (and One Assumption)
+
+  - In Ordinary Least Squares (OLS), the model is just 
+  
+$$Y=\beta_0 + \beta_1 X+ \epsilon$$
+  - The Job: Find the single set of $\beta$ values (e.g., $\beta_0, \beta_1$) that minimizes the total $\sum \epsilon_i^2$.
+  - The Math: Because it assumes all $\epsilon_i$ are independent, this is a "simple" calculus problem. It leads to a "closed-form" solution, meaning a direct equation:
+  
+$$\hat{\beta}=(X^T X)^{-1}(X^T Y)$$
+
+No guessing is needed; you just plug in your X and Y matrices and calculate the $\beta s$.
+
+```{r}
+# We need this package for 3D plotting
+# install.packages("plotly")
+library(plotly)
+library(dplyr)
+
+# Use a simple dataset
+data(cars)
+
+# 1. First, find the "true" OLS solution (the bottom of the bowl)
+model_cars <- lm(dist ~ speed, data = cars)
+true_intercept <- coef(model_cars)[1]
+true_slope <- coef(model_cars)[2]
+
+# 2. Create a grid of "guesses" for the intercept and slope
+# We'll center our grid around the true values
+intercept_guesses <- seq(true_intercept - 30, true_intercept + 30, length.out = 50)
+slope_guesses <- seq(true_slope - 2, true_slope + 2, length.out = 50)
+
+# 3. Create a function to calculate SSE for any given B0, B1
+calculate_sse <- function(b0, b1, data) {
+  predictions <- b0 + b1 * data$speed
+  errors <- data$dist - predictions
+  sum(errors^2)
+}
+
+# 4. Create a data frame of all possible (B0, B1) combinations
+param_grid <- expand.grid(b0 = intercept_guesses, b1 = slope_guesses)
+
+# 5. Calculate SSE for every combination
+# This is a bit slow, so we use rowwise()
+sse_values <- param_grid %>%
+  rowwise() %>%
+  mutate(sse = calculate_sse(b0, b1, data = cars)) %>%
+  ungroup()
+
+# 6. Reshape the data into a 2D matrix for the 3D surface plot
+# Plotly needs z to be a matrix where rows=x and cols=y
+sse_matrix <- sse_values %>%
+  tidyr::pivot_wider(names_from = b1, values_from = sse) %>%
+  select(-b0) %>%
+  as.matrix()
+```
+
+The OLS 3D Surface Plot
+
+Now we can plot the sse_matrix. Notice it's a perfect, convex bowl. The lm() function finds the single lowest point (the blue dot) on this surface in one calculation—no searching required!
+```{r echo=FALSE}
+# Create the 3D surface plot
+fig_ols <- plot_ly(
+  x = ~slope_guesses, 
+  y = ~intercept_guesses, 
+  z = ~sse_matrix, 
+  type = "surface"
+) %>%
+  # Add a point to mark the "true" minimum we found with lm()
+  add_trace(
+    x = true_slope, 
+    y = true_intercept, 
+    z = calculate_sse(true_intercept, true_slope, cars),
+    type = "scatter3d", 
+    mode = "markers",
+    marker = list(color = "blue", size = 5),
+    name = "OLS Solution (Minimum)"
+  ) %>%
+  layout(
+    title = "OLS Error Surface (A Perfect 'Bowl')",
+    scene = list(
+      xaxis = list(title = "Slope (B1) Guesses"),
+      yaxis = list(title = "Intercept (B0) Guesses"),
+      zaxis = list(title = "Sum of Squared Error (SSE)")
+    )
+  )
+
+fig_ols
+```
+
+2. LMM Has Two Jobs (a "Chicken-and-Egg" Problem)
+
+  - In LMM (Model 4), the model is 
+
+$$Y=(\beta_0+b_{0,subject})+(\beta_1+b_{1,subject})X+\epsilon $$
+- The LMM has to find two sets of parameters, and they depend on each other:
+
+  - The Fixed Effects (\beta_0, \beta_1): The "average" intercept and slope for the whole population.
+
+  - The Variance Components (the $\sigma^2s$): These are the variances of the random effects. The model doesn't find a specific $b_0$ for each subject; it finds the variance of all the subject intercepts (e.g., $\sigma^2_{intercept}$) and the variance of all the subject slopes (e.g., $\sigma^2_{slope}$).
+
+  - This creates a "chicken-and-egg" problem that OLS can't solve:
+
+  - To find the best fixed effects (the $\beta s$), you first need to know how much variance there is to account for (the $\sigma^2 s$).
+
+  - To find the variances (the $\sigma^2 s$), you first need to know where the average line is (the $\beta s$) so you can calculate the residuals.
+
+  - Because you have to solve for both the fixed effects and the variance components at the same time, there is no single "closed-form" OLS equation that can do it.
+
+**The Solution: Iteration (ML / REML)**
+
+Instead of OLS, LMMs are solved using iterative methods, most commonly REML (Restricted Maximum Likelihood).
+
+Conceptually, REML works like this:
+
+- *Guess*: The algorithm makes an initial guess for the variance components (e.g., "let's guess $\sigma^2_{intercept}=50$ and $\sigma^2_{slope}=10$").
+
+- *Calculate*: Based on that guess, it then calculates the best possible $\beta s$ (this step is like a "weighted" OLS, known as Generalized Least Squares).
+
+- *Check*: It looks at the resulting $\beta s$ and residuals $\epsilon s$and calculates a "likelihood" score indicating how probable is our data, given all these parameters?
+
+- *Repeat*: The algorithm makes a new, better guess for the variance components and repeats the process.
+
+- *Converge*: It iterates hundreds of times, tweaking its guesses until it finds the combination of $\beta s$ and $\sigma s$ that makes the observed data most probable.
+
+So, OLS is a one-step calculation, while LMMs require an iterative "search" to find the best parameters.
+
+Here, we will simulate a complex surface to illustrate the conceptual problem that LMMs must solve. Imagine the Z-axis is now the "Log-Likelihood" score (higher is better).
+
+The iterative (REML) algorithm is like a "hiker" dropped on this surface, trying to find the highest peak.
+```{r echo=FALSE}
+# 1. Create a grid for our "parameter" guesses
+x <- seq(-10, 10, length.out = 100)
+y <- seq(-10, 10, length.out = 100)
+
+# 2. Define a complex "likelihood" function with multiple peaks
+# This is a common mathematical function for demos (sin(r)/r)
+# This is a SIMULATION to show the *idea*, not the real LMM surface.
+z_matrix <- matrix(NA, nrow = 100, ncol = 100)
+for (i in 1:100) {
+  for (j in 1:100) {
+    r <- sqrt(x[i]^2 + y[j]^2) + .Machine$double.eps
+    z_matrix[i, j] <- sin(r) / r
+  }
+}
+
+# 3. Create the 3D surface plot
+fig_lmm <- plot_ly(x = ~x, y = ~y, z = ~z_matrix, type = "surface") %>%
+  layout(
+    title = "Conceptual LMM 'Likelihood Surface' (A 'Mountain Range')",
+    scene = list(
+      xaxis = list(title = "Parameter 1 (e.g., Var(Intercept))"),
+      yaxis = list(title = "Parameter 2 (e.g., Var(Slope))"),
+      zaxis = list(title = "Log-Likelihood (Higher is Better)")
+    )
+  )
+
+fig_lmm
+```
+
+Conclusion
+
+OLS (Bowl): The solution is simple. We are finding the minimum of a perfect bowl. This can be solved directly with a single equation (a "closed-form" solution).
+
+LMM (Mountain): The problem is complex. We are finding the maximum of a complex, hilly landscape. The algorithm must search for this peak iteratively. This is why it's slower, needs to "converge," and can sometimes fail if the "mountain" is too complex or flat.
+
+-----
+
+### Assumptions of Linear Mixed-Effects Models
+
+Just like OLS, LMMs have several assumptions that must be met for the model's p-values and estimates to be trustworthy. The assumptions are similar to OLS, but with a few important additions related to the random effects.
+
+To check these, we first need to run the full `lmer` model from Part 5.
+
+```{r lmm-model-setup}
+# Load the lme4 package (which has the data)
+library(lme4)
+data("sleepstudy")
+
+# Run the "full" model from Part 5
+model_full <- lmer(Reaction ~ Days + (Days | Subject), data = sleepstudy)
+```
+
+Here are the key assumptions and how to check them:
+
+#### Assumption 1 & 2: Linearity and Homoscedasticity (of Residuals)
+
+* **Assumption:** The relationship between predictors and the outcome is linear, and the residuals (the $\epsilon$ errors) have a constant variance (homoscedasticity).
+* **How to Check:** Plot the model's residuals against its fitted values. We are looking for a random "starry night" pattern with no clear curves (violates linearity) or funnel shapes (violates homoscedasticity).
+* **R Code:**
+
+<!-- end list -->
+
+```{r check-lmm-resid-fitted}
+# Plot residuals vs. fitted values
+plot(model_full) 
+```
+
+* **Interpretation:** This plot looks good. There is no obvious funnel shape or curve, and the points are scattered randomly around the "0" line.
+
+#### Assumption 3: Normality of Residuals
+
+* **Assumption:** The *residuals* ($\epsilon_i$) are normally distributed.
+* **How to Check:** A Q-Q (Quantile-Quantile) plot of the residuals.
+* **R Code:**
+
+<!-- end list -->
+
+```{r check-lmm-resid-qq}
+# Q-Q plot of the residuals
+qqnorm(residuals(model_full))
+qqline(residuals(model_full))
+```
+
+* **Interpretation:** The points fall very closely along the diagonal line, indicating that the residuals are normally distributed. This assumption appears met.
+
+#### Assumption 4: Normality of Random Effects
+
+* **Assumption:** This is the *new* assumption for LMMs. We assume that the random effects themselves are drawn from a normal distribution. In our model, we assume all the random intercepts ($b_{0, subject}$) come from one normal distribution, and all the random slopes ($b_{1, subject}$) come from another normal distribution.
+* **How to Check:** A Q-Q plot of the *random effects* (`ranef`). We can get this using the `qqmath()` function from the `lattice` package.
+* **R Code:**
+
+<!-- end list -->
+
+```{r check-lmm-ranef-qq}
+# Load lattice package
+library(lattice)
+
+# Create Q-Q plots for each random effect
+# condVar = TRUE adds the confidence bands
+qqmath(ranef(model_full, condVar = TRUE))
+```
+
+* **Interpretation:** This plot shows two panels: one for `(Intercept)` and one for `Days` (the slope). In both panels, the points (which represent our 18 subjects) fall nicely within the confidence bands (the expected range of variation for a perfect normal distribution), supporting the assumption that our random effects are normally distributed.
+
+The way to think about this plot is, "If my 18 subjects were truly drawn from a perfect normal distribution, their random effects should fall within this shaded area 95% of the time."

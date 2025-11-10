@@ -1,5 +1,5 @@
 %----------------------------------------------------------------------------------------
-%	The Perceptron CHAPTER 
+%	Reproducible research with Git 
 %----------------------------------------------------------------------------------------
 \chapterimage{ChapterCover.pdf} % Chapter heading image
 \chapter{Reproducible Research with GIT \& Git-HUB}
@@ -58,7 +58,7 @@ Git is a popular and powerful open-source, version control software.  Version co
 \item Open the Terminal application (in Applications > Utilities).
 \item Type the following command:
 \begin{terminal}
-\terminalinput{git --version}
+\terminalinput{git -\texttt{-}version}
 \end{terminal}
 
 If Git is not yet installed, macOS will prompt you to install Command Line Developer Tools. Click Install.
@@ -78,7 +78,7 @@ Install Git by typing:
 
 After installation, verify with:
 \begin{terminal}
-\terminalinput{git --version}\\
+\terminalinput{git -\texttt{-}version}\\
 \terminaloutput{git version 2.39.1}
 \end{terminal}
 \end{enumerate}
@@ -88,13 +88,13 @@ After installing Git, configure your identity so your commits (changes) are prop
 
 In your terminal (Git Bash or macOS Terminal), run:
 \begin{terminal}
-\terminalinput{git config --global user.name ``Your Name''}|\\
-\terminalinput{git config --global user.email ``your.email@example.com''}
+\terminalinput{git config \texttt{-}-global user.name ``Your Name''}|\\
+\terminalinput{git config \texttt{-}-global user.email ``your.email@example.com''}
 \end{terminal}
 
 You can confirm your settings with:
 \begin{terminal}
-\terminalinput{git config --list}\\
+\terminalinput{git config \texttt{-}-list}\\
 \terminaloutput{Your Name}\\
 \terminaloutput{your.email@example.com}
 \end{terminal}
@@ -165,7 +165,7 @@ Even when using a shared platform like GitHub, you will want to designate a loca
 	\begin{itemize}
 	\item Open Git Bash or Command Prompt
 
-	Press Windows + S, type Git Bash or cmd, and press Enter.
+	Press Windows + S, type \texttt{git Bash} or \texttt{cmd}, and press Enter.
 
 	\item See where you currently are
 	
@@ -698,7 +698,8 @@ While Git’s core functionality—tracking changes and managing versions—is a
 In most projects, there are files that should not be tracked by Git—such as temporary outputs, compiled files, or large datasets. A \texttt{.gitignore} file can be created using any text editor and it tells Git to ignore the files and folders designated in that file. Create a .gitignore file in the root of your repository, and Git will apply these rules when adding and committing files. This helps keep your version history clean and prevents accidentally uploading sensitive or unnecessary data.
 
 \noindent Below is an example of a \texttt{.gitignore} file for a research project:\\
-\footnotesize{NOTE: the hashtag symbol indicates a descriptive comment}
+{\footnotesize NOTE: the hashtag symbol indicates a descriptive comment}
+
 \begin{verbatim}
 # Ignore everything in the results folder and all .log files
 /results/
@@ -775,30 +776,35 @@ Create a GitHub repo (public or private) with:
 		\item A repo with the folder structure:
 
 research-report/\\
+|---- main.tex\\
 |---- intro.tex\\
 |---- methods.tex\\
 |---- results.tex\\
 |---- discussion.tex\\
-|---- report.tex\\
-|---- refs.bib\\
+|---- main.tex\\
+|---- references.bib\\
 |---- README.md
 
-		\end{itemize}
+\end{itemize}
 \item Student Instructions
 	\begin{enumerate}
-	\item Fork the repo https://github.com/pdkieffaber/PSYC672.
-	\item Create a new branch of your fork using:
+	\item Fork the PSYC672 repo
+		\begin{enumerate}
+		\item Visit \weblink{https://github.com/pdkieffaber/PSYC672}.
+		\item Click ``Fork'' (top right)
+		\item This will create a new fork in your GitHub account.
+		\end{enumerate}
+	\item Clone the fork to your computer:
 	\begin{terminal}
-	\terminalinput{git checkout -b yourname-intro}
+	\terminalinput{git clone https://github.com/STUDENT-USERNAME/PSYC672.git}\\
+	\terminalinput{cd PSYC672}
 	\end{terminal}
-	\footnotesize{Replace yourname with your name.}
-	\item Add .tex section (e.g., intro.tex) and cite at least one source using BibTeX.
-	\item Add a comment to the log file PSYC470.md
+	\item Edit the README.txt file, adding the line, ``\textit{First Last}-FAll, 2025'' (replace \textit{First} with your first name and \textit{Last} with your last name)
 	\item Commit changes and push:
 	\begin{terminal}
-	\terminalinput{git add intro.tex}\\
+	\terminalinput{git add .}\\
 	\terminalinput{git commit -m ``Added my introduction section''}\\
-	\terminalinput{git push origin yourname-intro}
+	\terminalinput{git push origin main}
 	\end{terminal}
 	\end{enumerate}
 \end{enumerate}

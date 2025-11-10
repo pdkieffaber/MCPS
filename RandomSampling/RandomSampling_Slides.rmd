@@ -1,0 +1,270 @@
+---
+title: "Random Sampling Techniques"
+author: "Computer Applications for the Psychological Sciences"
+date: "`r Sys.Date()`"
+output: slidy_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+library(tidyverse)
+# library(lme4) # Uncomment if you want to run the lmer code
+```
+
+---
+
+# Parametric Statistics (The General Linear Model)
+
+- When we run summary(lm_model), we are implicitly trusting that our data meets the model assumptions. 
+- If it doesn't
+  - p-values and confidence intervals can be misleading or just plain wrong.
+- Assumptions about the error in GLM (the $\epsilon$ error term):
+  * **Normality:** The residuals are assumed to be drawn from a normal (Gaussian) distribution.
+  * **Homogeneity of Variance (Homoscedasticity):** The variance of the residuals is assumed to be equal at all levels of the predictor variable.
+  * **Independence:** The residuals are assumed to be independent of one another. The error for one data point tells you nothing about the error for another.
+
+---
+
+# Non-parametric Statistics (computational statistics)
+
+- No traditional assumptions 
+- Computationally-intensive methods for generating confidence intervals and p-values.  
+- The "holy trinity" of computational statistics.
+  * Bootstrap (Inference) answers: "How uncertain is my statistic?" (Gives CIs)
+  * Permutation (Inference) answers: "How likely is my result by chance?" (Gives p-values)
+  * Cross-Validation (Prediction) answers: "How well will my model work on new data?" (Gives a model generalization error)
+  
+---
+
+# What if our data and fitted errors looked like this...
+
+```{r, echo=FALSE, fig.show='hold', out.width="40%", fig.align="center"}
+# Set a seed so this example is reproducible
+set.seed(123)
+
+# Create a heavily right-skewed dataset
+# We'll use the log-normal distribution
+skewed_data <- data.frame(
+  value = rlnorm(100, meanlog = 2, sdlog = 1.5)
+)
+
+# Plot a histogram to show the skew
+ggplot(skewed_data, aes(x = value)) +
+  geom_histogram(bins = 30, fill = "salmon", color = "black") +
+  theme_minimal() +
+  labs(title = "A Heavily Right-Skewed Distribution")
+
+qqnorm(skewed_data$value)
+qqline(skewed_data$value)
+```
+
+---
+
+# No Formula Problem
+
+- We have formulas for the CI of a mean (thanks to the Central Limit Theorem), that is actually pretty robust to violations of data shape (e.g., normality).
+
+- But what about a CI for a...
+  - Median?
+  - R-squared?
+  - 90th percentile?
+  - parameter estimate in complex models?
+
+- For these, there's no simple "textbook" formula. We need a new method.
+
+--- 
+
+# The Solution: Computational Statistics
+
+- **The Big Idea:** 
+  * Instead of relying on formulas (which require assumptions), we rely on computation.
+
+- **The Principle:** 
+  * Our one sample is our best estimate of the true population.
+
+- **The Method:**
+  * We can use this one sample to simulate the process of sampling from the population thousands of times.
+
+- This is the core idea of resampling.
+
+---
+
+# The "Engine" of Resampling: sample()
+
+- This one function drives methods we will cover.
+
+- *Method #1*
+  - The Bootstrap (sampling *with* replacement): Simulates drawing new samples from the population. 
+  - Used for Confidence Intervals.
+
+```{r}
+original_sample <- c(10, 20, 30, 40, 50)
+# A "new" sample, with duplicates and omissions
+set.seed(123)
+sample(original_sample, size = 5, replace = TRUE)
+```
+
+---
+
+# Bootstrapping for CIs
+
+- Goal: To build a sampling distribution for any statistic.
+
+- The Algorithm:
+  * START with your original sample (size n).
+  * INITIALIZE an empty vector for results.
+  * LOOP 10,000 times: 
+    - a. Draw a "bootstrap sample" (size n, replace = TRUE). 
+    - b. Calculate your statistic (e.g., median()) on this sample. 
+    - c. STORE the statistic in your results vector.
+  * FINISH: You now have 10,000 bootstrapped statistics.
+  
+---
+
+# Bootstrapping: From Distribution to CI
+
+- The 10,000 results are the sampling distribution.
+- To get a 95% CI, just find the 2.5th and 97.5th percentiles.
+
+```{r}
+set.seed(456)
+n_small <- 8
+our_data <- rlnorm(n_small, meanlog = 2.0, sdlog = 1)
+n_boot <- 10000
+boot_medians <- numeric(n_boot)
+set.seed(123) 
+for (i in 1:n_boot) {
+  boot_sample <- sample(our_data, size = n_small, replace = TRUE)
+  boot_medians[i] <- median(boot_sample)
+}
+
+# We'll put our results in a data frame for plotting with ggplot
+boot_results_df <- data.frame(medians = boot_medians)
+
+# Get the 95% CI
+boot_ci <- quantile(boot_medians, probs = c(0.025, 0.975))
+print(boot_ci)
+
+ggplot(boot_results_df, aes(x = medians)) +
+  geom_histogram(bins = 30, fill = "lightblue", color = "black") +
+  geom_vline(xintercept = boot_ci[1], color = "red", linewidth = 1.2, linetype = "dashed") +
+  geom_vline(xintercept = boot_ci[2], color = "red", linewidth = 1.2, linetype = "dashed") +
+  theme_minimal() +
+  labs(
+    title = "Bootstrap Sampling Distribution of the Median",
+    x = "Bootstrapped Median Value",
+    y = "Frequency"
+  )
+```
+
+
+-Key Takeaway: This works for the mean, median, R-squared... anything!
+
+---
+
+# Permutation Tests for p-values
+
+- Goal: To simulate a "null hypothesis" world where the labels (e.g., "Group A", "Group B") are meaningless.
+- The Algorithm (for a t-test):
+  * START with your two groups.
+  * CALCULATE your observed statistic (e.g., mean(A) - mean(B)).
+  * INITIALIZE an empty vector for "null" results.
+  * LOOP 10,000 times: 
+    - a. POOL all outcomes into one big vector. 
+    - b. SHUFFLE (permute) the "A" and "B" labels. 
+    - c. Calculate the statistic (e.g., mean(fake_A) - mean(fake_B)). 
+    - d. STORE this "null" statistic.
+  * FINISH: You now have a 10,000-value null distribution.
+  
+---
+
+# Permutation: From Null Distribution to p-value
+
+- The p-value is the proportion of "null" stats that are at least as extreme as your one observed stat.
+
+```{r}
+data("ToothGrowth")
+group_a <- ToothGrowth$len[ToothGrowth$supp == "OJ"]
+group_b <- ToothGrowth$len[ToothGrowth$supp == "VC"]
+observed_diff <- mean(group_a) - mean(group_b)
+n_perm <- 10000
+null_diffs <- numeric(n_perm)
+all_outcomes <- c(group_a, group_b)
+all_labels   <- ToothGrowth$supp
+set.seed(123) 
+for (i in 1:n_perm) {
+  shuffled_labels <- sample(all_labels, replace=FALSE)
+  fake_mean_a <- mean(all_outcomes[shuffled_labels == "OJ"])
+  fake_mean_b <- mean(all_outcomes[shuffled_labels == "VC"])
+  null_diffs[i] <- fake_mean_a - fake_mean_b
+}
+
+# Get the two-tailed p-value
+p_value <- sum(abs(null_diffs)>abs(observed_diff))/n_perm
+# OR
+p_value <- mean(abs(null_diffs) >= abs(observed_diff))
+print(paste("Permutation p-value:", p_value))
+
+# Let's plot the null distribution and our observed value
+null_dist_df <- data.frame(differences = null_diffs)
+ggplot(null_dist_df, aes(x = differences)) +
+  geom_histogram(bins = 30, fill = "gray", color = "black", alpha = 0.7) +
+  geom_vline(xintercept = observed_diff, color = "red", linewidth = 1.2, linetype = "dashed") +
+  geom_vline(xintercept = -observed_diff, color = "red", linewidth = 1.2, linetype = "dashed") +
+  labs(title = "Permutation Null Distribution",
+       subtitle = "Red lines show our one 'observed' difference",
+       x = "Difference in Means (from shuffling)") +
+  theme_minimal()
+```
+
+- For lm(): You can test lm(y ~ x) by shuffling the y vector 10,000 times and storing the slope from lm(shuffled_y ~ x).
+
+---
+
+# Cross-Validation
+
+- "Why": $R^2$ from summary(lm()) is "overly optimistic."
+- It's based on the same data the model was built on. 
+- This is overfitting.
+- The Real Question: How will my model perform on new, unseen data?
+- The Method: k-Fold Cross-Validation
+  * Split your data into 10 equal "folds" (slices).
+  * LOOP 10 times:
+    - a.  Hold out Fold 1 as the "test set."
+    - b.  TRAIN the model on the other 9 folds.
+    - c.  TEST the model on Fold 1 and store the $R^2$.
+    - Repeat, holding out Fold 2, then Fold 3, etc.
+  * FINISH: Average your 10 $R^2$ values. This is your "honest" $R^2$.
+  
+---
+
+# Cross-Validation: The Code
+
+```{r}
+data(cars)
+set.seed(123) 
+# 5-fold Cross-validation
+cars_folded <- cars %>%
+  mutate(fold = sample(1:5, size = nrow(cars), replace = TRUE))
+
+fold_r2s <- numeric(5) # Initialize
+
+for (i in 1:5) {
+  test_data  <- cars_folded %>% filter(fold == i)
+  train_data <- cars_folded %>% filter(fold != i)
+  
+  model <- lm(dist ~ speed, data = train_data)
+  predictions <- predict(model, newdata = test_data)
+
+  ss_total <- sum((test_data$dist - mean(test_data$dist))^2)
+  ss_resid <- sum((test_data$dist - predictions)^2)
+  fold_r2s[i] <- 1 - (ss_resid / ss_total)
+}
+
+# Finish
+print(round(fold_r2s,3))
+print(paste("Average Cross-Validated R-squared:", round(mean(fold_r2s), 3)))
+
+optimistic_r2 <- summary(lm(dist ~ speed, data = cars))$r.squared
+print(paste("Optimistic R-squared from full dataset:", round(optimistic_r2, 3)))
+```

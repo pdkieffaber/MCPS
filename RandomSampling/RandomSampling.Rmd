@@ -1,0 +1,533 @@
+---
+title: "Resampling and Randomization"
+author: "Data Science for the Psychological Sciences"
+date: "Paul D. Kieffaber, Ph.D."
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: true
+    toc_depth: 3
+    theme: cosmo
+  pdf_document:
+    toc: true
+    toc_depth: 2
+  word_document:
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r echo=FALSE}
+# This chunk sets up the R environment for the rest of the document
+knitr::opts_chunk$set(
+  echo = TRUE,       # Show the R code
+  message = FALSE,   # Hide messages
+  warning = FALSE,   # Hide warnings
+  fig.align = "center", # Center plots
+  out.width = '70%'
+)
+
+library(ggplot2)
+```
+
+### **Module Goal:** To move beyond the assumptions of traditional parametric statistics and introduce computationally-intensive methods (bootstrapping and permutation tests) for generating confidence intervals and p-values.
+
+### **Prerequisites:
+
+- Basic R proficiency (data frames, functions, dplyr).
+
+- Understanding of core statistical concepts (mean, median, p-value, confidence interval).
+
+- Familiarity with parametric tests (t.test(), lm()) and their assumptions (from your previous module).
+
+# Review
+
+## The World of Parametric Assumptions
+
+In our last module, we explored the "workhorses" of statistical analysis: the General Linear Model, which includes both the t.test() and lm(). These tools are powerful, fast, and form the foundation of most statistical analysis. But their power and convenience come at a price. They rely on a strict "statistical contract" — a set of parametric assumptions — to be true. 
+
+When we run summary(lm_model), we are implicitly trusting that our data meets these assumptions. If it doesn't, the p-values and confidence intervals that R prints out can be misleading or just plain wrong.These models, like lm() and t.test(), build their calculations on a few key assumptions about the residuals (the $\epsilon$ error term)
+
+* **Normality:** The residuals are assumed to be drawn from a normal (Gaussian) distribution.
+* **Homogeneity of Variance (Homoscedasticity):** The variance of the residuals is assumed to be equal at all levels of the predictor variable.
+* **Independence:** The residuals are assumed to be independent of one another. The error for one data point tells you nothing about the error for another.
+
+When these assumptions are incorrect, our standard errors become unreliable. If the residuals aren't normal, our p-values for a small sample might be incorrect. If variance isn't homogenous, we might overestimate our confidence in one group and underestimate it in another. And as we saw in the mixed-effects models section, if our data points aren't independent (like students in a classroom or measurements over time), our model will be wildly over-confident, leading to p-values that are far too small. 
+
+```{r}
+library(lme4)
+library(lmerTest)
+
+# Run the full LMM from the LinearModels.Rmd file
+data(sleepstudy, package = "lme4")
+model_full <- lmer(Reaction ~ Days + (1 + Days | Subject), data = sleepstudy)
+
+# Create the Q-Q plot
+qqnorm(residuals(model_full))
+qqline(residuals(model_full))
+```
+
+This plot gave us the confidence to trust our model's output. But it raises a critical question that forms the basis of this entire module: What if this plot wasn't a straight line? What if our data was heavily skewed, or had no clear-cut variance? What tools do we have when our data breaks the "rules"?
+
+But it raises a critical question that forms the basis of this entire module: What if this plot wasn't a straight line? What if our data looked like this?
+
+```{r echo=FALSE}
+# Set a seed so this example is reproducible
+set.seed(123)
+
+# Create a heavily right-skewed dataset
+# We'll use the log-normal distribution
+skewed_data <- data.frame(
+  value = rlnorm(100, meanlog = 2, sdlog = 1.5)
+)
+
+# Plot a histogram to show the skew
+ggplot(skewed_data, aes(x = value)) +
+  geom_histogram(bins = 30, fill = "salmon", color = "black") +
+  theme_minimal() +
+  labs(title = "A Heavily Right-Skewed Distribution")
+```
+
+This data is clearly not normal. If we ran a Q-Q plot on it, we'd see a dramatic failure to meet the assumption. The tails of the distribution (the very low and very high values) would curve far away from the diagonal line.
+
+```{r echo=FALSE}
+qqnorm(skewed_data$value)
+qqline(skewed_data$value)
+```
+
+So, what's the big deal? The t.test is fairly "robust" to violations of normality, right? Yes, but only to a point. When data is this skewed, the mathematical assumptions of the t-distribution break down. The standard errors calculated by t.test() will be incorrect, and therefore the confidence intervals and p-values will be untrustworthy. 
+
+## The "Statistic with No Formula" Problem
+
+The central limit theorem (CLT) states that no matter what your data looks like (skewed, lumpy, weird), the sampling distribution of the mean (the distribution of 10,000 sample means) will always be approximately normal, as long as your sample size is big enough.
+
+Because we know this sampling distribution will be a nice, predictable normal (bell) curve, statisticians were able to derive a simple, one-size-fits-all formula for its spread:
+
+Standard Error of the Mean = $\frac{s}{\sqrt{n}}$ (the sample standard deviation divided by the square root of the sample size)
+
+Once you have a reliable formula for the standard error, creating a confidence interval is just a simple, off-the-shelf calculation. This is exactly what the t.test() function does for you. But what if aren't using the mean as a measure of central tendency? Let's go back to our skewed data. We know the mean is a poor measure of central tendency for this data, and the median is much more robust. But how do we get a 95% CI for the median for which no simple, "textbook" formula for a confidence interval? 
+
+The CIs we get from t.test() and summary(lm()) are convenient, but they are only possible because decades of statistical theory have produced formulas for the standard error of a mean or a regression coefficient.
+
+But what if we want a 95% CI for...
+
+- The median?
+- The 90th percentile of our data?
+- The R-squared of our regression model?
+- The ratio of two means from different groups?
+
+For these statistics, there is no simple formula. This is where bootstrapping really shines. It is a universal engine for generating a confidence interval for any statistic you can calculate, no new formulas required.
+
+# Introduction to "Computational Statistics"
+
+For the last century, much of statistical education was dominated by the parametric formulas you learned in introductory statistics courses. We have t.test(), anova(), and summary(lm()), which all produce neat, tidy tables of coefficients, standard errors, and p-values. This was a practical necessity. These tests were developed in an era when calculations were done by hand or on slow, primitive calculators. Their main advantage was that they provided simple formulas (like the standard error of the mean, $\frac{s}{\sqrt{n}}$) that allowed researchers to approximate p-values and confidence intervals.
+
+But this convenience came at a cost: the "statistical contract" of assumptions we discussed earlier (normality, homoscedasticity, etc.). This created a serious problem. What happens when our data is messy? What happens when we're interested in a statistic, like the median or R-squared, for which no simple, reliable formula for a confidence interval, the answer used to be, "You can't." 
+
+## The Resampling Principle: 
+
+A New Way of ThinkingThis brings us to the core idea of this entire module is the principle of resampling. The logic is this:Our one sample is our best available estimate of the true population. This single sentence is the key. If we assume our sample is a reasonable "prototype" of the population, we no longer need to rely on abstract mathematical formulas derived from theoretical assumptions. We can, instead, use raw computational power to simulate the process of sampling itself.
+
+Instead of using a formula to assume what the sampling distribution looks like (e.g., a normal curve), we will use the computer to generate it directly. How? By treating our one sample as a "parent" population and drawing thousands of new, simulated "child" samples from it. We then calculate our statistic of interest (e.g., the median) on each of these new samples. The resulting distribution of 10,000 medians shows us the full range of plausible variation, giving us a "formula-free" confidence interval. This is the essence of computational statistics: we are trading mathematical assumptions for computational power. 
+
+
+## The "Engine" of Resampling: 
+
+In R, the single function, `sample()`, makes this entire, powerful idea possible. This function is the engine that drives both bootstrapping and permutation testing. It takes a vector of data and draws a new sample from it.The key argument is `replace = ...`. This one choice defines the two core methods we will learn.
+
+1) Sampling WITH replacement (`replace = TRUE`): This is the Bootstrap. We take an item, record it, and put it back. This means our new sample can have duplicates and omissions. It's a "new" plausible sample.
+
+2) Sampling WITHOUT replacement (`replace = FALSE`): This is a Permutation. We take an item, set it aside, and do not put it back. This just shuffles the order of our original data.Let's see this in action.
+
+```{r}
+original_sample <- c(10, 20, 30, 40, 50)
+print(paste0("Original Sample: ", paste(original_sample, collapse = ", ")))
+
+# 2. The Bootstrap (Sampling WITH replacement)
+# Notice how 50 is missing and 10 appears twice.
+set.seed(123) # for a reproducible example
+boot_sample <- sample(original_sample, size = 5, replace = TRUE)
+print(paste0("Bootstrap Sample:  ", paste(boot_sample, collapse = ", ")))
+
+# 3. The Permutation (Sampling WITHOUT replacement)
+# This is just the same 5 numbers, shuffled.
+set.seed(123)
+perm_sample <- sample(original_sample, size = 5, replace = FALSE)
+print(paste0("Permutation Sample: ", paste(perm_sample, collapse = ", ")))
+```
+
+These two simple commands, replace = TRUE and replace = FALSE, are the entire foundation of this module. By repeatedly running the bootstrap (sampling with replacement), we can build the sampling distribution for any statistic. This is how we get confidence intervals. 
+
+By repeatedly running the permutation (sampling without replacement, or "shuffling"), we can simulate a world where the null hypothesis is true. This is how we get p-values. Let's explore the first of these, the bootstrap, right now.
+
+# Bootstrapping for Confidence Intervals
+
+This is our first, and perhaps most common, application of resampling: generating a 95% confidence interval for any statistic.
+
+As we discussed, we need this because we often want a CI for statistics (like the median or R-squared) that have no simple, reliable formula. The bootstrap lets us bypass this "no formula" problem by using computation to build the sampling distribution ourselves.
+
+The goal of the bootstrap is to simulate the process of "going out and getting 10,000 new samples from the population" to see how much our statistic would vary.
+
+## The Bootstrap Algorithm (Step-by-Step)
+
+The algorithm to generate a bootstrap confidence interval is powerful, and surprisingly simple. It always follows the same four steps.
+
+* **Start:** Begin with your original sample of data (of size n). This is your best guess for the "population."
+* **Initialize:** Create an empty vector (or list) to store the results of your simulation.
+* **Loop (Simulate):** Repeat a large number of times (e.g., 10,000): 
+  * **a. Resample:** Draw a new "bootstrap sample" of size n from your original sample, WITH replacement (replace = TRUE). 
+  * **b. Calculate:** On this new bootstrap sample, calculate your statistic of interest (e.g., median(), mean(), or an lm() coefficient). 
+  * **c. Store:** Save that single statistic to your results vector.
+
+Finish: You now have a vector of 10,000 statistics. This is your bootstrap sampling distribution.
+
+Let's run this full algorithm ourselves. We'll use the small, skewed dataset from our previous example to calculate the 95% CI for the median.
+
+```{r}
+# Load the tidyverse for data manipulation
+library(tidyverse)
+
+# --- 1. Start ---
+# Our original, small, skewed dataset
+set.seed(456)
+n_small <- 8
+our_data <- rlnorm(n_small, meanlog = 2.0, sdlog = 1)
+print("Our original data:")
+print(round(our_data, 1))
+
+# Our point estimate
+print(paste("Our observed median:", round(median(our_data), 2)))
+
+# --- 2. Initialize ---
+# Create an empty vector to store 10,000 medians
+n_boot <- 10000
+boot_medians <- numeric(n_boot)
+
+# --- 3. Loop ---
+# We set the seed again for reproducibility
+set.seed(123) 
+for (i in 1:n_boot) {
+  
+  # a. Resample our data WITH replacement
+  boot_sample <- sample(our_data, size = n_small, replace = TRUE)
+  
+  # b. Calculate the median on the new sample
+  current_median <- median(boot_sample)
+  
+  # c. Store the result
+  boot_medians[i] <- current_median
+}
+
+# --- 4. Finish ---
+# Let's look at the first 10 results
+print("First 10 bootstrapped medians:")
+print(round(head(boot_medians, 10), 2))
+```
+
+We now have boot_medians, a vector containing 10,000 plausible medians that we could have gotten if we had resampled from our population.
+
+### From Bootstrap Distribution to Confidence Interval
+
+That vector of 10,000 medians is the sampling distribution. It represents the full range of plausible variation for our statistic. We can visualize it with a histogram to see what it looks like.
+
+```{r}
+# We'll put our results in a data frame for plotting with ggplot
+boot_results_df <- data.frame(medians = boot_medians)
+
+ggplot(boot_results_df, aes(x = medians)) +
+  geom_histogram(bins = 30, fill = "lightblue", color = "black") +
+  theme_minimal() +
+  labs(
+    title = "Bootstrap Sampling Distribution of the Median",
+    x = "Bootstrapped Median Value",
+    y = "Frequency"
+  )
+```
+
+Now that we have this distribution, getting a 95% confidence interval is incredibly easy. We no longer need any complex formulas or t-tables.
+
+A 95% confidence interval is simply the "middle 95%" of this distribution. To find it, we just need to find the value that cuts off the bottom 2.5% and the value that cuts off the top 2.5%.
+
+We do this in R using the quantile() function.
+
+```{r}
+# Get the 95% confidence interval
+boot_ci <- quantile(boot_medians, probs = c(0.025, 0.975))
+
+print(boot_ci)
+```
+
+And that's it! We can now state with 95% confidence that the true median of the population is likely between 1.93 and 14.74.
+
+The key takeaway is this: This 4-step algorithm is universal.
+
+You can swap out median() for any other statistic.
+
+- Want a CI for the mean? Use mean(boot_sample).
+
+- Want a CI for R-squared? Use summary(lm(y ~ x, data = boot_df))$r.squared.
+
+- Want a CI for a regression coefficient? Use coef(lm(y ~ x, data = boot_df))[2].
+
+The logic remains the same. This is why bootstrapping is one of the most powerful and flexible tools in modern statistics.
+
+# Permutation Tests for p-values
+
+In the last section, we used bootstrapping to create confidence intervals. The core idea was to simulate "plausible variation" by resampling with replacement. Now, we shift our focus to p-values. To get a p-value, we need to answer a different question: "How likely is the effect I saw, if there was no real effect at all?"
+
+We are no longer simulating plausible variation; with permutation, we are attempting to simulate a world where the null hypothesis is true. The core idea is this: if the null hypothesis is true, then the labels we assign to our data (e.g., "Drug" vs. "Placebo", or "Group A" vs. "Group B", etc.) are meaningless. If the labels are meaningless, we should be able to shuffle them (i.e., permute them) and get a similar result just by random chance. This leads to a powerful new algorithm. 
+
+Let's trace the full algorithm for testing the difference in means between two groups, "A" and "B".
+
+* **Start:** Begin with your two groups (e.g., group_a_outcomes and group_b_outcomes).
+* **Calculate Observed Statistic:** First, calculate the real difference in means from your actual data. This is the one true value you are testing against.
+* **Initialize:** Create an empty vector (e.g., null_results) to store the results of your simulation.Loop (Simulate): 
+* **Repeat 10,000 times:** 
+  * **a.  Pool:** Combine all outcome scores from both groups into one large vector.
+  * **b.  Shuffle (Permute):** Create a new set of "fake" group labels by shuffling the original labels. This is like randomly dealing all the "A" and "B" labels back to the pooled data.
+  * **c.  Assign:** Create your new "fake_A" and "fake_B" groups based on these randomly shuffled labels.
+  * **d.  Calculate:** Calculate the difference in means for these new, fake groups (e.g., mean(fake_A) - mean(fake_B)).e.  
+  * **Store:** Save this "null" statistic to your null_results vector.
+* **Finish:** You now have a vector of 10,000 "null" statistics. This is your null distribution. 
+
+**From Null Distribution to p-value:** This null_results vector is critical. It's a distribution of 10,000 "differences-in-means" that could have been produced by random chance alone. It's centered at 0, because we'd expect the difference to be zero, on average, if the labels are meaningless. To get our p-value, we just compare our one observed statistic from Step 2 to this null distribution. The p-value is the proportion of our 10,000 null statistics that were at least as extreme as our one observed statistic. Let's run a quick example.
+
+```{r}
+# --- 1. Start ---
+# We'll use the ToothGrowth data
+data("ToothGrowth")
+group_a <- ToothGrowth$len[ToothGrowth$supp == "OJ"]
+group_b <- ToothGrowth$len[ToothGrowth$supp == "VC"]
+
+# --- 2. Calculate Observed Statistic ---
+observed_diff <- mean(group_a) - mean(group_b)
+print(paste("Observed Difference in Means:", round(observed_diff, 2)))
+
+# --- 3. Initialize ---
+n_perm <- 10000
+null_diffs <- numeric(n_perm)
+all_outcomes <- c(group_a, group_b)
+all_labels   <- ToothGrowth$supp
+
+# --- 4. Loop ---
+set.seed(123) # for reproducibility
+for (i in 1:n_perm) {
+  # b. Shuffle the labels
+  shuffled_labels <- sample(all_labels)
+  
+  # c/d. Calculate mean difference for this "fake" world
+  fake_mean_a <- mean(all_outcomes[shuffled_labels == "OJ"])
+  fake_mean_b <- mean(all_outcomes[shuffled_labels == "VC"])
+  
+  # e. Store the null statistic
+  null_diffs[i] <- fake_mean_a - fake_mean_b
+}
+
+# --- 5. Calculate p-value ---
+# How many of the null differences are as extreme as our observed difference?
+# We use abs() for a two-tailed test
+p_value <- mean(abs(null_diffs) >= abs(observed_diff))
+print(paste("Permutation p-value:", p_value))
+
+# Let's plot the null distribution and our observed value
+null_dist_df <- data.frame(differences = null_diffs)
+ggplot(null_dist_df, aes(x = differences)) +
+  geom_histogram(bins = 30, fill = "gray", color = "black", alpha = 0.7) +
+  geom_vline(xintercept = observed_diff, color = "red", linewidth = 1.2, linetype = "dashed") +
+  geom_vline(xintercept = -observed_diff, color = "red", linewidth = 1.2, linetype = "dashed") +
+  labs(title = "Permutation Null Distribution",
+       subtitle = "Red lines show our one 'observed' difference",
+       x = "Difference in Means (from shuffling)") +
+  theme_minimal()
+```
+
+Our calculated p-value is the proportion of the gray histogram bars that fall to the outside of the two dashed red lines. This tells us how often a difference as large as our observed difference would pop up just by random chance.
+
+This logic isn't just for t-tests. It can be applied to almost any model, including lm() models. How do you test the p-value for lm(y ~ x) where the null Hypothesis ($H_0$) is that the relationship between x and y is zero? If $H_0$ is true, then the (x, y) pairings in our data are just a coincidence. We can simulate this "un-related" world by breaking the link between them. The easiest way is to repeatedly shuffle the y vector.
+
+**The Loop:** 
+- Calculate your observed slope (coefficient) from lm(y ~ x).
+- Loop 10,000 times:
+  - a.  Create a shuffled_y vector by sample(y).
+  - b.  Run the null model: null_model <- lm(shuffled_y ~ x).
+  - c.  Store the slope: null_slopes[i] <- coef(null_model)[2].
+  
+You now have a null distribution of 10,000 slopes and your p-value is mean(abs(null_slopes) >= abs(observed_slope)). This technique gives you a robust, assumption-free p-value for any predictor in your lm() model.
+
+# nPutting It All Together (Bootstrap and Permutation)
+
+Now it's your turn. Use the ToothGrowth dataset to perform both a bootstrap and a permutation test. This will help you solidify the difference between the two methods.
+
+## Exercise #1 - Bootstrapping
+- Dataset: ToothGrowth (variables: len and supp)
+- Objective: To find the 95% Confidence Interval for the difference in means between supp == "OJ" and supp == "VC".
+
+```{r}
+# --- 1. Get the data ---
+data("ToothGrowth")
+group_oj <- ToothGrowth$len[ToothGrowth$supp == "OJ"]
+group_vc <- ToothGrowth$len[ToothGrowth$supp == "VC"]
+
+# --- 2. Initialize ---
+n_boot <- 10000
+boot_diffs <- numeric(n_boot)
+
+# --- 3. Write your bootstrap loop ---
+# HINT: You need to sample *with replacement* from group_oj
+# and *separately* sample with replacement from group_vc.
+for (i in 1:n_boot) {
+  # boot_oj <- sample(...)
+  # boot_vc <- sample(...)
+  # boot_diffs[i] <- mean(boot_oj) - mean(boot_vc)
+}
+
+# --- 4. Plot your bootstrap distribution ---
+# (Make a histogram of boot_diffs)
+
+# --- 5. Calculate the 95% CI ---
+# (Use the quantile() function on boot_diffs)
+
+# --- 6. Compare to the t.test() ---
+# classic_test <- t.test(len ~ supp, data = ToothGrowth)
+# print(classic_test$conf.int)
+```
+
+Question: Compare your bootstrap CI to the one from t.test(len ~ supp). Are they similar? Why or why not?
+
+## Exercise #2 - Permutation
+
+- Dataset: ToothGrowth (variables: len and supp)
+- Objective: To find the p-value for the difference in means between supp == "OJ" and supp == "VC".
+
+```{r}
+# --- 1. Calculate your OBSERVED difference ---
+# (You already have this from Task 1: mean(group_oj) - mean(group_vc))
+observed_diff <- mean(group_oj) - mean(group_vc)
+
+# --- 2. Initialize ---
+n_perm <- 10000
+null_diffs <- numeric(n_perm)
+all_outcomes <- ToothGrowth$len
+all_labels   <- ToothGrowth$supp
+
+# --- 3. Write your permutation loop ---
+# HINT: You need to sample *without replacement* (shuffle)
+# the *all_labels* vector.
+for (i in 1:n_perm) {
+  # shuffled_labels <- sample(...)
+  # fake_mean_oj <- mean(all_outcomes[shuffled_labels == "OJ"])
+  # ...
+  # null_diffs[i] <- ...
+}
+
+# --- 4. Plot your null distribution ---
+# (Make a histogram of null_diffs and add a vline for observed_diff)
+
+# --- 5. Calculate the p-value ---
+# (Use the mean(abs(...) >= abs(...)) formula)
+
+# --- 6. Compare to the t.test() ---
+# classic_test <- t.test(len ~ supp, data = ToothGrowth)
+# print(classic_test$p.value)
+```
+
+Question: Compare your permutation p-value to the one from t.test(len ~ supp). Are they similar?
+
+# Cross-Validation (Resampling for Model Validation)
+
+So far in this chapter, we've used resampling to understand our existing data. Bootstrapping let us get confidence intervals (CIs) to answer: "How uncertain is my statistic?" Permutation Tests let us get p-values to answer: "How likely is my result by chance?"
+
+Now, we'll learn the third and final member of the resampling "holy trinity": Cross-Validation. This technique uses resampling to answer a completely different, and perhaps more important, question: "How well will my model work on new, unseen data?"
+
+This section moves us from statistical inference (explaining what we have) to model validation and the first steps of machine learning (predicting what we haven't seen).
+
+## The Problem of Overfitting
+
+In our module on linear models, we built models to explain the data we already had. For example, when we ran lm(dist ~ speed, data = cars), we got an R-squared of 0.65. This R-squared tells us how well our model's line fits the 50 data points it was built with.
+
+But there's a problem: that 0.65 is overly optimistic. The lm() function is designed to find the single best possible line for those 50 points. It has perfectly "fit" itself to the unique quirks and random noise of our specific sample. If we were to gather 50 new data points and use our original model to make predictions, our R-squared on this new data would almost certainly be lower.
+
+This is called overfitting. The model is "tuned" to our training data but won't perform as well in the real world. The Key Question is, "How do we get an honest estimate of our model's performance?"
+
+The simplest method is the train/test split. You randomly divide your data, holding back 20% as a "test set." You build your model on the 80% ("training set") and then test it on the 20% to get an honest R-squared. The problem with this is that it's inefficient (you "lose" 20% of your data for training) and your entire answer depends on the luck of which 20% you happened to pick for the test set.
+
+**The Resampling Solution:** k-Fold Cross-Validation
+
+Cross-validation (CV) solves this problem using a more clever resampling approach. Instead of one split, we do many splits and average the results. The most common method is k-fold cross-validation.
+
+Here is the algorithm for 10-fold CV:
+
+1) **Start:** Take your full dataset.
+2) **Split:** Randomly shuffle and split the data into 10 equal "folds" (like 10 slices of a pie).
+3) **Loop (Simulate):** Repeat 10 times (once for each fold): 
+  a) Hold out: Use Fold 1 as your "test set" (the unseen data). 
+  b) Train: Use the other 9 folds (Folds 2-10) as your "training set." 
+  c) Model: Build your lm(y ~ x) only on the 9-fold training set. 
+  d) Predict: Use that newly trained model to make predictions on the held-out Fold 1. 
+  e) Store: Calculate and store the performance metric (e.g., R-squared or RMSE) from that test.
+4) Repeat: Now, hold out Fold 2 as the test set and train on Folds 1, 3-10. Then hold out Fold 3 and train on the rest, and so on, until every fold has been the "test set" exactly once.
+5) Finish: You now have 10 "honest" performance scores. The average of these 10 scores is your final cross-validated R-squared. This is a much more robust and reliable estimate of how your model will perform on new data.
+
+Let's see this in action. We can build a 5-fold CV "engine" ourselves using a for loop. We'll use the cars dataset 
+
+```{r}
+library(tidyverse)
+
+# 1. Add a "fold" ID to our data
+# We'll use 5 folds for this example
+data(cars)
+set.seed(123) # for reproducibility
+cars_folded <- cars %>%
+  mutate(fold = sample(1:5, size = nrow(cars), replace = TRUE))
+
+# 2. Initialize
+# Create an empty vector to store our 5 R-squared values
+fold_r2s <- numeric(5) # We have 5 folds
+
+# 3. Loop
+for (i in 1:5) {
+  
+  # a/b. Split into training and testing
+  # The test data is just the data for the current fold 'i'
+  test_data  <- cars_folded %>% filter(fold == i)
+  
+  # The training data is everything else
+  train_data <- cars_folded %>% filter(fold != i)
+  
+  # c. Model: Build *only* on the training data
+  model <- lm(dist ~ speed, data = train_data)
+  
+  # d. Predict: Test on the hold-out fold
+  predictions <- predict(model, newdata = test_data)
+  # note: The predict() function was written to use "newdata" instead of data to make it clear that you are passing in new observations, not the original data used to build the model.
+  
+  # e. Store R-squared from the *test* data
+  # We have to calculate R-squared manually from the test predictions
+  ss_total <- sum((test_data$dist - mean(test_data$dist))^2)
+  ss_resid <- sum((test_data$dist - predictions)^2)
+  fold_r2s[i] <- 1 - (ss_resid / ss_total)
+}
+
+# 5. Finish
+print("R-squared from each of the 5 folds:")
+print(round(fold_r2s, 3))
+
+print(paste("Average Cross-Validated R-squared:", round(mean(fold_r2s), 3)))
+
+# Compare this to the "overly optimistic" R-squared
+optimistic_r2 <- summary(lm(dist ~ speed, data = cars))$r.squared
+print(paste("Optimistic R-squared from the full dataset:", round(optimistic_r2, 3)))
+```
+
+Look at the results! The average cross-validated R-squared of r round(mean(fold_r2s), 3) is lower than the "optimistic" R-squared we get from the full dataset. This gives us a much more honest and realistic expectation of our model's performance.
+
+
+Together, these three techniques (Bootstrap, Permutation, Cross-Validation) form the "holy trinity" of modern computational statistics.
+
+* Bootstrap (Inference) answers: "How uncertain is my statistic?" (Gives CIs)
+
+* Permutation (Inference) answers: "How likely is my result by chance?" (Gives p-values)
+
+* Cross-Validation (Prediction) answers: "How well will my model work on new data?" (Gives a model generalization error)
+

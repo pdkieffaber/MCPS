@@ -1,0 +1,965 @@
+---
+title: "Data Visualization with ggplot2"
+author: "Computer Applications for the Psychological Sciencees"
+date: "Fall 2025"
+output:
+  slidy_presentation:
+    self_contained: true
+    incremental: false
+    duration: 45
+    fontsize: 16pt
+    slide_level: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,out.width='70%',fig.align='center')
+```
+
+# Chapter Goal
+
+To build a foundational understanding of the "Grammar of Graphics" so that you can create beautiful and highly customized data visualizations using the ggplot2 package in R.
+
+# Why ggplot2? The Grammar of Graphics
+
+* Instead of telling R how to draw a plot step-by-step, you declare what you want the plot to represent. This declarative approach, based on a system called the Grammar of Graphics, allows you to build complex plots in a more structured, reproducible, and intuitive way.
+
+* The power of ggplot2 comes from the fact that it is not just a collection of pre-packaged chart types. Instead, it provides a set of grammatical rules and components that you can combine to create a vast, almost infinite, variety of visualizations. 
+
+* The key is to think in layers. You start by defining your dataset and the core aesthetic mappings, and then you add layers on top: a layer of points, perhaps a layer for a line of best fit, a layer for labels, and so on. This modular approach is what makes ggplot2 so flexible and powerful.
+
+## The Three Essential Components
+
+### 1) data: 
+ggplot2 is designed to work with data frames, where your data is organized in a "tidy" format: each column represents a variable, and each row represents an observation. 
+
+### 2) aes() (Aesthetic Mappings): 
+The `aes()` function is where you define how variables from your data frame are mapped to the visual properties (i.e., the aesthetics) of your plot.
+* The most common aesthetics are `x` and `y` for position on the axes, but there are many others, such as `color`, `fill`, `shape`, `size`, and `alpha` (transparency). 
+
+### 3) geom_...() (Geometric Objects):
+The geoms are the "verbs" of your plot. They determine what is actually drawn to represent the data. Each geom function adds a new layer to your plot. If you want a scatter plot, you use `geom_point()`. If you want a line chart, you use `geom_line()`. If you want a bar chart, you use `geom_bar()`. Because you add geoms as layers, you can easily combine them. For instance, you can create a scatter plot with a line of best fit by simply adding a `geom_point()` layer followed by a `geom_smooth()` layer.
+
+# Basic Plots: Visualizing Relationships and Distributions
+
+Make sure your R environment is ready...
+
+```{r}
+# Make sure the necessary libraries are loaded
+library(ggplot2)
+library(dplyr)
+```
+
+## Scatter Plots (geom_point):
+
+Scatterplots are the primary tool for visualizing the relationship between two continuous variables. Let's ask a simple question: In the Star Wars universe, do taller characters tend to have more mass?
+
+```{r}
+# We use filter() to remove characters with unknown height or mass
+starwars_filtered <- filter(starwars, !is.na(height), !is.na(mass))
+
+ggplot(data = starwars_filtered, aes(x = height, y = mass)) +
+  geom_point() +
+  labs(title = "Mass vs. Height of Star Wars Characters",
+       x = "Height (cm)", y = "Mass (kg)")
+```
+This plot appears to show a positive relationship, but there is a massive outlier. 
+
+Who could that be?
+
+## Find the outlier
+
+```{r}
+starwars %>% 
+  filter(mass>500) %>% 
+  select(name)
+```
+**It's Jabba the Hutt!!!**
+
+## Adding Layers
+We can add a third variable to reveal deeper patterns. Let's see if the height/mass relationship differs by gender (excluding Jabba). 
+
+We can map the gender variable to the color aesthetic. 
+```{r}
+starwars_filtered %>% 
+  filter(mass<500) %>% #Sorry Jabba
+  ggplot(aes(x = height, y = mass, color = gender)) + #Note the data argument is omitted when piped
+    geom_point() +
+    labs(title = "Mass vs. Height of Star Wars Characters by Gender",
+      x = "Height (cm)", y = "Mass (kg)")
+```
+
+Now we can see the data broken down by gender, with a legend automatically created for us.
+
+## Bar Charts (geom_bar and geom_col):
+
+The best tool for comparing quantities across different categories is the bar plot. The two main geoms for bar charts serve different purposes.
+
+* `geom_bar()`: Use this when you want ggplot2 to count the number of rows for each category. It works directly on the raw data.
+
+* `geom_col()`: Use this when you have already calculated the value you want to plot (e.g., a mean or a sum) and have a column in your data that represents that value.
+
+## Example (geom_bar)
+
+```{r}
+ggplot(data = starwars, aes(x = species)) +
+  geom_bar() +
+  labs(title = "Number of Characters by Species", x = "Species", y = "Count") +
+  # theme() helps make axis labels readable
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+This plot quickly shows us that Humans are, by far, the most common species, followed by Droids.
+
+
+## Example (geom_col)
+Let's calculate the average mass for each gender and plot that result.
+
+```{r}
+# First, create a summary data frame
+gender_mass_summary <- starwars_filtered %>%
+  group_by(gender) %>%
+  summarise(average_mass = mean(mass))
+
+# Now, use geom_col() to plot the pre-calculated 'average_mass'
+ggplot(data = gender_mass_summary, aes(x = gender, y = average_mass)) +
+  geom_col() +
+  labs(title = "Average Mass by Gender", x = "Gender", y = "Average Mass (kg)")
+```
+
+## Histograms and Density Plots (geom_histogram and geom_density):
+
+Histogram and Density plots are essential for understanding the distribution of a single continuous variable. Let's examine the distribution of character birth years.
+
+```{r}
+ggplot(data = starwars, aes(x = birth_year)) +
+  geom_histogram() +
+  labs(title = "Distribution of Star Wars Character Birth Years",
+       x = "Birth Year (BBY)", y = "Count")
+```
+
+Note that the units of the birth_year variable are BBY, an acronym for Before Battle of Yavin. The histogram shows most characters were born in a relatively recent period, with a few ancient outliers.
+
+## Find the outlier!
+
+```{r}
+starwars_filtered %>% 
+  filter(birth_year>750) %>% 
+  select(name,birth_year)
+```
+It looks like Yoda was born 896 years BBY!
+
+## Setting the Histogram's Binwidth
+
+```{r}
+ggplot(data = starwars, aes(x = birth_year)) +
+  geom_histogram(binwidth = 10, fill = "blue", alpha = 0.6) + # 10-year bins
+  labs(title = "Character Birth Years in 10-Year Bins",
+       x = "Birth Year (BBY)", y = "Count")
+```
+By setting binwidth = 10, you are explicitly telling ggplot2 that each bar should represent a 10-year span, which is much more interpretable than the default 30 bins.
+
+## Boxplots (geom_boxplot):
+
+Boxplots are ideal for comparing the distributions of a continuous variable across multiple groups. They pack a lot of statistical information into a compact visual summary. Each boxplot consists of several key elements:
+
+* The thick line in the middle of the box represents the median (the 50th percentile), which is the midpoint of the data.
+
+* The bottom and top edges of the box represent the first quartile (Q1) (the 25th percentile) and the third quartile (Q3) (the 75th percentile), respectively.
+  * Thus, the height of the box itself is the Interquartile Range (IQR), which contains the middle 50% of the data and gives a sense of the data's spread.
+
+* The "whiskers" extend from the box to show the range of the data. By default, they extend to the furthest data point that is within 1.5 times the IQR from the edge of the box.
+
+* Any data points that fall outside the whiskers are plotted as individual points and are considered potential outliers.
+
+This structure makes it very easy to compare the central tendency, and spread of different groups at a glance.
+
+## Example: Compare the height of different species using a boxplot
+Let's compare the height distributions of the three most common species: Humans, Droids, and Gungans.
+```{r}
+# Filter for the top 3 species and remove NAs to keep the plot clean
+top_species <- starwars %>%
+  filter(species %in% c("Human", "Droid", "Gungan"), !is.na(height))
+
+ggplot(data = top_species, aes(x = species, y = height)) +
+  geom_boxplot() +
+  labs(title = "Height Distribution by Species",
+       x = "Species", y = "Height (cm)")
+```
+Interesting, It would appear that humans in the Star Wars universe have a median height around 180cm!  Droids are suprisingly short by comparison, with a median height of only ~110cm, but the distribution appears to have a clear positive skew.
+
+# Enhancing and Customizing Your Plots
+* This is where you move from a basic, functional chart to a polished, publication-ready visualization that tells a clear and compelling story. 
+
+## Labels, Titles, and Annotations (labs()):
+
+The labs() function is your primary tool for this, allowing you to control almost all the text on your plot.
+
+The most common arguments you'll use are:
+
+* title: Adds a main title at the top of the plot.
+
+* subtitle: Adds a smaller subtitle just below the main title.
+
+* caption: Adds text at the bottom-right of the plot, perfect for citing data sources.
+
+* x and y: Replaces the default axis titles with more descriptive text.
+
+* color, fill, shape, size: Changes the title of the legend associated with that specific aesthetic.
+
+## Example: Let's spruce up the height vs. mass scatter plot
+```{r}
+starwars_filtered %>% 
+  filter(mass<500, !is.na(gender)) %>% #Sorry Jabba
+  ggplot(aes(x = height, y = mass, color = gender)) +
+    geom_point(alpha = 0.8) +
+    labs(
+      title = "Character Proportions in the Star Wars Universe",
+      subtitle = "Taller characters generally have more mass, across genders",
+      caption = "Data source: dplyr starwars dataset",
+      x = "Height (in Centimeters)",
+      y = "Mass (in Kilograms)",
+      color = "Character Gender" # This changes the legend title
+    )
+```
+## Adjusting Scales and Axes (scale_...):
+
+The `scale_*` family of functions is your control panel for fine-tuning the details of your aesthetic mappings. While `aes()` maps a variable to an aesthetic, `scale_*` controls how that mapping is performed. This includes specifying the exact colors, breaks, and labels you want to use.
+
+**Specifying Manual Colors:** To override the default colors, you use `scale_color_manual()` (for points and lines) or `scale_fill_manual()` (for areas like bars and boxes). The key is to provide a named vector to the values argument.
+
+## Personalizing the colors in a scatterplot
+
+```{r}
+# Let's use specific colors for feminine and masculine characters in the scatterplot
+starwars_filtered %>% 
+  filter(mass<500, !is.na(gender)) %>% #Sorry Jabba
+  ggplot(aes(x = height, y = mass, color = gender)) +
+    geom_point() +
+    scale_color_manual(values = c("feminine" = "red", "masculine" = "blue")) +
+    labs(title = "Mass vs. Height with Custom Colors")
+```
+
+## Add fit lines with geom_smooth()
+methods (method = "lm", "glm", "loess") (se = TRUE, FALSE)
+```{r}
+# Let's use specific colors for feminine and masculine characters in the scatterplot
+starwars_filtered %>% 
+  filter(mass<500, !is.na(gender)) %>% #Sorry Jabba
+  ggplot(aes(x = height, y = mass, color = gender)) +
+    geom_point() +
+    geom_smooth(method="lm",se=TRUE) +
+    scale_color_manual(values = c("feminine" = "red", "masculine" = "blue")) +
+    labs(title = "Mass vs. Height with Custom Colors")
+```
+
+## Personalizing the colors in a boxplot
+
+```{r}
+# Filter for the top 3 species and remove NAs to keep the plot clean
+top_species <- starwars %>%
+  filter(species %in% c("Human", "Droid", "Gungan"), !is.na(height))
+
+ggplot(data = top_species, aes(x = species, y = height, fill=species)) +
+  geom_boxplot() +
+  scale_fill_manual(values=c('red','purple','blue')) +
+  labs(title = "Height Distribution by Species",
+       x = "Species", y = "Height (cm)")
+```
+
+
+## Using Pre-Built Palettes
+Manually picking colors can be difficult. ggplot2 has built-in support for the excellent ColorBrewer palettes, which are designed for clear data visualization. You can use them with scale_color_brewer() or scale_fill_brewer().
+
+```{r}
+## Using a pre-built, colorblind-safe palette for the species boxplot
+ggplot(data = top_species, aes(x = species, y = height, fill = species)) +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Set2") + # Use the "Set2" palette
+  labs(title = "Height Distribution by Species",
+       x = "Species", y = "Height (cm)")
+```
+
+
+# Themes (theme_...)
+
+While `geom_*` and `scale_*` functions control the data elements of your plot, themes control the non-data elements. This includes things like the background color, gridlines, font sizes, and legend position. ggplot2's theming system allows you to change the overall look and feel of your plot with a single line of code.
+
+Complete Themes: The easiest way to apply a theme is to add a "complete theme" layer. These functions change all the major display parameters at once.
+
+## Example: Base plot + theme_gray()
+Let's create a base plot and see how different themes affect its appearance.
+
+```{r}
+# First, get your data ready
+starwars_clean <- starwars_filtered %>% 
+  filter(mass<500, !is.na(gender), !is.na(mass)) #Sorry Jabba
+
+#Create a scatterplot object
+p <- ggplot(data = starwars_clean, aes(x = height, y = mass, color = gender)) +
+  geom_point() +
+  labs(title = "Mass vs. Height of Star Wars Characters")
+# The default theme is theme_gray()
+  p + theme_gray()
+```
+
+## theme_bw
+
+```{r}
+p + theme_bw()
+```
+
+## theme_minimal
+
+```{r}
+p + theme_minimal()
+```
+
+## theme_classic
+
+```{r}
+p + theme_classic()
+```
+
+## Creating Your Own Theme (theme()):
+While complete themes are great, the real power comes from using the theme() function to fine-tune individual elements. This allows you to create a custom, reusable theme that matches a specific style guide, like APA format.
+
+An APA-style plot is clean and simple: it has no background color, no gridlines, and uses a serif font. Let's build a function that creates this theme.
+
+```{r}
+# Define our custom APA theme function
+theme_apa <- function() {
+  theme_classic() +  # Start with theme_classic as a base
+  theme(
+    panel.background = element_blank(), # Remove panel background
+    panel.border = element_rect(color = "black", fill = NA), # Add a black border around the plot
+    axis.line = element_line(color = "black"), # Make axis lines black
+    text = element_text(family = "serif") # Use a serif font for all text
+  )
+}
+```
+
+## theme_apa
+
+```{r}
+p + theme_apa()
+```
+
+# Faceting: Creating Subplots (facet_wrap and facet_grid):
+
+While using aesthetics like color and shape is great for adding variables, it can sometimes lead to a cluttered plot. 
+
+Faceting is a powerful alternative that lets you split your main plot into a grid of smaller subplots (or "facets"). 
+
+`facet_wrap(~ variable)` is the most common faceting function. You provide a formula with a tilde (~) followed by the name of a categorical variable. ggplot2 will create a separate plot for each level of that variable and arrange them in a sensible grid.
+
+## Faceting Example
+Let's compare the distribution of character mass for each gender. We could try to overlay density plots, but this can get messy. Faceting provides a much clearer view.
+```{r}
+# First, let's filter out the extreme outlier (Jabba) for a more informative plot
+starwars_mass_filtered <- starwars %>% 
+  filter(mass < 1000, !is.na(mass), !is.na(gender))
+
+ggplot(data = starwars_mass_filtered, aes(x = mass)) +
+  geom_histogram(binwidth = 10, fill = "cornflowerblue") +
+  facet_wrap(~ gender) + # Create subplots based on the 'gender' variable
+  theme_bw() +
+  labs(
+    title = "Figure 1.\nDistribution of Mass by Gender",
+    x = "Mass (kg)",
+    y = "Count"
+  )
+```
+
+# Beyond the Basics
+
+## Combining Plots of Different Types
+
+```{r}
+# First, make sure you have patchwork installed
+#install.packages("patchwork")
+library(patchwork)
+
+# Create two separate plots
+p1 <- ggplot(starwars_clean, aes(x = height)) + geom_histogram()
+p2 <- ggplot(starwars_clean, aes(x = mass, y=height)) + geom_point()
+
+# Combine them side-by-side
+p1 + p2
+```
+
+## Adding marginal distributions with ggExtra()
+The ggplot2 ecosystem is vast, and many add-on packages provide powerful new functionalities. The ggextra package is a great example. Its main function, ggMarginal(), allows you to add marginal plots (like histograms, density plots, or boxplots) to the top and right sides of a scatter plot. This is incredibly useful for seeing both the relationship between two variables and their individual distributions in the same figure.
+
+```{r out.width='50%'}
+# First, make sure you have ggextra installed and loaded
+#install.packages("ggExtra")
+library(ggExtra)
+
+# Next, construct your scatterplot
+p<-ggplot(data = starwars_clean, aes(x = height, y = mass)) +
+  geom_point() +
+  scale_color_manual(values = c("feminine" = "black", "masculine" = "darkgray")) +
+  labs(title = "Mass vs. Height with Custom Colors") + 
+  theme_apa()
+
+# Use the scatter plot 'p' as input to ggMarginal
+ggMarginal(p, type = "density", fill = "slateblue")
+```
+
+## Marginal boxplots
+
+```{r out.width='50%'}
+ggMarginal(p, type = "boxplot", fill = "slateblue") 
+```
+
+
+## Marginal histograms
+
+```{r out.width='50%'}
+ggMarginal(p, type = "histogram", fill = "slateblue") 
+```
+
+## Better Boxplots with "jitter"
+```{r}
+starwars_topspecies<-starwars %>% 
+  filter(species %in% c("Human", "Droid", "Gungan"), !is.na(height))
+# Plot
+  ggplot(data=starwars_topspecies, aes(x=species, y=height, fill=species)) +
+    geom_boxplot(alpha=.6) +
+    #scale_fill_viridis(discrete = TRUE, alpha=0.6) +
+    scale_fill_brewer(palette = "Set2") +
+    geom_jitter(color="black", size=0.4, alpha=0.9) +
+    theme_apa() +
+    theme(
+      legend.position="none",
+      plot.title = element_text(size=12),
+      axis.text = element_text(size=12)
+    ) +
+    ggtitle("Figure 1\nA boxplot with jitter") +
+    xlab("")
+```
+
+## Violin plots
+A violin plot is a hybrid between a boxplot and a kernel-density plot—it 
+
+```{r}
+# Plot
+  ggplot(data=starwars_topspecies, aes(x=species, y=height, fill=species)) +
+    geom_violin(alpha=.6) +
+    #scale_fill_viridis(discrete = TRUE, alpha=0.6) +
+    scale_fill_brewer(palette = "Set2") +
+    geom_jitter(color="black", size=0.4, alpha=0.9) +
+    theme_apa() +
+    theme(
+      legend.position="none",
+      plot.title = element_text(size=12),
+      axis.text = element_text(size=12)
+    ) +
+    ggtitle("Figure 1\nA boxplot with jitter") +
+    xlab("")
+```
+
+## Grouped Bar/Column Charts
+When we compare data across two categorical variables, a simple boxplot or bar chart isn’t enough—we need to show how one variable’s effect depends on the levels of another. 
+```{r}
+# Bar chart: counts of cars by cylinders and gears
+ggplot(mtcars, aes(x = factor(cyl), fill = factor(gear))) +
+  geom_bar(position = "dodge") +
+  labs(title = "Bar Chart: Counts of Cars by Cylinders and Gears",
+       x = "Cylinders", y = "Count", fill = "Gears") +
+  theme_apa()
+```
+*A grouped column plot (bar chart) uses the same idea, but instead of counting frequencies, it displays summary statistics like means or counts.*
+
+## Grouped column chart
+
+```{r}
+# Summarize mtcars by cylinder and gear
+mtcars_summary <- mtcars %>%
+  mutate(cyl = factor(cyl), gear = factor(gear)) %>%
+  group_by(cyl, gear) %>%
+  summarise(
+    mean_hp = mean(hp),
+    .groups = "drop"
+  )
+# Column chart: precomputed mean horsepower
+ggplot(mtcars_summary, aes(x = cyl, y = mean_hp, fill = gear)) +
+  geom_col(position = "dodge") +
+  labs(title = "Column Chart: Mean Horsepower by Cylinders and Gears",
+       x = "Cylinders", y = "Average Horsepower", fill = "Gears") +
+  theme_minimal()
+```
+
+## Grouped boxplot
+
+```{r}
+ggplot(mpg, aes(x = class, y = hwy, fill = drv)) +
+  geom_boxplot(position = position_dodge(width = .8)) +
+  labs(
+    title = "Highway MPG by Vehicle Class and Drive Type",
+    x = "Vehicle Class",
+    y = "Highway Miles per Gallon",
+    fill = "Drive Type"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+```
+Each group of boxes (by class) contains smaller boxes for different drv values, showing the distribution of highway MPG for front-wheel, rear-wheel, and 4-wheel drive vehicles.
+
+## Error Bars
+Error bars are not just decorative elements on a chart, they are visual tools for showing uncertainty around an estimate. 
+
+Each bar (or whisker) typically represents a range such as a standard deviation (SD), standard error (SE), or a confidence interval (CI) around the mean:
+
+* SD → shows spread of individual data points.
+
+* SE → shows precision of the mean (smaller with larger n).
+
+* 95% CI → shows an interval likely to contain the true population mean.
+
+In ggplot2, error bars are often added with geom_errorbar() and paired with grouped bar or point charts to communicate both central tendency and variability:
+
+## Adding error bars to a column chart
+
+```{r}
+# Summarize mtcars by cylinder and gear
+mtcars_summary <- mtcars %>%
+  mutate(cyl = factor(cyl), gear = factor(gear)) %>%
+  group_by(cyl, gear) %>%
+  summarise(
+    mean_hp = mean(hp),
+    sd_hp   = sd(hp),
+    n       = n(),
+    se      = sd_hp / sqrt(n),               # standard error
+    ci      = 1.96 * se,                     # 95% CI assuming normality
+    lower   = mean_hp - ci,                  # Lower bound of CI
+    upper   = mean_hp + ci,                  # Upper bound of CI
+    .groups = "drop"
+  )
+
+# Plot with error bars
+ggplot(mtcars_summary, aes(x = cyl, y = mean_hp, fill = gear)) +
+  geom_col(position = position_dodge(width = 0.9)) +
+  geom_errorbar(
+    aes(ymin = lower, ymax = upper),
+    position = position_dodge(width = 0.9),
+    width = 0.2,
+    color = "black"
+  ) +
+  labs(
+    title = "Average Horsepower by Cylinders and Gears",
+    subtitle = "With 95% Confidence Interval Error Bars",
+    x = "Number of Cylinders",
+    y = "Average Horsepower",
+    fill = "Gears"
+  ) +
+  theme_minimal(base_size = 14)
+```
+
+## Bubble Charts
+A bubble chart is an extension of the scatterplot that adds a third quantitative variable by mapping it to the size (and sometimes color) of each point.
+
+In bubble charts, each bubble’s:
+
+* x-position → represents one variable (predictor)
+
+* y-position → represents another variable (outcome)
+
+* size → encodes a third continuous measure (e.g., sample size, variability, or confidence)
+
+* color (optional) → can encode a fourth, categorical grouping
+
+Let's consider another example from the mtcars dataset.  The objective is to understand the relationships between horsepower (hp), miles per gallon (mpg), the weight of the car (wt), and the number of cylinders (cyl).
+
+
+## Bubble chart
+
+```{r}
+# Create the bubble chart
+ggplot(mtcars, aes(
+  x = hp,             
+  y = mpg,            
+  size = wt,          
+  color = cyl
+)) +
+  geom_point(alpha = 0.7) +
+  scale_size_continuous(range = c(3, 15), name = "Weight") +
+  labs(
+    title = "Miles per Gallon as a Function of Vehicle Options",
+    subtitle = "Each bubble is one car",
+    x = "Horsepower",
+    y = "Miles per Gallon"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "bottom") #Note that you can change the position of the legend
+```
+It looks like a vehicle's horsepower is negatively correlated with its fuel efficiency, but positively correlated with the car's weight and the number of cylinders.
+
+## Even more complexity with facet_wrap
+We can even add additional complexity by faceting a 5th, categorical variable like the organization of the cylinders.  For example, let's facet the plot by `vs`, which indicates whether or not the cylinders are arranged in a v-shape (vs = 0) or in a straight line (vs = 1).
+```{r}
+# Create the bubble chart
+ggplot(mtcars, aes(
+  x = hp,             
+  y = mpg,            
+  size = wt,          
+  color = cyl
+)) +
+  geom_point(alpha = 0.7) +
+  scale_size_continuous(range = c(3, 15), name = "Weight") +
+  labs(
+    title = "Miles per Gallon as a Function of Vehicle Options",
+    subtitle = "Each bubble is one car",
+    x = "Horsepower",
+    y = "Miles per Gallon"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "bottom") + #Note that you can change the position of the legend
+  facet_wrap(~vs)
+```
+
+## Correlograms
+A correlogram is a visual map of the relationships between several quantitative variables, displaying the correlation coefficients (typically Pearson’s r) in a grid.
+
+For this example, let's try using a dataset from the `psych` package (by William Revelle). The bfi dataset is particularly good for a psychological-style bubble plot because it contains real questionnaire responses across major personality dimensions, age, and gender.
+
+
+## Installing/loading required packages
+
+```{r}
+# Install/load psych and corrplot if needed
+if (!require(psych)) install.packages("psych")
+if (!require(corrplot)) install.packages("corrplot")
+library(psych)
+library(corrplot
+        )
+# Inspect the data
+?psych::bfi
+head(bfi)
+```
+
+The bfi dataset from the psych package contains 25 self-report items measuring the Big Five personality traits:
+
+* Extraversion (E1–E5)
+
+* Agreeableness (A1–A5)
+
+* Conscientiousness (C1–C5)
+
+* Neuroticism (N1–N5)
+
+* Openness (O1–O5)
+
+Let’s visualize how these traits relate to one another using a correlogram.
+
+
+## Correlogram
+
+```{r}
+# Select the 25 personality items
+bfi_items <- bfi %>% 
+  select(E1:O5) %>%  
+  na.omit()
+
+# Compute the correlation matrix
+bfi_cor <- cor(bfi_items)
+
+# Basic correlogram
+corrplot(bfi_cor, method = "color")
+
+```
+
+The corrplot package has lots of customization options that make correlation matrices not only informative but visually engaging. Let's start with the different corrplot "methods". Different methods emphasize correlation magnitude (circle size or ellipse flattening) or direction (color).
+
+
+## Correlogram "methods"
+
+```{r}
+par(mfrow = c(2,3))  # put plots in a 2x3 grid
+corrplot(bfi_cor, method = "circle", title = "circle", mar = c(0,0,2,0))
+corrplot(bfi_cor, method = "number", title = "number", mar = c(0,0,2,0))
+corrplot(bfi_cor, method = "pie", title = "pie", mar = c(0,0,2,0))
+corrplot(bfi_cor, method = "shade", title = "shade", mar = c(0,0,2,0))
+corrplot(bfi_cor, method = "ellipse", title = "ellipse", mar = c(0,0,2,0))
+corrplot(bfi_cor, method = "color", title = "color", mar = c(0,0,2,0))
+par(mfrow = c(1,1))
+```
+
+## Built-in clustering
+If you don't have any sense of how the variables are "clustered" together, corrplot will automatically arrange your data based on a heirarchical clustering analysis.
+
+```{r}
+# Basic correlogram
+corrplot(bfi_cor,
+         method = "color",          # colored tiles
+         type = "upper",            # show upper triangle (full or lower)
+         order = "hclust",       # groups correlated variables
+         addrect = 5,            # draw rectangles around 5 clusters
+         tl.col = "black",          # text label color
+         tl.cex = 0.7,              # text label size
+         col = colorRampPalette(c("red", "white", "blue"))(200), # Change the color pallette
+         addCoef.col = "black",     # print r values
+         number.cex = 0.6,
+         title = "Correlogram of Big Five Personality Items",
+         mar = c(0,0,2,0))
+```
+
+## Highlight correlations with p-values
+You can also highlight specific correlations based on their associated p-value.
+
+```{r}
+# Compute correlation test results (r and p)
+corr_test <- psych::corr.test(bfi_items) # Use corr.test from psych package
+p_mat <- corr_test$p  # extract p-values
+
+# Plot only significant correlations
+corrplot(bfi_cor, p.mat = p_mat, sig.level = 0.01, insig = "blank",
+         method = "color",
+         type = "upper",
+         col = colorRampPalette(c("blue", "green", "red"))(200),
+         title = "Only Significant Correlations (p < .01)",
+         mar = c(0,0,2,0))
+# The argument insig = "blank" hides non-significant cells, making meaningful relationships stand out.
+```
+
+## Combine upper and lower panels
+You can visualize different information on each half of the matrix.
+
+```{r}
+# Upper: colored circles, Lower: correlation coefficients
+corrplot(bfi_cor, method = "color", type = "upper", order = "original",
+         tl.pos = "lt", tl.col = "black", tl.cex = 0.8)
+
+corrplot(bfi_cor, method = "number", type = "lower", tl.pos = 'n', add = TRUE, diag = FALSE, number.cex = 0.6)
+# tl.pos='n' --> no labels
+```
+
+This combination gives both a colorful overview and exact r values at once.
+
+## Heatmaps
+A heatmap is a graphical display where values in a data matrix are represented by color intensity. The correlogram is a form of heatmap, however, in traditional heatmaps, rows and columns typically correspond to variables, observations, or experimental conditions. The color of each cell encodes the magnitude of the value it represents (e.g., low = blue, high = red).
+
+Heatmaps are great for identifying clusters or patterns in correlations or responses, differences across subjects or conditions, and groups of variables that behave similarly.
+
+In psychology, heatmaps are often used to visualize:
+
+* Correlation matrices (relationships among traits, brain regions, questionnaire items)
+
+* Response patterns (e.g., item × participant matrices)
+
+* Time-series data (e.g., activation over time × region)
+## Simple Heatmap of Correlations
+
+Let’s visualize how the 25 Big Five personality items from psych::bfi relate to one another.
+
+
+## Creating a heatmap with ggplot
+
+```{r}
+# Convert to long (tidy) format for ggplot
+cor_long <- as.data.frame(as.table(bfi_cor))
+
+# Plot as heatmap
+ggplot(cor_long, aes(Var1, Var2, fill = Freq)) +
+  geom_tile() +
+  scale_fill_gradient2(low = "darkred", mid = "white", high = "steelblue",
+                       midpoint = 0, limit = c(-1, 1)) +
+  labs(
+    title = "Heatmap of Big Five Personality Item Correlations",
+    x = NULL, y = NULL, fill = "r"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+## Choropleth Map
+
+A choropleth map displays data values across geographic regions — such as countries, states, or counties — by color-coding each area according to a numeric variable. They’re designed to answer questions like “Where is this variable higher or lower?” at a glance.
+
+## A US Map using ggplot
+
+```{r}
+# Install (if required) and load maps package
+if (!require(maps)) install.packages("maps")
+library(maps)
+
+# Get US map data
+states_map <- map_data("state")
+
+# Simulate a "stress index" variable for each state
+set.seed(123)
+state_data <- data.frame(
+  region = tolower(state.name), # get state names from the state dataset
+  stress_index = runif(50, 40, 80) # get 50 random numbers from uniform dist. between 40 & 80
+)
+
+# Merge the numeric variable with the map
+us_map <- left_join(states_map, state_data, by = "region")
+
+# Choropleth map
+ggplot(us_map, aes(long, lat, group = group, fill = stress_index)) +
+  geom_polygon(color = "black", size = 0.2) + # Border between states
+  coord_fixed(1.3) +  # sets a fixed aspect ratio between the x and y axes
+  scale_fill_viridis_c(option = "plasma", name = "Stress Index") +
+  labs(
+    title = "Simulated Stress Index by U.S. State",
+  ) +
+  theme_void(base_size = 14)
+```
+Each state’s fill color corresponds to its simulated “stress index,” illustrating higher stress concentrated in certain regions.
+
+## A World map using ggplot
+```{r}
+world_map <- map_data("world")
+
+# Simulated "happiness" score by country
+set.seed(123)
+country_data <- data.frame(
+  region = unique(world_map$region),
+  happiness = runif(length(unique(world_map$region)), 3, 8)
+)
+
+world_data <- left_join(world_map, country_data, by = "region")
+
+ggplot(world_data, aes(long, lat, group = group, fill = happiness)) +
+  geom_polygon(color = "gray80", size = 0.1) +
+  scale_fill_viridis_c(option = "magma", name = "Happiness Score") +
+  coord_fixed(1.3) +
+  labs(
+    title = "Global Happiness Index (Simulated Data)",
+  ) +
+  theme_void(base_size = 14)
+```
+
+
+## The 2d Density Plot
+2D density plots are a powerful alternative to scatter plots for very large datasets where overplotting is a major issue.
+
+A good example can be found in the bfi dataset from the psych package.
+```{r}
+# Load the bfi data (Big Five Inventory responses)
+data(bfi)
+
+# Compute mean scores for each trait per participant
+bfi_person <- bfi %>%
+  mutate(
+    Extraversion = rowMeans(select(., E1:E5), na.rm = TRUE), # Compute extraversion average
+    Neuroticism  = rowMeans(select(., N1:N5), na.rm = TRUE), # Compute neuroticism average
+    gender = factor(gender,
+                    levels = c(1, 2),
+                    labels = c("Male", "Female")) # Add labels for gender
+  ) %>%
+  filter(!is.na(Extraversion), !is.na(Neuroticism), !is.na(age), !is.na(gender))
+```
+
+Because there are so many participants, the scatterplot does not give a clear picture of the data.
+
+## 2D density plot (default = contours)
+
+```{r}
+ggplot(bfi_person, aes(x = Extraversion, y = Neuroticism)) +
+  geom_point(alpha = 0.5) +                          # raw data points
+  labs(
+    title = "Scatterplot: Extraversion vs. Neuroticism",
+    x = "Extraversion",
+    y = "Neuroticism"
+  ) +
+  theme_minimal(base_size = 14)
+```
+However, the 2D density plot nicely illustrates how data are concentrated over the 2D plane.
+
+## 2D Filled density plot
+
+```{r}
+ggplot(bfi_person, aes(x = Extraversion, y = Neuroticism)) +
+  geom_density_2d(color = "blue", size = 1) +        # contour lines
+  labs(
+    title = "Scatterplot: Extraversion vs. Neuroticism",
+    x = "Extraversion",
+    y = "Neuroticism"
+  ) +
+  theme_minimal(base_size = 14)
+```
+Even better is the filled 2D density.
+
+
+## Code: Chunk 47
+
+```{r}
+ggplot(bfi_person, aes(x = Extraversion, y = Neuroticism)) +
+  geom_density_2d_filled() +        # filled density
+  scale_fill_viridis_d(name = "Density Level") +
+  labs(
+    title = "Scatterplot: Extraversion vs. Neuroticism",
+    x = "Extraversion",
+    y = "Neuroticism"
+  ) +
+  theme_minimal(base_size = 14)
+```
+
+# Saving High-resolution Images
+
+When you’ve created a figure you want to use in a paper, presentation, or poster, it’s important to save it at high resolution so it looks crisp and professional.
+In R, there are two main ways to do this:
+
+## 1) ggsave() — designed for ggplot objects.
+It automatically saves the last plot (or a specific one you name) and lets you control the size, units, and resolution (dpi).
+
+```{r}
+ggsave("my_plot.png", width = 8, height = 6, units = "in", dpi = 300)
+```
+
+* dpi = 300 gives publication-quality resolution.
+
+* You can also use formats like "pdf", "tiff", or "svg" for vector graphics.
+
+## 2) Base graphics method — useful when the plot isn’t from ggplot (like the corrplot() example).
+
+With this method, you open a graphics device (e.g., png()), make the plot, and then close the device with dev.off():
+
+```{r}
+png("bfi_correlogram_fancy.png", width = 1200, height = 1000, res = 150)
+corrplot(bfi_cor, method = "color", order = "hclust", addrect = 5,
+         col = colorRampPalette(c("darkred", "white", "navy"))(200),
+         tl.col = "black", tl.cex = 0.7,
+         title = "Fancy Big Five Correlogram")
+dev.off()
+```
+
+* width and height control the output size (in pixels by default).
+
+* res = 150 sets resolution; increase to 300+ for publication-quality images.
+
+* Replace png() with pdf(), tiff(), or jpeg() for other formats.
+
+
+## Animations (Under Construction)
+```{r}
+# libraries:
+#library(ggplot2)
+#library(gganimate)
+#install.packages('babynames')
+#library(babynames)
+#library(hrbrthemes)
+
+# Keep only 3 names
+#don <- babynames %>% 
+#  filter(name %in% c("Gabrielle", "Kathryn", "Samantha")) %>%
+#  filter(sex=="F")
+  
+# Plot
+#don %>%
+#  ggplot( aes(x=year, y=n, group=name, color=name)) +
+#    geom_line() +
+#    geom_point() +
+    #scale_color_brewer(palette = 'Pastel') +
+#    ggtitle("Popularity of American names in the previous 30 years") +
+#    theme_ipsum() +
+#    ylab("Number of babies born") +
+#    transition_reveal(year)
+
+
+
+# Save at gif:
+#anim_save("~/Desktop/labnames.gif")
+```

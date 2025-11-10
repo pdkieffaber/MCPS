@@ -1,0 +1,195 @@
+---
+title: "Wrangling Data with the Tidyverse"
+author: "Computer Applications for the Psychological Sciences"
+date: "Fall 2025"
+output:
+  slidy_presentation: default
+  ioslides_presentation:
+    widescreen: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,
+                      fig.width = 7, fig.height = 4.5, fig.align = "center")
+library(tidyverse)
+library(janitor)
+library(skimr)
+library(broom)
+pct <- function(x, digits = 1) paste0(round(100*x, digits), "%")
+```
+
+# What is Data Wrangling?
+* The process of transforming raw, messy data into a clean, organized, and usable format.
+
+* Analogy: Like a chef preparing ingredients before cooking a meal, data wrangling prepares data for analysis.
+
+# The 80/20 Rule of Data Science
+* The Rule: Data professionals spend approximately 80% of their time discovering, cleaning, and reorganizing data.
+
+* Only 20% of their time is spent on the "core" tasks of analysis and modeling.
+
+* Why? Data in the wild is almost never in a format ready for analysis. This foundational work is critical for meaningful results.
+
+# The Tidyverse: A Grammar of Data Manipulation
+The tidyverse is a collection of R packages (ggplot2, dplyr, tidyr, etc.) that are designed for data science and share a common philosophy and grammar, making data work more efficient and intuitive.
+
+Its most important operator is the pipe (%>%).
+
+# The Pipe Operator (%>%) {.smaller}
+The pipe operator allows you to chain functions together, passing the result of one function as the first argument to the next. You can read %>% as "and then".
+
+## Without the pipe (hard to read):
+```{r}
+arrange(summarise(group_by(storms, year), avg_wind = mean(wind)), desc(avg_wind))
+```
+
+# With the pipe (clean and sequential):
+```{r}
+storms %>%
+  group_by(year) %>%
+  summarise(avg_wind = mean(wind)) %>%
+  arrange(desc(avg_wind))
+```
+
+# What is Tidy Data?
+Tidy data is a standardized format that makes data easier to model and visualize. It follows three simple rules:
+
+* Every column is a variable.
+
+* Every row is an observation.
+
+* Every cell is a single value.
+
+Raw data is often "untidy." Our goal is to use tidyverse tools to make it tidy.
+
+# A Common First Step: clean_names()
+
+Real-world datasets often have messy column names (First Name, dollar_amount ($)). The clean_names() function from the janitor package is a lifesaver.
+
+It automatically:
+
+* Converts all names to snake_case
+
+* Removes special characters
+
+* Handles spaces and capitalization
+
+```{r}
+# Imagine a messy data frame
+#messy_data %>% 
+#  clean_names() # That's it! Your column names are now clean.
+```
+
+# Core Verbs:
+
+## select()
+* To subset your data by keeping or removing columns.
+
+## filter()
+* To subset your data by keeping rows that meet specific logical conditions.
+
+## mutate()
+* To create new columns, often by performing calculations on existing columns.
+
+# select()
+
+Example: Let's select only four columns from the storms dataset.
+
+```{r}
+storms %>%
+  select(name, year, wind, pressure) %>%
+  head(5) # Show first 5 rows
+```
+
+# filter()
+
+Example: Let's find all storms in 1995 that were hurricane strength (wind >= 74 knots).
+```{r}
+storms %>%
+  filter(year == 1995, wind >= 74) %>%
+  head(5) # Show first 5 rows
+```
+
+# mutate()
+
+Example: Let's convert wind speed from knots to kph (1 knot ≈ 1.852 kph).
+```{r}
+storms %>%
+  select(name, wind) %>%
+  mutate(wind_kph = wind * 1.852) %>%
+  head(5) # Show first 5 rows
+```
+
+# Your Turn! (Practice Problem)
+
+## Question: Using the storms dataset, can you find the name, year, and pressure for all storms that occurred in the 21st century (year >= 2000) and had a pressure less than 950mb?
+
+**Hint: You will need to use filter() and select().**
+
+# The Power Couple: group_by() + summarise()
+**group_by()**
+
+* Groups the data so that subsequent verbs operate on a per-group basis.
+
+**summarise()**
+
+* Collapses each group into a single-row summary.
+
+Example: Let's find the maximum wind speed for each year.
+```{r}
+storms %>%
+  group_by(year) %>%
+  summarise(max_wind = max(wind)) %>%
+  head(5) # Show first 5 years
+```
+
+# Reshaping Data: From Wide to Tidy
+Problem: Sometimes variables are stored as column names. This is "untidy."
+Solution: pivot_longer() collapses multiple columns into key-value pairs.
+
+Before: The who dataset is wide
+```{r}
+#Select a few columns to show the "wide" structure
+who %>% 
+  select(country, new_sp_m014, new_sp_m1524) %>% 
+  head(3)
+```
+
+# Applying pivot_longer()
+We tell pivot_longer which columns to gather (cols), where to put the old column names (names_to), and where to put the cell values (values_to).
+
+After: The data is "longer" and tidy
+```{r}
+# The code to make the 'who' dataset tidy
+tidy_who <- who %>%
+  pivot_longer(
+    cols = new_sp_m014:newrel_f65,
+    names_to = "key",
+    values_to = "count"
+  )
+
+#Take a peek at our new variables
+tidy_who %>% 
+  select(country, key, count) %>% 
+  head(5)
+```
+
+
+# Case Study: Finding the Windiest Year
+Question: Which year had the highest average maximum wind speed?
+
+**Strategy:**
+
+1. Group the data by year.
+
+2. Summarise each year to find its average maximum wind.
+
+3. Arrange the results and take the top one.
+
+**The single, chained command gives us our answer**
+```{r}
+storms %>%
+  group_by(year) %>%
+  summarise(avg_max_wind = mean(wind, na.rm = TRUE)) %>%
+  slice_max(order_by = avg_max_wind, n = 1)
+```
