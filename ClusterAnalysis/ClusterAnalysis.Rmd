@@ -1,0 +1,217 @@
+---
+title: "Psyc672ClusterAnalysis"
+output: html_document
+date: '2023-11-29'
+author: 'Paul Kieffaber (and a lot copied/modified from the web)'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## About Dataset
+Background Information
+From Wikipedia
+
+The Big Five personality traits, also known as the five-factor model (FFM) and the OCEAN model, is a taxonomy, or grouping, for personality traits. When factor analysis (a statistical technique) is applied to personality survey data, some words used to describe aspects of personality are often applied to the same person. For example, someone described as conscientious is more likely to be described as "always prepared" rather than "messy". This theory is based therefore on the association between words but not on neuropsychological experiments. This theory uses descriptors of common language and therefore suggests five broad dimensions commonly used to describe the human personality and psyche.
+
+The Dataset
+This dataset contains 1,015,342 questionnaire answers collected online by Open Psychometrics.
+
+```{r loaddata, echo=TRUE}
+setwd("~/Documents/Rmarkdown/PSYC672/ClusterAnalysis")
+Big5Data <- read.csv('data-final.csv', header=TRUE, sep='\t')
+```
+
+After loading the data, I needed to do some cleaning because there are a bunch of extra columns I'm not interested in right now and also we need to summarize the Big 5 domains.
+
+```{r cleandata, echo=TRUE}
+library(dplyr)
+Big5Data=Big5Data[Big5Data$IPC==1,1:50]
+Big5Data <- Big5Data %>% mutate_at(1:50, as.numeric)
+Big5Data=as.data.frame(Big5Data)
+```
+Now let's compute the big 5 variables
+```{r makebig5, echo=TRUE}
+Big5Data$Extrovert=rowSums(Big5Data[ , 1:10]) 
+Big5Data$Neurotic=rowSums(Big5Data[ , 11:20]) 
+Big5Data$Agreeable=rowSums(Big5Data[ , 21:30]) 
+Big5Data$Conscientous=rowSums(Big5Data[ , 31:40]) 
+Big5Data$Open=rowSums(Big5Data[ , 41:50]) 
+Big5Data$PID <- seq.int(nrow(Big5Data))
+Big5Data=Big5Data[, c('PID','Extrovert','Neurotic','Agreeable','Conscientous','Open')]
+Big5Data=Big5Data[complete.cases(Big5Data),]
+head(Big5Data)
+```
+
+Checking the structure of the new dataframe just to make sure that everything looks right
+```{r checkdatastructure, echo=TRUE}
+str(Big5Data)
+```
+
+A pairs plot allows us to get a sense for the paired relationships between variables, but in this case, there are so many cases that it takes forever to render.  So, let's use a correlogram
+```{r pairplot, echo=TRUE}
+#pairs(Big5Data[,2:6])
+library(corrplot)
+CorMtx=cor(Big5Data[,2:6])
+corrplot(CorMtx, method="circle")
+```
+# Start the Cluster Analysis
+We’ll use the factoextra, tidyverse, and cluster packages for easy cluster analysis and visualization.
+
+```{r prepcluster, echo=TRUE}
+library(tidyverse)  # data manipulation
+library(cluster)    # clustering algorithms
+library(factoextra) # clustering algorithms & visualization
+```
+## Data Preparation
+To perform a cluster analysis in R, generally, the data should be prepared as follows:
+
+1) Wide format (Rows are observations (individuals) and columns are variables)
+2) Any missing value in the data must be removed or estimated.
+3) The data **must** be standardized (i.e., scaled) to make variables comparable. Recall that, standardization consists of transforming the variables such that they have mean zero and standard deviation one.
+
+## Standardization
+```{r datanorm, echo=TRUE}
+#Big5Normd <- scale(Big5Data) #I got weird output from this
+Big5Normd=data.frame(Extrovert=scale(Big5Data$Extrovert, center=TRUE), Neurotic=scale(Big5Data$Neurotic, center=TRUE), Agreeable=scale(Big5Data$Agreeable, center=TRUE), Conscientous=scale(Big5Data$Conscientous, center=TRUE), Open=scale(Big5Data$Open, center=TRUE))
+head(Big5Normd)
+```
+## K-Means Clustering
+K-means clustering (MacQueen 1967) is one of the most commonly used unsupervised machine learning algorithm for partitioning a given data set into a set of k groups (i.e. k clusters), where k represents the number of groups pre-specified by the analyst. It classifies observations in multiple groups (i.e., clusters), such that objects within the same cluster are as similar as possible (i.e., high intra-class similarity), whereas objects from different clusters are as dissimilar as possible (i.e., low inter-class similarity). In k-means clustering, each cluster is represented by its center (i.e, centroid) which corresponds to the mean of points assigned to the cluster.
+
+## Clustering Distance Measures
+The classification of observations into groups requires some methods for computing the distance or the (dis)similarity between each pair of observations. The result of this computation is known as a dissimilarity or distance matrix. 
+
+There are many methods to calculate this distance information; the choice of distance measures is a critical step in clustering because it defines how the similarity of two elements (x, y) is calculated and it will influence the shape of the clusters.
+
+The classical methods for distance measures are Euclidean and Manhattan distances.
+
+Let's take a look at the euclidean distance for simplicity.  The euclidean distance $d$ is defined as...
+$$
+d(p,q)= \sqrt{\sum_{i=1}^{n}(q_i - p_i)^2}
+$$
+where...
+
+$p,q$ = two points in euclidean n-space
+
+$p_i,q_i$ = euclidean vectors starting from the origin (initial point)
+
+$n$ = n-dimensional space
+
+The choice of distance measures is very important, as it has a strong influence on the clustering results. For most common clustering software, the default distance measure is the Euclidean distance. However, depending on the type of the data and the research questions, other dissimilarity measures might be preferred and you should be aware of the options.
+
+Within R it is simple to compute and visualize the distance matrix using the functions get_dist for computing distances and fviz_dist for visualizing the distances, from the factoextra package. This starts to illustrate which observations have large dissimilarities (red) versus those that appear to be fairly similar (teal).
+
+We'll start with the Euclidean distance (default)
+```{r clustdist, echo=TRUE}
+ClusterData=Big5Normd[sample(nrow(Big5Normd),300),]
+Big5Dist <- get_dist(ClusterData)
+```
+
+Now to visualize the distances
+```{r visdist, echo=TRUE}
+fviz_dist(Big5Dist, gradient = list(low = "#00AFBB", mid = "white", high = "#FC4E07"))
+```
+
+
+# The Basic Idea
+The basic idea behind k-means clustering consists of defining clusters so that the total intra-cluster variation (known as total within-cluster variation) is minimized. There are several k-means algorithms available. The standard algorithm is the Hartigan-Wong algorithm (1979), which defines the total within-cluster variation as the sum of squared distances Euclidean distances between items and the corresponding centroid:
+$$
+W(C_k)=\sum_{x_i \in C_k}{(x_i - u_k)^2}
+$$
+where:
+
+1. -$x_i$ is a data point belonging to the cluster $C_k$
+2. -$\mu_k$ is the mean value of the points assigned to the cluster $C_k$ (i.e., the cluster centroid)
+
+Each observation ($x_i$) is assigned to a given cluster such that the sum of squares (SS) distance of the observations to their assigned cluster centers ($\mu_k$) is minimized.
+
+We define the total within-cluster variation as follows:
+$$
+total.withiness = \sum_{k=1}^{k}W(C_k) = \sum_{k=1}^{k}\sum_{x_i \in C_k}{(x_i - u_k)^2}
+$$
+The total within-cluster sum of square measures the compactness (i.e goodness) of the clustering and we want it to be as small as possible.
+
+# K-means Algorithm
+The first step when using k-means clustering is to indicate the number of clusters (k) that will be generated in the final solution. The algorithm starts by randomly selecting k objects from the data set to serve as the initial centers for the clusters. The selected objects are also known as cluster means or centroids. Next, each of the remaining objects is assigned to it’s closest centroid, where closest is defined using the Euclidean distance (Eq. 1) between the object and the cluster mean. This step is called “cluster assignment step”. After the assignment step, the algorithm computes the new mean value of each cluster. The term cluster “centroid update” is used to design this step. Now that the centers have been recalculated, every observation is checked again to see if it might be closer to a different cluster. All the objects are reassigned again using the updated cluster means. The cluster assignment and centroid update steps are iteratively repeated until the cluster assignments stop changing (i.e until convergence is achieved). That is, the clusters formed in the current iteration are the same as those obtained in the previous iteration.
+
+## K-means algorithm can be summarized as follows:
+
+1. Specify the number of clusters (K) to be created (by the analyst)
+2. Select randomly k objects from the data set as the initial cluster centers or means
+3. Assigns each observation to their closest centroid, based on the Euclidean distance between the object and the centroid
+4. For each of the k clusters update the cluster centroid by calculating the new mean values of all the data points in the cluster. The centroid of a Kth cluster is a vector of length p containing the means of all variables for the observations in the kth cluster; p is the number of variables.
+5. Iteratively minimize the total within sum of square (Eq. 7). That is, iterate steps 3 and 4 until the cluster assignments stop changing or the maximum number of iterations is reached. By default, the R software uses 10 as the default value for the maximum number of iterations.
+
+## Determining the Optimal Number of Clusters
+The k-means clustering requires the users to specify the number of clusters to be generated.
+
+One fundamental question is: How to choose the right number of expected clusters (k)? There are a number of methods, but here, we discuss one simple solution. The idea is to compute k-means clustering using different values of clusters k. Next, the *total.withiness* (within sum of square) is plotted against the number of clusters. The location of a bend (knee/elbow) in the plot is generally considered as an indicator of the appropriate number of clusters.
+
+The R function fviz_nbclust() [in factoextra package] provides a convenient solution to estimate the optimal number of clusters.
+```{r numclust, echo=TRUE}
+fviz_nbclust(ClusterData, kmeans, method = "wss")
+```
+
+## Computing k-means clustering in R
+Once you have decided on the number of clusters, we can compute k-means in R with the kmeans() function. Here will group the data into five clusters (centers = 5). The kmeans function also has an nstart option that attempts multiple initial configurations and reports on the best one. For example, adding nstart = 25 will generate 25 initial configurations. This approach is often recommended.
+
+```{r runclust, echo=TRUE}
+k2 <- kmeans(ClusterData, centers = 5, nstart = 25)
+str(k2)
+```
+
+The output of kmeans is a list with several bits of information. The most important being:
+
+* **cluster**: A vector of integers (from 1:k) indicating the cluster to which each point is allocated.
+* **centers**: A matrix of cluster centers.
+* **totss**: The total sum of squares.
+* **withinss**: Vector of within-cluster sum of squares, one component per cluster.
+* **tot.withinss**: Total within-cluster sum of squares, i.e. sum(withinss).
+* **betweenss**: The between-cluster sum of squares, i.e. $totss-tot.withinss$.
+* **size**: The number of points in each cluster.
+
+If we print the results we’ll see that our groupings of 2 clusters and their sizes. We see the cluster centers (means) for the two groups across the four variables (Murder, Assault, UrbanPop, Rape). We also get the cluster assignment for each observation (i.e. Alabama was assigned to cluster 2, Arkansas was assigned to cluster 1, etc.).
+
+```{r showclust, echo=TRUE}
+k2
+```
+
+We can also view our results by using fviz_cluster. This provides a nice illustration of the clusters. If there are more than two dimensions (variables) fviz_cluster will perform principal component analysis (PCA) and plot the data points according to the first two principal components that explain the majority of the variance.
+
+```{r graphclust, echo=TRUE}
+fviz_cluster(k2, data = ClusterData)
+```
+...or create a chart of cluster centroids
+
+```{r barclust, echo=TRUE}
+library(reshape2)
+# Convert data frame from "wide" to "long" format
+bardat = melt(k2$centers, id.var='id')
+
+#ggplot(bardat, aes(x=factor(Var2), y=value)) + 
+#  geom_bar(fill=hcl(195, 100, 65)) + 
+#  xlab("ID") + ylab("Mean") +
+#  facet_grid(Var1 ~ .)
+```
+# K-means clustering advantages and disadvantages
+K-means clustering is very simple and fast algorithm. It can efficiently deal with very large data sets. However there are some weaknesses, including:
+
+1. It assumes prior knowledge of the data and requires the analyst to choose the appropriate number of cluster (k) in advance
+2. The final results obtained is sensitive to the initial random selection of cluster centers. Why is it a problem? Because, for every different run of the algorithm on the same dataset, you may choose different set of initial centers. This may lead to different clustering results on different runs of the algorithm.
+3. It’s sensitive to outliers.
+4. If you rearrange your data, it’s very possible that you’ll get a different solution every time you change the ordering of your data.
+
+# Summary
+K-means clustering can be used to classify observations into k groups, based on their similarity. Each group is represented by the mean value of points in the group, known as the cluster centroid.
+
+K-means algorithm requires users to specify the number of cluster to generate. The R function kmeans() [stats package] can be used to compute k-means algorithm. The simplified format is kmeans(x, centers), where “x” is the data and centers is the number of clusters to be produced.
+
+After, computing k-means clustering, the R function fviz_cluster() [factoextra package] can be used to visualize the results. The format is fviz_cluster(km.res, data), where km.res is k-means results and data corresponds to the original data sets.
+
+# References
+Hartigan, JA, and MA Wong. 1979. “Algorithm AS 136: A K-means clustering algorithm.” Applied Statistics. Royal Statistical Society, 100–108.
+
+MacQueen, J. 1967. “Some Methods for Classification and Analysis of Multivariate Observations.” In Proceedings of the Fifth Berkeley Symposium on Mathematical Statistics and Probability, Volume 1: Statistics, 281–97. Berkeley, Calif.: University of California Press. http://projecteuclid.org:443/euclid.bsmsp/1200512992.
+
