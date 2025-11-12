@@ -1,214 +1,684 @@
 ---
-title: "Psyc672ClusterAnalysis"
-output: html_document
-date: '2023-11-29'
-author: 'Paul Kieffaber (and a lot copied/modified from the web)'
+title: "Cluster Analysis"
+author: "Computer Applications for the Psychological Sciencees"
+date: "PSYC470"
+output:
+  html_document:
+    df_print: paged
+    mathjax: default
+  theme: darkly
+  pdf_document:
+    toc: true
+    toc_depth: 2
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,out.width='70%',fig.align='center')
 ```
 
-## About Dataset
-Background Information
-From Wikipedia
+# Introduction to Cluster Analysis
+Cluster analysis is form of *unsupervised machine learning*. Unlike supervised learning, where you have a known target variable (like price or species) to predict, clustering operates in a world without pre-existing labels. The primary goal of cluster analysis is to discover natural groupings or clusters within your data. 
 
-The Big Five personality traits, also known as the five-factor model (FFM) and the OCEAN model, is a taxonomy, or grouping, for personality traits. When factor analysis (a statistical technique) is applied to personality survey data, some words used to describe aspects of personality are often applied to the same person. For example, someone described as conscientious is more likely to be described as "always prepared" rather than "messy". This theory is based therefore on the association between words but not on neuropsychological experiments. This theory uses descriptors of common language and therefore suggests five broad dimensions commonly used to describe the human personality and psyche.
+It's common for students to group cluster analysis with techniques like Principal Component Analysis (PCA) or Factor Analysis. While all are "data reduction" techniques, they reduce the data in fundamentally different, and in fact opposite, ways.
 
-The Dataset
-This dataset contains 1,015,342 questionnaire answers collected online by Open Psychometrics.
+* **PCA/Factor Analysis reduces columns.**
+  - Question it answers: "Which of my variables hang together?"
+  - Goal: To take many variables (e.g., 20 survey items) and find a smaller set of underlying components or factors (e.g., 3 "factors" like 'Anxiety', 'Depression', and 'Neuroticism').
+  - Unit of analysis: It analyzes the variables (columns) to see which ones are correlated.
+  - The Result: A new, smaller set of variables.
 
-```{r loaddata, echo=TRUE}
-setwd("~/Documents/Rmarkdown/PSYC672/ClusterAnalysis")
-Big5Data <- read.csv('data-final.csv', header=TRUE, sep='\t')
-```
+* **Cluster Analysis reduces rows.**
+  - Question it answers: "Which of my subjects hang together?"
+  - Goal: To take many subjects (e.g., 500 patients) and find a smaller set of underlying groups or profiles (e.g., 3 "clusters" like 'Mildly Anxious', 'Somatic-Depressive', and 'Healthy').
+  - Unit of analysis: It analyzes the subjects (rows) to see which ones are similar.
+  - The Result: A new, single categorical variable (the cluster ID).
 
-After loading the data, I needed to do some cleaning because there are a bunch of extra columns I'm not interested in right now and also we need to summarize the Big 5 domains.
+**A Simple Analogy:**
 
-```{r cleandata, echo=TRUE}
+PCA/Factor Analysis is like looking at a bookshelf of 50 books and sorting them by genre (e.g., "these 10 are Sci-Fi," "these 12 are History"). You're grouping the books (variables).
+
+Cluster Analysis is like looking at 50 people who read the books and sorting them into groups (e.g., "these 10 people only read Sci-Fi," "these 12 people read History and Biographies"). You're grouping the people (subjects).
+
+**The principle is simple:**
+
+* Participants within a cluster should be highly similar to one another.
+* Participants between different clusters should be highly dissimilar from one another.
+
+Think of it as the computational equivalent of sorting a mixed bag of laundry. You don't have labels telling you what's a sock and what's a shirt, but by looking at features like size, shape, and material, you can intuitively group similar items together. In data analysis, these "features" are your variables, and the "groups" are the hidden patterns you want to uncover.
+
+Cluster analysis is incredibly powerful and widely used for:
+
+* **Customer Segmentation:** Finding distinct groups of customers based on purchasing behavior or demographics.
+* **Anomaly Detection:** Identifying data points that don't fit into any cluster, which could represent fraud, errors, or rare events.
+* **Image Segmentation:** Grouping pixels in an image to identify objects.
+* **Genomics:** Classifying genes based on their expression patterns.
+* **Identifying Psychiatric Subtypes:** Many psychiatric diagnoses are very broad and cover people with different combinations of symptoms.
+* **Creating Personality Profiles:** 
+* **Understanding Cognitive Profiles:**
+* **Grouping Social Behaviors or Attitudes**
+
+# Data as Coordinates
+
+So how does an algorithm "find" subjects that are "similar"? It does this by treating each subject's scores as coordinates in a multi-dimensional space.
+
+* **The 2D Plane:**
+  - Let's start with a simple, two-variable dataset. Imagine you have 100 patients and you've measured their:
+    - Anxiety score (0-50)
+    - Depression score (0-50)
+  - In your data file, each patient is a row. But we can visualize this by making the Anxiety score the X-axis and the Depression score the Y-axis. Now, each patient is no longer just a row—they are a single point on this 2D scatter plot.
+
+    - Patient A (Anxiety=10, Depression=8) is a point at (10, 8).
+    - Patient B (Anxiety=45, Depression=40) is a point at (45, 40).
+
+Let's take a look at how cluster analysis "visualizes" people in your data.
+
+```{r, 2D Clusters, message = FALSE, warning = FALSE}
+library(ggplot2)
 library(dplyr)
-Big5Data=Big5Data[Big5Data$IPC==1,1:50]
-Big5Data <- Big5Data %>% mutate_at(1:50, as.numeric)
-Big5Data=as.data.frame(Big5Data)
-```
-Now let's compute the big 5 variables
-```{r makebig5, echo=TRUE}
-Big5Data$Extrovert=rowSums(Big5Data[ , 1:10]) 
-Big5Data$Neurotic=rowSums(Big5Data[ , 11:20]) 
-Big5Data$Agreeable=rowSums(Big5Data[ , 21:30]) 
-Big5Data$Conscientous=rowSums(Big5Data[ , 31:40]) 
-Big5Data$Open=rowSums(Big5Data[ , 41:50]) 
-Big5Data$PID <- seq.int(nrow(Big5Data))
-Big5Data=Big5Data[, c('PID','Extrovert','Neurotic','Agreeable','Conscientous','Open')]
-Big5Data=Big5Data[complete.cases(Big5Data),]
-head(Big5Data)
-```
 
-Checking the structure of the new dataframe just to make sure that everything looks right
-```{r checkdatastructure, echo=TRUE}
-str(Big5Data)
-```
+# 1. Simulate the data for the two "clumps"
+set.seed(123)
+cluster1 <- data.frame(
+  Anxiety = rnorm(n = 50, mean = 15, sd = 3),
+  Depression = rnorm(n = 50, mean = 10, sd = 3)
+)
 
-A pairs plot allows us to get a sense for the paired relationships between variables, but in this case, there are so many cases that it takes forever to render.  So, let's use a correlogram
-```{r pairplot, echo=TRUE}
-#pairs(Big5Data[,2:6])
-library(corrplot)
-CorMtx=cor(Big5Data[,2:6])
-corrplot(CorMtx, method="circle")
-```
-# Start the Cluster Analysis
-We’ll use the factoextra, tidyverse, and cluster packages for easy cluster analysis and visualization.
+cluster2 <- data.frame(
+  Anxiety = rnorm(n = 50, mean = 40, sd = 4),
+  Depression = rnorm(n = 50, mean = 42, sd = 3)
+)
 
-```{r prepcluster, echo=TRUE}
-library(tidyverse)  # data manipulation
-library(cluster)    # clustering algorithms
-library(factoextra) # clustering algorithms & visualization
-```
-## Data Preparation
-To perform a cluster analysis in R, generally, the data should be prepared as follows:
+# 2. Add the specific patients
+patients <- data.frame(
+  Anxiety = c(10, 45),
+  Depression = c(8, 40),
+  Label = c("Patient A", "Patient B")
+)
 
-1) Wide format (Rows are observations (individuals) and columns are variables)
-2) Any missing value in the data must be removed or estimated.
-3) The data **must** be standardized (i.e., scaled) to make variables comparable. Recall that, standardization consists of transforming the variables such that they have mean zero and standard deviation one.
+# 3. Combine all data
+plot_data_2d <- bind_rows(cluster1, cluster2)
 
-## Standardization
-```{r datanorm, echo=TRUE}
-#Big5Normd <- scale(Big5Data) #I got weird output from this
-Big5Normd=data.frame(Extrovert=scale(Big5Data$Extrovert, center=TRUE), Neurotic=scale(Big5Data$Neurotic, center=TRUE), Agreeable=scale(Big5Data$Agreeable, center=TRUE), Conscientous=scale(Big5Data$Conscientous, center=TRUE), Open=scale(Big5Data$Open, center=TRUE))
-head(Big5Normd)
-```
-## K-Means Clustering
-K-means clustering (MacQueen 1967) is one of the most commonly used unsupervised machine learning algorithm for partitioning a given data set into a set of k groups (i.e. k clusters), where k represents the number of groups pre-specified by the analyst. It classifies observations in multiple groups (i.e., clusters), such that objects within the same cluster are as similar as possible (i.e., high intra-class similarity), whereas objects from different clusters are as dissimilar as possible (i.e., low inter-class similarity). In k-means clustering, each cluster is represented by its center (i.e, centroid) which corresponds to the mean of points assigned to the cluster.
-
-## Clustering Distance Measures
-The classification of observations into groups requires some methods for computing the distance or the (dis)similarity between each pair of observations. The result of this computation is known as a dissimilarity or distance matrix. 
-
-There are many methods to calculate this distance information; the choice of distance measures is a critical step in clustering because it defines how the similarity of two elements (x, y) is calculated and it will influence the shape of the clusters.
-
-The classical methods for distance measures are Euclidean and Manhattan distances.
-
-Let's take a look at the euclidean distance for simplicity.  The euclidean distance $d$ is defined as...
-$$
-d(p,q)= \sqrt{\sum_{i=1}^{n}(q_i - p_i)^2}
-$$
-where...
-
-$p,q$ = two points in euclidean n-space
-
-$p_i,q_i$ = euclidean vectors starting from the origin (initial point)
-
-$n$ = n-dimensional space
-
-The choice of distance measures is very important, as it has a strong influence on the clustering results. For most common clustering software, the default distance measure is the Euclidean distance. However, depending on the type of the data and the research questions, other dissimilarity measures might be preferred and you should be aware of the options.
-
-Within R it is simple to compute and visualize the distance matrix using the functions get_dist for computing distances and fviz_dist for visualizing the distances, from the factoextra package. This starts to illustrate which observations have large dissimilarities (red) versus those that appear to be fairly similar (teal).
-
-We'll start with the Euclidean distance (default)
-```{r clustdist, echo=TRUE}
-ClusterData=Big5Normd[sample(nrow(Big5Normd),300),]
-Big5Dist <- get_dist(ClusterData)
+# 4. Create the plot
+ggplot(plot_data_2d, aes(x = Anxiety, y = Depression)) +
+  geom_point(alpha = 0.6) + # Plot the "clumps"
+  geom_point(data = patients, aes(color = Label), size = 4) + # Highlight specific patients
+  geom_text(data = patients, aes(label = Label), vjust = -1) + # Add labels
+  scale_color_brewer(palette = "Set1") +
+  labs(
+    title = "Patients as Coordinates in 2D Space",
+    x = "Anxiety Score",
+    y = "Depression Score"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
 ```
 
-Now to visualize the distances
-```{r visdist, echo=TRUE}
-fviz_dist(Big5Dist, gradient = list(low = "#00AFBB", mid = "white", high = "#FC4E07"))
+When you look at this plot, you'd immediately see that Patient A is very "close" to one grouping of patients, while Patient C is "far away" from them, but "close" to another group of patients. You can also clearly see the two distinct "clumps" or "clusters" of points.
+
+Cluster analysis is simply the mathematical process of finding the center of these "clumps" and assigning each point (each subject) to its nearest one.
+
+* **The 3D Space**
+  - This concept scales up. Let's add a third variable: Neuroticism (0-50).
+  - Now, each patient has three scores, which we can treat as coordinates in a 3D space: (X, Y, Z).
+    - Anxiety = X-axis
+    - Depression = Y-axis
+    - Neuroticism = Z-axis
+
+* Our 2D plot becomes a 3D "point cloud." Each of the 100 patients is now a single point floating in this 3D space. For 3D plotting, interactive libraries like plotly are excellent because they let you click and drag to rotate the plot.
+
+```{r 3D Clusters, message = FALSE, warning = FALSE}
+library(plotly)
+
+# 1. Simulate the data for three "clumps" in 3D
+set.seed(123)
+cluster_A <- data.frame(
+  Anxiety = rnorm(n = 50, mean = 15, sd = 5),
+  Depression = rnorm(n = 50, mean = 10, sd = 5),
+  Neuroticism = rnorm(n = 50, mean = 40, sd = 5),
+  Group = "Cluster A"
+)
+
+cluster_B <- data.frame(
+  Anxiety = rnorm(n = 50, mean = 40, sd = 5),
+  Depression = rnorm(n = 50, mean = 45, sd = 5),
+  Neuroticism = rnorm(n = 50, mean = 15, sd = 5),
+  Group = "Cluster B"
+)
+
+cluster_C <- data.frame(
+  Anxiety = rnorm(n = 50, mean = 20, sd = 5),
+  Depression = rnorm(n = 50, mean = 40, sd = 5),
+  Neuroticism = rnorm(n = 50, mean = 35, sd = 5),
+  Group = "Cluster C"
+)
+
+# 2. Combine all data
+plot_data_3d <- bind_rows(cluster_A, cluster_B, cluster_C)
+
+# 3. Create the 3D plot
+plot_ly(plot_data_3d, 
+        x = ~Anxiety, 
+        y = ~Depression, 
+        z = ~Neuroticism, 
+        color = ~Group, # Color the points by their "clump"
+        type = "scatter3d", 
+        mode = "markers",
+        marker = list(size = 4, opacity = 0.8)) %>%
+  layout(
+    title = "Patients as Coordinates in 3D Space",
+    scene = list(
+      xaxis = list(title = "Anxiety"),
+      yaxis = list(title = "Depression"),
+      zaxis = list(title = "Neuroticism")
+    )
+  )
 ```
 
+  When you run the code above in RStudio, an interactive 3D plot should appear. You can rotate it to see how the "clumps" are separated in 3D space. 
+  
+The logic is identical: the algorithm calculates the distance between points in 3D and finds the clusters.
 
-# The Basic Idea
-The basic idea behind k-means clustering consists of defining clusters so that the total intra-cluster variation (known as total within-cluster variation) is minimized. There are several k-means algorithms available. The standard algorithm is the Hartigan-Wong algorithm (1979), which defines the total within-cluster variation as the sum of squared distances Euclidean distances between items and the corresponding centroid:
-$$
-W(C_k)=\sum_{x_i \in C_k}{(x_i - u_k)^2}
-$$
-where:
+* **N-Dimensions: The "Hyperspace"**
+  - What happens when we use a real psychology dataset, like a "Big Five" personality inventory with 25 questions?
+  - We now have 25 variables. We can't visualize 25 dimensions, but the math works exactly the same way.
+  - Each subject is represented by a single point in a 25-dimensional space (known as a hyperspace).
+  - A subject's "coordinate" is (score_q1, score_q2, score_q3, ..., score_q25).
 
-1. -$x_i$ is a data point belonging to the cluster $C_k$
-2. -$\mu_k$ is the mean value of the points assigned to the cluster $C_k$ (i.e., the cluster centroid)
+The algorithms use a distance metric (like Euclidean distance) to calculate the distance between any two points in these 2, 3, or 25-dimensional spaces.
 
-Each observation ($x_i$) is assigned to a given cluster such that the sum of squares (SS) distance of the observations to their assigned cluster centers ($\mu_k$) is minimized.
+The goal is always the same: to find the "clumps" of points that are "closest" to each other in this complex hyperspace, and by doing so, find the groups of subjects who have the most similar profiles across variables.
 
-We define the total within-cluster variation as follows:
-$$
-total.withiness = \sum_{k=1}^{k}W(C_k) = \sum_{k=1}^{k}\sum_{x_i \in C_k}{(x_i - u_k)^2}
-$$
-The total within-cluster sum of square measures the compactness (i.e goodness) of the clustering and we want it to be as small as possible.
+# Data Preparation
 
-# K-means Algorithm
-The first step when using k-means clustering is to indicate the number of clusters (k) that will be generated in the final solution. The algorithm starts by randomly selecting k objects from the data set to serve as the initial centers for the clusters. The selected objects are also known as cluster means or centroids. Next, each of the remaining objects is assigned to it’s closest centroid, where closest is defined using the Euclidean distance (Eq. 1) between the object and the cluster mean. This step is called “cluster assignment step”. After the assignment step, the algorithm computes the new mean value of each cluster. The term cluster “centroid update” is used to design this step. Now that the centers have been recalculated, every observation is checked again to see if it might be closer to a different cluster. All the objects are reassigned again using the updated cluster means. The cluster assignment and centroid update steps are iteratively repeated until the cluster assignments stop changing (i.e until convergence is achieved). That is, the clusters formed in the current iteration are the same as those obtained in the previous iteration.
+Before you can run any clustering algorithm (or any other analysis), you must prepare your data. This is arguably the most important step, as most clustering methods are highly sensitive to the scale and nature of your variables.
 
-## K-means algorithm can be summarized as follows:
+## Feature Scaling
 
-1. Specify the number of clusters (K) to be created (by the analyst)
-2. Select randomly k objects from the data set as the initial cluster centers or means
-3. Assigns each observation to their closest centroid, based on the Euclidean distance between the object and the centroid
-4. For each of the k clusters update the cluster centroid by calculating the new mean values of all the data points in the cluster. The centroid of a Kth cluster is a vector of length p containing the means of all variables for the observations in the kth cluster; p is the number of variables.
-5. Iteratively minimize the total within sum of square (Eq. 7). That is, iterate steps 3 and 4 until the cluster assignments stop changing or the maximum number of iterations is reached. By default, the R software uses 10 as the default value for the maximum number of iterations.
+Most clustering algorithms are "distance-based," meaning they calculate the similarity between data points using a mathematical distance.
 
-## Determining the Optimal Number of Clusters
-The k-means clustering requires the users to specify the number of clusters to be generated.
+**The Problem:** Imagine you have a dataset with two features: age (ranging from 20-70) and income (ranging from \$30,000-\$150,000). When an algorithm calculates the distance, the income variable, simply because of its larger numbers, will completely dominate the calculation. The age variable will have almost no influence on the outcome.
 
-One fundamental question is: How to choose the right number of expected clusters (k)? There are a number of methods, but here, we discuss one simple solution. The idea is to compute k-means clustering using different values of clusters k. Next, the *total.withiness* (within sum of square) is plotted against the number of clusters. The location of a bend (knee/elbow) in the plot is generally considered as an indicator of the appropriate number of clusters.
+**The Solution:** You must scale or standardize your data so that all variables contribute equally. The most common method is Z-score standardization, which rescales each variable to have a mean of 0 and a standard deviation of 1.
 
-The R function fviz_nbclust() [in factoextra package] provides a convenient solution to estimate the optimal number of clusters.
-```{r numclust, echo=TRUE}
-fviz_nbclust(ClusterData, kmeans, method = "wss")
+In R, this is easily done with the `scale()` function:
+
+## Calculating Distance ("Similarity")
+
+Once your data is scaled, the algorithm needs a precise mathematical rule to define how "similar" or "dissimilar" two data points are. This rule is the *distance metric*.
+
+Choosing a metric is an important decision, as different metrics can lead to different cluster results. The metric you choose should align with your data's properties and your research question.
+
+**Euclidean Distance**: This is the most common and intuitive metric. It's the "as the bird flies" straight-line distance between two points. For two data points, $p = (p_1, p_2, \dots, p_n)$ and $q = (q_1, q_2, \dots, q_n)$, across $n$ features (dimensions), the formula is:
+
+$$d(p, q)=\sqrt{ \sum_{i=1}^{n} (p_i - q_i)^2}$$
+
+For example, if $n=2$, then $d(p,q)=\sqrt{(p_1 - q_1)^2 + (p_2 - q_2)^2}$
+
+*Example:* Imagine two patients plotted on scaled scores for anxiety (x-axis) and depression (y-axis):
+
+* Patient A: $(p_1, p_2) = (1, 2)$
+* Patient B: $(q_1, q_2) = (4, 6)$
+* The Euclidean distance is:
+
+$$d(A, B) = \sqrt{(4 - 1)^2 + (6 - 2)^2} = \sqrt{3^2 + 4^2} = \sqrt{9 + 16} = \sqrt{25} = 5.0$$
+* **Pros:** Very intuitive, represents the shortest physical distance, and works very well for creating compact, spherical clusters. It's the default distance metric for many K-Means algorithms.
+* **Cons:** Highly sensitive to outliers. Because the differences are squared in the formula, a single large difference on one feature (an outlier) can dramatically inflate the total distance, potentially pulling the point out of its "correct" cluster.
+
+**Manhattan Distance**: This is often called the "city block" or "taxicab" distance. It calculates the distance by summing the absolute differences of the coordinates, as if you were traveling on a grid of streets. For the same two points, $p$ and $q$ from before, the formula is:
+
+$$d(p, q) = \sum_{i=1}^{n} |p_i - q_i|$$
+
+For example, using the same Patient A and Patient B from before:Patient A: $(p_1, p_2) = (1, 2)$, Patient B: $(q_1, q_2) = (4, 6)$. The Manhattan distance is:
+
+$$d(A, B) = |4 - 1| + |6 - 2| = |3| + |4| = 3 + 4 = 7.0$$
+Notice the distance (7.0) is different from the Euclidean distance (5.0).
+
+* **Pros:** Much more robust to outliers. Because it uses the absolute difference, not the squared difference, a single large outlier's influence is not exaggerated. It's a good choice if your data is noisy.
+
+* **Cons:** It's less intuitive and can sometimes lead to different (often square-shaped) clusters compared to Euclidean.
+
+Let's see how we can use these two distance metrics to create a distance Matrix in R using the `dist()` function from the base stats package. It takes your scaled data frame (or matrix) and returns a special "dist" object, which is a distance matrix.This matrix contains the calculated distance between every possible pair of data points.Let's create a tiny scaled dataset for 4 patients with anxiety and depression scores.
+```{r, message = FALSE, warning = FALSE}
+# Create a small, simple data frame
+patient_demo <- data.frame(
+  anxiety = c(1, 4, 1, 3),
+  depression = c(2, 6, 3, 5)
+)
+rownames(patient_demo) <- c("Patient_A", "Patient_B", "Patient_C", "Patient_D")
+
+print("Original Data:")
+print(patient_demo)
+
+# --- 1. Scale the data ---
+patient_demo_scaled=scale(patient_demo)
+
+# --- 2. Calculate Euclidean distance matrix ---
+dist_euclidean <- dist(patient_demo_scaled, method = "euclidean")
+
+print("--- Euclidean Distance Matrix ---")
+print(dist_euclidean)
+
+# --- 3. Calculate Manhattan distance matrix ---
+dist_manhattan <- dist(patient_demo_scaled, method = "manhattan")
+
+print("--- Manhattan Distance Matrix ---")
+print(dist_manhattan)
 ```
 
-## Computing k-means clustering in R
-Once you have decided on the number of clusters, we can compute k-means in R with the kmeans() function. Here will group the data into five clusters (centers = 5). The kmeans function also has an nstart option that attempts multiple initial configurations and reports on the best one. For example, adding nstart = 25 will generate 25 initial configurations. This approach is often recommended.
+# Common Clustering Algorithms
 
-```{r runclust, echo=TRUE}
-k2 <- kmeans(ClusterData, centers = 5, nstart = 25)
-str(k2)
+There are many clustering methods, but they generally fall into three main families.
+
+1. Partitioning Clustering (e.g., K-Means)
+  * This method aims to "partition" the data into a pre-specified number of clusters, K. The most popular example is K-Means.
+  * How it works: You tell the algorithm how many clusters (K) you want to find. It then randomly assigns K points as "centroids" (cluster centers) and iteratively repeats two steps:
+    1) Assignment Step: Assigns each data point to its nearest centroid.
+    2) Update Step: Recalculates the centroid of each cluster based on the mean of the points assigned to it.
+  * Best for: General-purpose clustering, fast on large datasets, and tends to create spherical, evenly-sized clusters.
+
+2. Hierarchical Clustering
+  * This method builds a tree-like hierarchy of clusters, which is visualized as a "dendrogram". It doesn't require you to specify the number of clusters beforehand.
+  * How it works (Agglomerative): This is the "bottom-up" approach.
+    1) Start by treating every single data point as its own cluster.
+    2) Find the two "closest" clusters and merges them.
+    3) Repeat #2 until all data points are in a single giant cluster. You then "cut" the dendrogram at a certain height to get your desired number of clusters.
+  * Best for: Smaller datasets where you want to visualize the hierarchy and don't know the number of clusters in advance.
+
+3. Density-Based Clustering (DBSCAN)
+  * This method groups points that are closely packed together, marking points that lie alone in low-density regions as outliers. The most popular example is DBSCAN (Density-Based Spatial Clustering of Applications with Noise).
+  * How it works: It defines clusters as continuous regions of high density. It's great at finding arbitrarily-shaped clusters (e.g., rings, curves) and is very robust to outliers.
+  * Best for: Finding non-spherical clusters, handling noise and outliers effectively.
+  
+# Cluster Analysis in R
+
+Before going further, let's take a look at how to implement several types of cluster analysis in R.
+
+**Data:** We will use a real, built-in R dataset for this walkthrough: `USArrests`.
+
+The USArrests dataset is a data frame with 50 rows (one for each US state) and 4 variables:
+* Murder (arrests per 100,000 residents)
+* Assault (arrests per 100,000 residents)
+* UrbanPop (% of the population in urban areas)
+* Rape (arrests per 100,000 residents)
+
+In this example, we're not clustering individuals, but states. The goal is to find out if there are "profiles" or "types" of states that share similar patterns of crime and urbanization.
+
+First, let's load some packages and prepare our data. This is the most important step. The USArrests data is on different scales (e.g., Assault ranges from 45 to 337, while Murder ranges from 0.8 to 17.4) so we must scale it first.
+
+```{r,message = FALSE, warning = FALSE}
+# --- Load Libraries ---
+library(tidyverse)    # For data manipulation and plotting
+library(factoextra)   # For cluster visualization & validation
+library(dbscan)       # For the DBSCAN algorithm
+
+# --- Load and Inspect Data ---
+data("USArrests")
+head(USArrests)
+
+# --- Scale the Data ---
+# We must scale the data before calculating distances
+# This creates 'df' which is a scaled matrix
+df <- scale(USArrests)
+
+# View the first few rows of the scaled data
+# Notice the means are now 0 and SDs are 1
+head(df)
+```
+Now df is our prepared, scaled data, ready for clustering.
+
+## Method 1: K-Means Clustering
+Goal: Partition the 50 states into $K$ groups...but first we have to find the best $K$.
+
+**How Many Clusters?**
+
+For methods like K-Means, how do you pick the "right" number for K? There is no single, correct answer. Instead, we use heuristics to find an "optimal" number.
+
+1) The Elbow Method: This method plots the Within-Cluster Sum of Squares (WCSS) against different values of K. The WCSS measures the compactness of the clusters. As K increases, WCSS will always decrease. You look for the "elbow" in the plot—the point where adding another cluster doesn't "significantly" reduce the WCSS.
+
+The `factoextra` package makes this simple.
+
+```{r,message = FALSE, warning = FALSE}
+# Find optimal K using the Elbow method
+fviz_nbclust(df, kmeans, method = "wss") +
+  labs(subtitle = "Elbow Method")
+```
+Interpretation: The plot shows a very clear "elbow" at K=4. After this point, adding more clusters doesn't significantly reduce the within-cluster sum of squares (WCSS).
+
+2)  The Silhouette Score: This method provides a more robust measure. For each data point, it calculates a score based on two things:
+  * Cohesion: How close is it to other points in its own cluster?
+  * Separation: How far is it from points in the nearest other cluster? 
+  
+The score is calculated for each individual data point $i$. The overall Silhouette Score for a clustering solution is the average of the silhouette scores for all points.
+
+The equation for a single point's silhouette score $S(i)$ is:
+
+$$S(i) = \frac{b(i) - a(i)}{\max\{a(i), b(i)\}}$$
+
+First, you calculate two values for each point $i$: 
+
+1) $a(i)$: Cohesion
+  - This is the average distance from point $i$ to all other points in its own cluster. It measures how well the point "fits" within its cluster.
+  - A small $a(i)$ is good (it's "cohesive" with its cluster).
+
+2) $b(i)$: Separation
+  - This is the average distance from point $i$ to all points in the nearest neighboring cluster. To calculate it, you first find the average distance from $i$ to all points in another cluster.You do this for every other cluster.
+  - $b(i)$ is the minimum of these average distances (i.e., the distance to the "closest" other cluster).
+  - A large $b(i)$ is good (it's "separated" from other clusters). 
+
+*How to Interpret the Score*
+
+The resulting score $S(i)$ for each point will range from -1 to +1. The overall Silhouette Score is the average of $S(i)$ across all points. You calculate the average silhouette score for different values of K and pick the K that maximizes the average score.
+
+```{r,message = FALSE, warning = FALSE}
+# Find optimal K using the Silhouette method
+fviz_nbclust(df, kmeans, method = "silhouette") +
+  labs(subtitle = "Silhouette Method")
 ```
 
-The output of kmeans is a list with several bits of information. The most important being:
+***Interpretation:*** The silhouette method suggests K=2 is the most optimal, as it has the highest score. However, $K=4$ was indicated using the elbow method. This is a common "conflict" in clustering. $K=2$ would probably just separate low-crime/rural from high-crime/urban states. $K=4$ will likely give us more nuanced profiles. For this educational example, let's choose K=4 to get more interesting groups.
 
-* **cluster**: A vector of integers (from 1:k) indicating the cluster to which each point is allocated.
-* **centers**: A matrix of cluster centers.
-* **totss**: The total sum of squares.
-* **withinss**: Vector of within-cluster sum of squares, one component per cluster.
-* **tot.withinss**: Total within-cluster sum of squares, i.e. sum(withinss).
-* **betweenss**: The between-cluster sum of squares, i.e. $totss-tot.withinss$.
-* **size**: The number of points in each cluster.
+### Run K-means algorithm with our chosen $K=4$.
 
-If we print the results we’ll see that our groupings of 2 clusters and their sizes. We see the cluster centers (means) for the two groups across the four variables (Murder, Assault, UrbanPop, Rape). We also get the cluster assignment for each observation (i.e. Alabama was assigned to cluster 2, Arkansas was assigned to cluster 1, etc.).
+```{r,message = FALSE, warning = FALSE}
+# Set seed for reproducibility
+set.seed(123)
 
-```{r showclust, echo=TRUE}
-k2
+# Run K-Means
+# nstart=25 will run the algorithm 25 times with different
+# random starting points and pick the best one.
+km.res <- kmeans(df, centers = 4, nstart = 25)
+
+# Visualize the clusters
+# fviz_cluster will perform PCA (Principle Component Analysis)
+# to show the 4-dimensional data in 2 dimensions.
+fviz_cluster(km.res, data = df,
+             ellipse.type = "convex",
+             geom = "point",
+             ggtheme = theme_bw())
 ```
 
-We can also view our results by using fviz_cluster. This provides a nice illustration of the clusters. If there are more than two dimensions (variables) fviz_cluster will perform principal component analysis (PCA) and plot the data points according to the first two principal components that explain the majority of the variance.
+***Interpretation:*** When we ran the K-Means algorithm on the USArrests data, we used four variables: Murder, Assault, UrbanPop, and Rape. This means both our data, and the $k=4$ clusters we found, exist in 4-dimensional space. In other words, a data point for any given state isn't just (x, y). It's (x, y, z, w), or more specifically: (Murder_score, Assault_score, UrbanPop_score, Rape_score).
 
-```{r graphclust, echo=TRUE}
-fviz_cluster(k2, data = ClusterData)
+The center of each cluster, called the **centroid** is also a 4-dimensional point.
+
+This creates a visualization problem! Our computer screens are 2-dimensional, and the human brain really isn't capable of visualizing more than three dimensions...So how can we possibly plot 4D clusters on a 2D screen?
+* *A "Bad" Solution:* You might think, "Why not just plot two of the original variables, like Murder vs. Assault?"
+  - The Problem: You'd be ignoring all the information from UrbanPop and Rape. It's possible that two clusters (e.g., Cluster 1 and Cluster 3) look identical on the Murder/Assault plot, but are actually very different, separated only by the UrbanPop variable. You would be looking at a misleading "shadow" of the data.
+* The "Smart" Solution: Principal Component Analysis (PCA)
+  - PCA is a dimensionality reduction technique. Its goal is to take a high-dimensional dataset (like our 4D data) and "squish" or "project" it onto a lower number of dimensions (like 2D) while losing as little information as possible.
+
+**An Analogy:** Imagine you have a complex 3D object, like a model airplane. You want to take a 2D photograph of it to show someone. If you take the photo from directly in front of the plane, your 2D image will just be a thin "cross" shape. You've lost all the information about the wings' length and the plane's body.
+
+However, if you rotate the plane to a 3/4 angle from above, your 2D photo will capture the shape of the wings, the body, and the tail. This is a much more informative "shadow" or "projection" of the 3D object.
+
+PCA is the mathematical equivalent for finding this "best angle" in high-dimensional data.
+
+**How PCA Works (Step-by-Step)**
+
+* Finding New Axes (The "Principal Components")
+  * PCA doesn't just pick two of our old axes (like Murder and Assault). Instead, it creates brand new, artificial axes called Principal Components (PCs).
+  * These new axes are linear combinations of the old ones.
+  * *Principal Component 1 (PC1):* PCA finds the "best" possible new axis that captures the maximum amount of variance (the "spread") in the 4D data. 
+    * It's a formula is something like: PC1 = (a * Murder) + (b * Assault) + (c * UrbanPop) + (d * Rape). PCA finds the perfect "weights" (a, b, c, d) that make the 50 states as spread out as possible along this new line. This is our "best angle" for the shadow.
+  * *Principal Component 2 (PC2):* PCA then finds the second-best new axis. This axis must be orthogonal (perpendicular) to PC1 and must capture the most of the remaining variance. It has its own formula: 
+PC2 = (e * Murder) + (f * Assault) + (g * UrbanPop) + (h * Rape)
+  * This process continues until we have 4 PCs (PC1, PC2, PC3, PC4), one for each original variable.
+
+* Checking if the New Axes are "Good Enough"
+  * The magic of PCA is that the first few components capture most of the information. We can check how much "variance" (information) PC1 and PC2 captured.
+  * PC1 might capture (for example) 62% of the total variance from all 4 original variables.
+  * PC2 might capture (for example) 25% of the total variance.
+  * This means our new 2D plot (PC1 vs. PC2) successfully represents 62% + 25% = 87% of the original 4D information! This is far better than just plotting Murder vs. Assault, which might only represent 50% (or less) of the total variance.
+
+**This is exactly what the `fviz_cluster()` function does for us automatically in the plot above!**
+
+* It ignores the original variables (Murder, Assault, etc.).
+* It runs PCA on your 4D scaled data (df) to find the "best" new axes, PC1 and PC2.
+* It calculates the new coordinates for all 50 states. For example, Alabama is no longer (-0.99, -0.15, -1.22, 0.51) in 4D space. It's now something like (-0.98, 1.13) in the new 2D (PC1/PC2) space.
+* It draws a 2D scatter plot with these new coordinates:
+    * X-axis = PC1 score ("Dimension 1")
+    * Y-axis = PC2 score ("Dimension 2")
+* It uses your K-Means results (the km.res$cluster vector) to color the points. It looks at Alabama, sees it belongs to cluster = 1, and colors its point red. It looks at California, sees cluster = 2, and colors it green.
+
+**Summary**
+
+The `fviz_cluster` plot is not plotting any of your original variables.
+
+It is a "smart" 2D plot where the X-axis (Dim 1) and Y-axis (Dim 2) are new, artificial variables (PC1 and PC2) created by PCA. These new variables are combinations of all four original variables, designed to give you the best possible 2D view of the separation between your 4-dimensional clusters.
+
+## Interpreting the K-Means Profiles
+
+Now let's find out what these clusters mean by looking at their average scores. We'll add the cluster assignments back to the original, unscaled data.
+
+```{r, message = FALSE, warning = FALSE}
+# Add cluster assignments to the original data
+USArrests_kmeans <- USArrests %>%
+  mutate(cluster = km.res$cluster)
+
+# Calculate the mean of each variable for each cluster
+cluster_profiles_km <- USArrests_kmeans %>%
+  group_by(cluster) %>%
+  summarise(
+    n = n(),
+    Murder_mean = mean(Murder),
+    Assault_mean = mean(Assault),
+    Rape_mean = mean(Rape),
+    UrbanPop_mean = mean(UrbanPop)
+  )
+
+print(cluster_profiles_km)
 ```
-...or create a chart of cluster centroids
+***Interpretation:*** 
+* Cluster 1:  High urban population but relatively low crime rate.
+* Cluster 2:  High urban population with high crime rate.
+* Cluster 3:  Low urban population with higher crime rate.
+* Cluster 4:  Low urban population with lower crime rate.
 
-```{r barclust, echo=TRUE}
-library(reshape2)
-# Convert data frame from "wide" to "long" format
-bardat = melt(k2$centers, id.var='id')
+* This is the perfect time for a chorograph!
+  * remember that our "people" are states in the US.  We can create a chorograph showing how states were assigned to each of the four clusters.
 
-#ggplot(bardat, aes(x=factor(Var2), y=value)) + 
-#  geom_bar(fill=hcl(195, 100, 65)) + 
-#  xlab("ID") + ylab("Mean") +
-#  facet_grid(Var1 ~ .)
+```{r, message = FALSE, warning = FALSE}
+# --- 3. Prepare Cluster Data for Merging ---
+# Create a data frame with state names and their cluster
+# Note: The map data uses *lowercase* state names, so we must convert them
+cluster_data <- data.frame(
+  region = tolower(rownames(USArrests)),
+  cluster = as.factor(km.res$cluster) # Convert cluster number to a factor
+)
+
+# --- 4. Load the US Map Polygon Data ---
+# This function from ggplot2 converts the 'maps' data into a data frame
+us_map <- map_data("state")
+
+# --- 5. Join Your Clusters to the Map Data ---
+# We join the map polygons (us_map) with our cluster assignments (cluster_data)
+# The 'by = "region"' tells R to match the 'region' column in both datasets
+map_with_clusters <- left_join(us_map, cluster_data, by = "region")
+
+# --- 6. Plot the Final Map ---
+ggplot(map_with_clusters, aes(x = long, y = lat, group = group)) +
+  # Create the polygons
+  # 'fill = cluster' colors the states based on our cluster assignment
+  # 'color = "white"' adds a thin white border between states
+  geom_polygon(aes(fill = cluster), color = "white") +
+  
+  # Use a standard map projection (Albers is good for the US)
+  coord_map("albers", lat0 = 39, lat1 = 45) +
+  
+  # Add titles
+  labs(
+    title = "K-Means Clustering of US States (K=4)",
+    subtitle = "Based on Murder, Assault, Rape, and UrbanPop data",
+    fill = "Cluster" # This renames the legend title
+  ) +
+  
+  # Use a clean theme that removes axes and gridlines
+  theme_void()
 ```
-# K-means clustering advantages and disadvantages
-K-means clustering is very simple and fast algorithm. It can efficiently deal with very large data sets. However there are some weaknesses, including:
 
-1. It assumes prior knowledge of the data and requires the analyst to choose the appropriate number of cluster (k) in advance
-2. The final results obtained is sensitive to the initial random selection of cluster centers. Why is it a problem? Because, for every different run of the algorithm on the same dataset, you may choose different set of initial centers. This may lead to different clustering results on different runs of the algorithm.
-3. It’s sensitive to outliers.
-4. If you rearrange your data, it’s very possible that you’ll get a different solution every time you change the ordering of your data.
+## Method 2: Hierarchical Clustering
 
-# Summary
-K-means clustering can be used to classify observations into k groups, based on their similarity. Each group is represented by the mean value of points in the group, known as the cluster centroid.
+Hierarchical clustering is a "bottom-up" or agglomerative method. It's fundamentally different from K-Means because you don't need to specify the number of clusters ($K$) beforehand.Instead, it builds a "family tree" of all your data points, called a dendrogram.
 
-K-means algorithm requires users to specify the number of cluster to generate. The R function kmeans() [stats package] can be used to compute k-means algorithm. The simplified format is kmeans(x, centers), where “x” is the data and centers is the number of clusters to be produced.
+**The Logic:** The algorithm is very intuitive:
 
-After, computing k-means clustering, the R function fviz_cluster() [factoextra package] can be used to visualize the results. The format is fviz_cluster(km.res, data), where km.res is k-means results and data corresponds to the original data sets.
+* Start: Treat every single data point (each state) as its own tiny cluster. (If you have 50 states, you start with 50 clusters).
+* Find Closest: Find the two "closest" clusters in the entire dataset.
+* Merge: Merge those two clusters into one new, larger cluster.
+* Repeat: Repeat steps 2 and 3. Each time, you have one fewer cluster. You keep merging the two closest remaining clusters until all 50 states are merged into one single "giant" cluster.This process naturally creates the tree-like dendrogram, which shows the "family history" of which states merged and when.
+* This leaves one critical question: How do you measure the distance between two clusters (which might have multiple points)?
+
+**The Crucial Step:** "Linkage" Defines Cluster Distance. The rule you use to define "cluster-to-cluster" distance is called the linkage method. This is the method argument in the `hclust()` function, and it's the most important choice you'll make. There are several common types:
+
+  - Single Linkage: Measures the distance between the two closest points in the two clusters. (The "optimistic" approach).
+  
+  - Complete Linkage: Measures the distance between the two farthest points in the two clusters. (The "pessimistic" approach).
+  
+  - Average Linkage: Measures the average distance between all possible pairs of points in the two clusters.
+  
+  - Ward's Method (ward.D2): This is the most popular and generally most robust method. It's different from the others. It doesn't just use a simple distance. Instead, it asks: "If I merge these two clusters, what will be the new total within-cluster variance (WCSS)?" The algorithm merges the two clusters that result in the minimum increase in the total WCSS. By doing this at every step, it tends to produce very compact, spherical, and evenly-sized clusters. It's conceptually very similar to K-Means (which also tries to minimize WCSS), making it a powerful default choice.
+  
+### Now let's see how this algorithm looks in R. 
+
+This is a two-step process:
+
+1. Calculate the point-to-point distance matrix for all 50 states. We'll use our scaled data df and the dist() function.
+
+2. Run the hierarchical clustering algorithm (hclust()) on this distance matrix, telling it to use our chosen linkage method (e.g., ward.D2).
+
+```{r}
+# 1. Calculate the distance matrix
+# This calculates the distance between all 50 states
+d <- dist(df, method = "euclidean")
+
+# 2. Run hierarchical clustering
+# We feed the distance matrix 'd' into hclust
+# We specify the "ward.D2" linkage method, which minimizes
+# the increase in variance at each merge.
+hc.res <- hclust(d, method = "ward.D2")
+```
+
+3. Visualize the Dendrogram
+  * The primary output is the dendrogram, which shows the hierarchy.
+
+```{r, message = FALSE, warning = FALSE}
+# 3. Plot the dendrogram
+fviz_dend(hc.res, cex = 0.7,  # cex = label size
+          k = 4, # "Cut" the tree into 4 clusters
+          rect = TRUE, # Add rectangles around the 4 clusters
+          k_colors = c("#2E9FDF", "#00AFBB", "#E7B800", "#FC4E07"),
+          main = "Hierarchical Clustering Dendrogram")
+```
+
+## Interpreting the Dendrogram
+
+The primary output of hierarchical clustering is the dendrogram (from the Greek dendro for "tree" and gramma for "drawing"). This plot shows the "family tree" of every state and how it was grouped.
+
+**How to Read This Tree:** 
+
+To understand the dendrogram, you need to know what the axes mean:
+
+* *X-axis (Bottom):* These are the individual data points (the "leaves" of the tree), in our case, the 50 states. The order is determined by the algorithm to prevent lines from crossing.
+* *Y-axis (Height):* This is the most important axis. It represents the dissimilarity (or "distance") at which two clusters were merged. 
+* The `ward.D2` method's height is related to the increase in within-cluster variance (WCSS). 
+  * Let's read it from the bottom up: Start at the Bottom (Height = 0): At the very bottom, every state is its own cluster. 
+  * Find the First Merge: Look for the lowest "rung" or "U-shape" on the tree. In this plot, it's Iowa and New Hampshire The low height of their merge means the algorithm found them to be the two most similar states in the entire dataset (based on our scaled crime and urban-population data).
+  * Follow the Branches: This new [Iowa, New Hampshire] group is now treated as a single cluster and the distance matrix is re-calculated with the remaining 49 "clusters". The next-lowest distance is Illinois and New York, which forms an [Illinois, New York] cluster. This process continues, next combining Indiana and Kansas, and so on. As the iterations continue, states will be connected to existing clusters until all states are part of one big cluster.
+
+As you move up the tree, the merges happen at greater and greater heights, meaning you are merging clusters that are more and more dissimilar from one another. The long, unbroken vertical lines are the most important part. They represent a large "distance" that had to be covered before the next merge could happen. For example, look at the final, topmost merge. It connects the "blue/green" group with the "yellow/red" group. The vertical line for this merge is very long, spanning from a height of ~10 up to ~25. 
+
+This long line signifies that these two super-clusters are very dissimilar from each other.The long lines below that top merge are what suggest k=4 is a good choice. They show that our four colored groups are themselves distinct "families" that are separated by a meaningful amount of distance.When we "cut the tree" at $k=4$, we are drawing a horizontal line that intersects four of these main branches. The states that are "hanging" from the same branch below this cut are all assigned to the same cluster.
+
+* Now we can "cut" the tree at $K=4$ (to match our K-Means) and visualize the clusters on a scatter plot.
+
+```{r, message = FALSE, warning = FALSE}
+# Cut the tree into 4 groups
+clusters_hc <- cutree(hc.res, k = 4)
+
+# Visualize the clusters on a scatter plot
+fviz_cluster(list(data = df, cluster = clusters_hc),
+             ellipse.type = "convex",
+             geom = "point",
+             ggtheme = theme_bw())
+```
+
+**Interpretation:** *Recall that `fviz_cluster()` automatically reduces the space to two dimensions using PCA.* Notice the results are similar, but not identical to K-Means. This is because the logic of how the clusters are formed is different (bottom-up hierarchy vs. top-down partitioning).
+
+
+## Method 3: Density-Based Spatial Clustering of Applications with Noise (DBSCAN)
+
+The core idea is simple and intuitive: A cluster is a crowded area, separated from other crowded areas by regions of empty space.
+
+Unlike K-Means (which assumes clusters are spherical) or Hierarchical (which just merges the next-closest-thing), DBSCAN defines "crowded" using two key parameters that define "density" for the algorithm.
+
+To the algorithm, "density" is not a vague term. It's defined by two rules you must set:
+
+1) **eps (Epsilon):** This is your "neighborhood radius." It's a distance. You are asking: "How far should I look from any given point to find its neighbors?" (e.g., "look 1.25 units away").
+
+2) **minPts (Minimum Points):** This is the "density threshold." You are asking: "How many neighbors must a point have within that eps radius to be considered a 'crowded' point?" (e.g., "a point must have at least 5 points in its neighborhood").
+
+Using these two rules to define density, the algorithm defines three types of points: 
+
+1) **Core Point:** This is a point in a "crowded" area. A point is a Core Point if it has at least minPts (e.g., 5) neighbors inside its eps (e.g., 1.25) radius. These are the hearts of the clusters.
+
+2) **Border Point:** This is a point on the "edge" of a crowd. A point is a Border Point if it's not a Core Point, but it is in the neighborhood of another Core Point. It can "reach" the crowd, but isn't in the middle of it.
+
+3) **Noise Point (Outlier):** This is an isolated point. A point is a Noise Point if it is not a Core Point and is not a Border Point. It's all alone, not in a dense region and not on the edge of a dense region.
+
+### The Algorithm
+
+- The algorithm randomly picks a point (e.g., Alabama).It checks if it's a Core Point. If YES: A new cluster is born! The algorithm grabs this Core Point and every point it can reach (its neighbors).
+
+- It then looks at those neighbors. Are they Core Points? 
+  - If YES: The algorithm grabs their neighbors too. The cluster "grows" like a chain reaction, "density-connecting" all the Core Points and picking up any Border Points it finds along the way. This continues until the cluster has found all reachable points. This entire connected "blob" is Cluster.
+  - If NO: The point is (temporarily) labeled as Noise.The algorithm moves to the next un-visited point and repeats the process. 
+  
+A cluster, therefore, is a collection of one or more Core Points plus all the Border Points they can reach. An outlier (noise) is any point that is left over at the end and doesn't belong to any cluster.Why This is So Different and Powerful. 
+
+It finds "weird" shapes. As long as the points are "density-connected," a cluster can be a long string, a C-shape, or a donut.It doesn't need $K$: You don't tell it how many clusters to find. It discovers the "natural" number of clusters based on your *eps* and *minPts* settings. While K-Means and Hierarchical methods force every single point into a cluster, DBSCAN finds "honest" outliers. 
+
+For example, if a state like 'Alaska' is a true outlier, K-Means will still force it into a group, which can drag that cluster's "center" (centroid) out of place and distort your interpretation. DBSCAN is "honest"—it just points at 'Alaska' and says, "This point is noise; it doesn't belong to any dense group." This is arguably a much more accurate reflection of reality.
+
+Let's see how DBSCAN works in practice.
+
+1) Find the Optimal eps Parameter
+
+DBSCAN doesn't need $K$, but it does need an eps (epsilon) value, which is the "neighborhood radius" to search. The standard way to find it is to plot the distance of every point to its $k$-nearest neighbors (we'll use $k=4$ neighbors) and look for the "knee" or "elbow" in the plot.
+
+```{r, message = FALSE, warning = FALSE}
+# minPts = k+1. If we want k=4 neighbors, minPts = 5.
+# This plots the distance to the 4th nearest neighbor for all 50 states
+kNNdistplot(df, k = 4)
+abline(h = 1.25, lty = 2, col = "red") # lty=2 is a dashed line
+```
+
+Interpretation: The "knee" of the plot is at the point where the distances start to rise sharply. This looks to be around *eps* = 1.25. We'll use this value. We will also set *minPts* = 5 (a common default, $k+1$).
+
+B. Run DBSCAN and Visualize
+
+```{r, message = FALSE, warning = FALSE}
+# Run DBSCAN
+db.res <- dbscan(df, eps = 1.25, minPts = 5)
+
+# Print the results
+print(db.res)
+```
+
+**Interpretation:** This is fascinating! DBSCAN found 2 clusters (labeled 1, 2) and 6 noise points (labeled 0). This means it identified 6 states as being "outliers" that don't fit well with any other group.
+
+C. Visualize the DBSCAN Clusters
+
+```{r, message = FALSE, warning = FALSE}
+# Visualize, note how '0' (black points) are the outliers
+fviz_cluster(db.res, data = df,
+             ellipse = TRUE,
+             geom = "point",
+             ggtheme = theme_bw())
+```
+
+Final Interpretation: This might be the most "honest" result. K-Means and Hierarchical forced every state into a group. DBSCAN tells us that states like Florida, Alaska, California, and Nevada (which are often in the "noise" cluster) might be too unique to be grouped, and we are left with two more homogenous, tightly-packed clusters.
+
+***NOTE:*** You may have noticed that the individual points in the PCA plot produced by `fviz_cluster()` function are the same for K Means and Heirarchical clustering methods, but different when using the DBSCAN method. This is because both K Means and Heirarchical methods are based on all 50 states but the DBSCAN method, because it identifies and removes outliers, represents the 2D cluster space based on a PCA of only 42 states!
 
 # References
 Hartigan, JA, and MA Wong. 1979. “Algorithm AS 136: A K-means clustering algorithm.” Applied Statistics. Royal Statistical Society, 100–108.
