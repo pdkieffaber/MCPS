@@ -1,7 +1,8 @@
 ---
-title: "Cluster Analysis"
-author: "Computer Applications for the Psychological Sciencees"
-date: "PSYC470"
+title: "From Data to Discovery: Data Science for the Psychological Sciences"
+subtitle: "Cluster Analysis"
+author: "Paul Kieffaber"
+date: "Fall 2025"
 output:
   html_document:
     df_print: paged
@@ -11,7 +12,11 @@ output:
     toc: true
     toc_depth: 2
 ---
-
+<style type="text/css">
+h1.title {
+  text-align: center;
+}
+</style>
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,out.width='70%',fig.align='center')
 ```
@@ -327,7 +332,28 @@ head(df)
 Now df is our prepared, scaled data, ready for clustering.
 
 ## Method 1: K-Means Clustering
-Goal: Partition the 50 states into $K$ groups...but first we have to find the best $K$.
+Goal: Partition the 50 states into $K$ groups.
+
+**The Basic Idea**
+
+The basic idea behind k-means clustering consists of defining clusters so that the total intra-cluster variation (known as total within-cluster variation) is minimized. There are several k-means algorithms available. The standard algorithm is the Hartigan-Wong algorithm (1979), which defines the total within-cluster variation as the sum of squared distances Euclidean distances between items and the corresponding centroid:
+$$
+W(C_k)=\sum_{x_i \in C_k}{(x_i - u_k)^2}
+$$
+where:
+
+1. -$x_i$ is a data point belonging to the cluster $C_k$
+2. -$\mu_k$ is the mean value of the points assigned to the cluster $C_k$ (i.e., the cluster centroid)
+
+Each observation ($x_i$) is assigned to a given cluster such that the sum of squares (SS) distance of the observations to their assigned cluster centers ($\mu_k$) is minimized.
+
+We define the total within-cluster variation as follows:
+$$
+total.withiness = \sum_{k=1}^{k}W(C_k) = \sum_{k=1}^{k}\sum_{x_i \in C_k}{(x_i - u_k)^2}
+$$
+The total within-cluster sum of square measures the compactness (i.e goodness) of the clustering and we want it to be as small as possible.
+
+..but first we have to find the best $K$.
 
 **How Many Clusters?**
 
@@ -478,6 +504,7 @@ print(cluster_profiles_km)
   * remember that our "people" are states in the US.  We can create a chorograph showing how states were assigned to each of the four clusters.
 
 ```{r, message = FALSE, warning = FALSE}
+library(mapproj)
 # --- 3. Prepare Cluster Data for Merging ---
 # Create a data frame with state names and their cluster
 # Note: The map data uses *lowercase* state names, so we must convert them
