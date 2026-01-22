@@ -1,0 +1,266 @@
+---
+title: "Exam: Introduction to R & RStudio"
+author: ""
+date: ""
+output:
+  pdf_document:
+    toc: false
+    number_sections: false
+---
+
+> Instructions: Answer all questions. Unless a question explicitly asks for narrative, you may respond with a brief sentence or a short R command/code snippet.
+
+# Reference objects (for questions that use them)
+
+Copy/paste the following into R **if you want to test your thinking**, but the exam questions can be answered without running code.
+
+```{r reference_objects, eval=FALSE}
+# Variables for operator questions
+x <- 10
+y <- 5
+
+# A vector for indexing/slicing questions
+ages <- c(25, 31, 19, 42, 50, 22)
+
+# A simple data frame for data-frame questions
+student_data <- data.frame(
+  ID = c(101, 102, 103, 104),
+  Name = c("Alice", "Bob", "Charlie", "David"),
+  Score = c(88, 92, 75, 85),
+  Major = c("Biology", "History", "Math", "Biology")
+)
+```
+
+\newpage
+
+# Part A — Describe the output
+
+## Question 1 (Output)
+
+```{r q1, eval=FALSE}
+5 + 3
+10 - 4
+6 * 7
+20 / 4
+```
+
+What printed output do you expect from each line?
+
+---
+
+## Question 2 (Output)
+
+```{r q2, eval=FALSE}
+10 %% 3
+```
+
+What is printed, and what does the operator `%%` compute?
+
+---
+
+## Question 3 (Output)
+
+```{r q3, eval=FALSE}
+x <- 10
+y <- 5
+x == 10
+y != 5
+x > y
+```
+
+List the printed TRUE/FALSE outputs in order.
+
+---
+
+## Question 4 (Output)
+
+```{r q4, eval=FALSE}
+(x > 5) & (y < 10)
+(x == 5) | (y == 5)
+!(x > y)
+```
+
+List the printed TRUE/FALSE outputs in order.
+
+---
+
+## Question 5 (Output)
+
+```{r q5, eval=FALSE}
+ages[3]
+ages[c(1, 5)]
+ages[2:4]
+```
+
+What does each line return?
+
+---
+
+## Question 6 (Output)
+
+```{r q6, eval=FALSE}
+ages[seq(1, length(ages), by = 2)]
+```
+
+What does this return? (Write the vector values.)
+
+---
+
+## Question 7 (Output)
+
+```{r q7, eval=FALSE}
+student_data$Score
+mean(student_data$Score)
+```
+
+What does each line return?
+
+---
+
+## Question 8 (Output)
+
+```{r q8, eval=FALSE}
+student_data[3, ]
+student_data[, 2]
+student_data[3, 2]
+student_data[, c("Name", "Major")]
+```
+
+Briefly describe what each line returns (e.g., “a data frame row”, “a character vector”, “a single value”, etc.) and the specific values you expect.
+
+\newpage
+
+# Part B — Find and fix the error
+
+## Question 9 (Debugging)
+
+A student tries to compare two values:
+
+```{r q9, eval=FALSE}
+x <- 10
+x = 10
+```
+
+This does not perform a comparison. What is the correct line of code to test whether `x` is equal to 10?
+
+---
+
+## Question 10 (Debugging)
+
+A student tries to subset a data frame but gets an error:
+
+```{r q10, eval=FALSE}
+student_data[3 ]
+```
+
+Identify the mistake and provide a corrected version that returns the **third row**.
+
+---
+
+## Question 11 (Debugging)
+
+A student tries to filter to high scorers but the code fails:
+
+```{r q11, eval=FALSE}
+high_scorers <- student_data[student_data$Score > 85 ]
+```
+
+Identify the missing piece(s) and provide a corrected line that returns all rows with `Score > 85`.
+
+---
+
+## Question 12 (Debugging)
+
+A student tries to install a package:
+
+```{r q12, eval=FALSE}
+install.packages(dplyr)
+```
+
+What is the error? Provide the corrected command.
+
+---
+
+## Question 13 (Debugging)
+
+A student tries to load a package:
+
+```{r q13, eval=FALSE}
+library(dplyr
+```
+
+What is the error? Provide the corrected command.
+
+---
+
+## Question 14 (Debugging)
+
+A student tries to search the help system:
+
+```{r q14, eval=FALSE}
+help.search(correlation)
+```
+
+What is the issue? Provide the corrected command.
+
+\newpage
+
+# Part C — Write the R code
+
+## Question 15 (Write code)
+
+Create a variable named `age` that stores the value 52 using the conventional R assignment operator.
+
+```{r q15, eval=FALSE}
+# YOUR CODE
+```
+
+---
+
+## Question 16 (Write code)
+
+Create a character variable named `name` that stores the text `"Jordan"`.
+
+```{r q16, eval=FALSE}
+# YOUR CODE
+```
+
+---
+
+## Question 17 (Write code)
+
+Create a logical variable named `is_complete` that stores the value `TRUE`.
+
+```{r q17, eval=FALSE}
+# YOUR CODE
+```
+
+---
+
+## Question 18 (Write code)
+
+Using `student_data`, write a single line that returns only the `Name` and `Major` columns (all rows).
+
+```{r q18, eval=FALSE}
+# YOUR CODE
+```
+
+---
+
+## Question 19 (Write code)
+
+Using `student_data`, write code that creates a new object named `biology_majors` containing only rows where `Major` is `"Biology"`.
+
+```{r q19, eval=FALSE}
+# YOUR CODE
+```
+
+---
+
+## Question 20 (Write code)
+
+Write one line of code to check the **class** of `student_data`, and a second line of code to view its structure.
+
+```{r q20, eval=FALSE}
+# YOUR CODE (2 lines)
+```

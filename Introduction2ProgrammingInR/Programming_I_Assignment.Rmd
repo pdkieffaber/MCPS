@@ -1,0 +1,254 @@
+---
+title: "Programming I Assignment: Scripts & Functions"
+subtitle: "Data Science for the Psychological Sciences"
+author: "Student Name"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: false
+    toc_depth: 2
+    number_sections: false
+  pdf_document:
+    toc: false
+    number_sections: false
+    latex_engine: xelatex
+geometry: margin=1in
+fontsize: 11pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE
+)
+options(htmltools.dir.version = FALSE)
+```
+
+# Overview and instructions
+
+## Purpose
+This assignment is focused on:
+
+- explaining how a **script** differs from a **function**
+- writing your own functions with clear **inputs (arguments)** and **outputs (return values)**
+- testing functions on multiple inputs
+- debugging with careful reading of error messages
+
+## What to submit
+Submit **two files**:
+
+1. `Lastname_Firstname_Programming_I_Assignment.Rmd`
+2. The knitted output: `Lastname_Firstname_Programming_I_Assignment.html`
+
+Your report must **knit without errors**.
+
+**General expectations**
+- Your functions should be readable and use clear names.
+- You must demonstrate tests (function calls) that show your functions work.
+
+---
+
+# Part 1: Scripts vs functions
+
+Imagine you are a data analyst working with a large dataset from a foster-placement agency. You are investigating whether one factor related to placement stability is the distance between a child’s birthplace and their foster placement. The dataset records distance in kilometers (km), but for your report (and for your intended audience), you want distances expressed in miles (mi). Rather than converting values manually—an approach that is slow and easy to get wrong—you can write some R code that handles the conversion for you.
+
+The data are illustrated below:
+```{r foster_table, echo=FALSE}
+library(tibble)
+library(knitr)
+
+foster_placement <- tibble(
+  child_id = c("C-101", "C-102", "C-103", "C-104", "C-105"),
+  age_years = c(7, 14, 10, 5, 16),
+  placement_type = c("Kinship", "Non-kin", "Kinship", "Non-kin", "Non-kin"),
+  distance_km = c(12.4, 85.7, 240.3, 33.1, 510.8),
+  placement_success_6mo = c("Yes", "No", "Yes", "Yes", "No")
+)
+
+kable(
+  foster_placement,
+  caption = "Example foster-placement dataset (5 children)"
+)
+```
+
+Keeping in mind that one kilometer is equivalent to 0.6214 miles...
+
+1. Write a **script** that will convert each of the 5 distances provided from km to mi.
+
+2. Write a **function** that will convert km to mi and use that function to convert each of the 5 distances from km to mi.
+
+Write **one short paragraph** answering:
+
+a. What is the primary difference between using a script versus a function?
+b. In your own words, what does it mean that function arguments are “temporary variables”?
+c. How would you deal with a larger dataset that included data from 5,000 children?
+
+**Your paragraph (write here using Rmarkdown):**
+
+
+---
+
+# Part 2: Write and test functions
+
+## A. Working with numeric vectors
+
+### A1. average_of_numbers()
+Write a function `average_of_numbers(numbers)` that returns the mean of a numeric vector.
+
+**Requirements**
+- Return a single numeric value.
+- Test on: `c(2, 9, 4, 6)`.
+- Confirm it matches R's built-in `mean()` function.
+
+```{r A1_average_of_numbers}
+# Your function here
+
+# Tests:
+# average_of_numbers(c(2, 9, 4, 6))
+# mean(c(2, 9, 4, 6))
+```
+
+### A2. z_score()
+Write a function `z_score(x)` that returns z-scores for a numeric vector.
+
+**Requirements**
+- Use the formula: `(x - mean(x)) / sd(x)`
+- Test on: `c(1, 2, 3, 4, 5)` and confirm the output has mean ~0 and SD ~1.
+
+```{r A2_z_score}
+# Your function here
+
+# Tests:
+# z <- z_score(c(1, 2, 3, 4, 5))
+# z 
+# mean(z)
+# sd(z)
+```
+
+---
+
+## B. Multiple arguments and “realistic” data cleaning
+
+### B1. clip_to_range()
+Write a function `clip_to_range(x, low, high)` that:
+- replaces values below `low` with `low`
+- replaces values above `high` with `high`
+- leaves values in between unchanged
+
+**Requirements**
+- Must work on vectors.
+- Test on: `c(-2, 1, 3, 10)` with `low = 0`, `high = 7`.
+
+```{r B1_clip_to_range}
+# Your function here
+
+# Tests:
+# clip_to_range(c(-2, 1, 3, 10), low = 0, high = 7)
+```
+
+### B2. Add a default argument
+Modify `clip_to_range()` so that:
+- `low` defaults to 1
+- `high` defaults to 7
+
+Then demonstrate that these two calls both work:
+
+- `clip_to_range(c(0, 2, 9))`  (uses defaults)
+- `clip_to_range(c(0, 2, 9), low = 0, high = 10)` (overrides defaults)
+
+```{r B2_defaults}
+# Your function here
+
+# Tests:
+# clip_to_range(c(0, 2, 9))
+# clip_to_range(c(0, 2, 9), low = 0, high = 10)
+```
+
+---
+
+# Part 3: Arguments and return values
+
+## C1. Return a specific type
+Write a function `is_fast_rt(rt_ms, cutoff = 500)` that returns **TRUE/FALSE**.
+
+**Requirements**
+- If `rt_ms < cutoff` return `TRUE`, otherwise `FALSE`.
+- Test on: 450, 500, 650 (and show the outputs).
+- Confirm the output is logical using R's built-in `is.logical()` function.
+
+```{r C1_is_fast_rt}
+# Your function here
+
+# Tests:
+# is_fast_rt(450)
+# is_fast_rt(500)
+# is_fast_rt(650)
+# is.logical(is_fast_rt(450))
+```
+
+---
+
+# Part 4: Light debugging
+
+## D1. Diagnose and fix an error
+
+Run the following code *as written* (uncomment the `mean()` line) and observe the error.
+
+```{r D1_buggy_code}
+age <- c("18", "19", "20", "21")
+# mean(age)  # Uncomment this line to produce the error
+```
+
+**Your tasks**
+1. In 2–3 sentences, explain why the error happens.
+2. What does running `str(age)` tell you?.
+3. Fix the issue by creating `age_num`, then compute the mean successfully (HINT: check the `as.numeric()` function)
+
+```{r D1_fix}
+# Diagnostic:
+# str(age)
+
+# Fix:
+# age_num <- ...
+# mean(age_num)
+```
+
+**Explanation (write here):**
+
+
+## D2. Debug a broken function
+
+The function below is intended to convert kilometers to miles, but it contains multiple errors. Run it (set `eval=TRUE`) and fix it.
+
+```{r D2_dbugging, eval=FALSE}
+km_to_miles <- function(km) {
+miles <- km x 0.6214
+return(mile)
+)
+
+#Test:
+#km_to_miles(10)
+```
+
+**Your tasks**
+
+Run the code and copy the exact error messages into your write-up.
+
+Fix each error until the function works.
+
+Test it on: 1, 10, and c(1, 10, 100).
+
+Write your answers here:
+
+- Error message:
+- What was wrong:
+- How you fixed it:
+
+---
+
+# Acknowledgments (required only if you used outside help)
+
+List any people, websites, or tools you used. Be specific enough that your work is transparent.
+
+-

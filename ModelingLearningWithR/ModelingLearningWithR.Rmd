@@ -1,90 +1,240 @@
 ---
-title: "Modeling Learning with R"
+title: "Formal Modeling of Psychological Processes"
+subtitle: "Methods & Computing for the Psychological Sciences: \\ From Data to Discovery"
 author: "Paul Kieffaber"
-date: "2025-10-09"
-output:
-  html_document: default
-  pdf_document: default
+#date: "`r Sys.Date()`"
+output: 
+  html_document:
+    theme: flatly           # A clean, professional font/color theme
+    highlight: tango        # Subtle code highlighting (if you choose to show any)
+    toc: true               # specifices a 'Table of Contents'
+    toc_float:              # Makes the TOC float on the left as you scroll
+      collapsed: false
+      smooth_scroll: true
+    number_sections: false   # Adds 1.1, 1.2 numbers to headings
+    df_print: paged         # Turns ugly data frames into interactive tables
+    code_download: true     # Allows the reader to download the Rmd source code
 ---
+```{css, echo=FALSE}
+h1, h3,h4 {
+  text-align: center;
+}
+```
 
 ```{r setup, include=FALSE}
+# This global option ensures NO code appears in the final file
 knitr::opts_chunk$set(
-  echo = TRUE,
-  fig.width = 6,    # default plot width in inches
-  fig.height = 4,   # default plot height in inches
-  fig.align = "center"  # optional, centers all figures
-  )
+  echo = TRUE,       # Hide code
+  message = FALSE,    # Hide package loading messages
+  warning = FALSE,    # Hide warnings
+  fig.align = "center" # Center all graphs
+)
 library(tidyverse)
 library(ggplot2)
 ```
-In this chapter we distinguish *natural‑language models*—verbal theories stated in everyday words—from *formal models*—the same ideas written as equations or code that yield numerical predictions. A natural‑language model might say: “People raise their expectation after rewards, especially when the outcome is surprising, and their expectations are reduced when outcomes are expected.” This is intuitive but leaves magnitudes and rules unspecified. A formal model makes those commitments explicit. For example, a minimal learning model is the delta rule: 
-$$V_{t+1} = V_t + \alpha (O_t - V_t)$$
-where:
+## The Rigor of Doubt: Why Precision and Falsifiability Define Psychological Science
 
-* $V_t$ is the current expectation about the outcome.
-* $O_t \in \{0,1\}$ is the actual outcome.
-* $\alpha \in (0,1)$ is the learning rate.
+As psychology majors, you are here because you are fascinated by the complexity of the human mind. You are seekers of knowledge. But before we talk about what we know, we must talk about how we know it. We must talk about epistemology—the theory of knowledge itself—and how it demands a shift in thinking from intuition to rigorous formalization.
 
-# Why cognitive models?
+**The Fragility of Verbal Theories**
 
-Cognitive models are formal, quantitative theories of mental processes. They specify:
+In our field, theories often start as natural-language models: elegant verbal arguments about how the mind works. They sound intuitive. For example, a verbal theory might state: "People adjust their beliefs about the world based on the degree of surprise they experience." This is a beautiful idea.
 
-* Inputs: what information the person receives on each trial (stimuli, feedback).
-* Latent states: internal variables that are not directly observed (e.g., beliefs, expectations).
-* Parameters: psychologically meaningful constants (e.g., a learning rate).
-* Update rules: how latent states change over time as new information arrives.
-* Observation model: how latent states generate observable data (choices, reaction times, accuracy).
-* Predictions: trial‑by‑trial forecasts that can be compared to data.
+The problem? It's often too vague to be truly tested. What exactly is the "degree of surprise"? How does that map onto a quantifiable belief change? Verbal theories are slippery. They can often be retrofitted to explain any observed outcome, which, epistemologically speaking, makes them scientifically weak. A theory that explains everything, explains nothing at all.
 
-Modeling in this way is central to theory building in psychology because it forces clarity about mechanisms. Natural language theories often admit multiple interpretations; a cognitive model translates assumptions into equations that make testable, falsifiable predictions. This lets us:
+This brings us to the core principle of scientific inquiry, championed by the philosopher Karl Popper: **Falsifiability**.
 
-* Disambiguate competing explanations. Two verbal theories can predict opposite learning curves once formalized.
-* Quantify mechanisms. Parameters (e.g., a learning rate) become estimates we can compare across people, groups, or conditions.
-* Accumulate evidence. Models can be fit, compared, and refined using principled criteria (likelihood, cross‑validation), enabling cumulative science rather than one‑off findings.
-* Bridge levels of analysis. The same model can link behavior to neural signals (e.g., prediction errors), or to individual differences.
-* Generalize. Once specified, a model can be simulated under new tasks or interventions to generate new hypotheses.
+Science does not advance by trying to prove a theory is right. Science advances by trying, relentlessly, to prove a theory is wrong.
 
-# Modeling Learning with R
-In this chapter, we investigate theories of learning in Psychology. Our goal is to implement two foundational models of learning, (1) the Rescorla-Wagner model and (2) a Bayesian learning model—using R. By simulating these models, we can develop a much deeper intuition for how they work, what psychological phenomena they explain, and how they differ in their assumptions about the nature of learning.
+If your hypothesis cannot, in principle, be proven false, it is not a scientific theory; it is a belief system. Our goal as scientists is to build theoretical structures so precise, so clear in their predictions, that they offer the world a clear shot at knocking them down. The stronger a theory is, the more opportunities it gives us to show it is false. And every time a theory survives such a test, our confidence in it, not its truth, grows stronger.
+
+Linear regression models are statistical tools that are vital. They help us predict outcomes and identify relationships. They might tell us, "An increase in Variable X is correlated with an increase in Variable Y with a strength of $\beta = 0.45$."
+
+But stop there and ask yourselves: What did you learn about the mechanism?
+
+Correlational regression models are descriptive; they are not inherently theoretical. They are magnificent tools for describing patterns in data, but they often leave the underlying psychological process as a black box. You have mapped the observations, but you haven't tested the causal architecture of the mind.
+
+This critique extends to their sophisticated extensions, such as mediation and moderation models. While path analysis might seem to delineate a mechanism—showing, for instance, that stress (A) affects physical health (B) through coping strategies (M)—these models are still fundamentally extensions of the General Linear Model. They describe the pattern of influence between latent variables, but they do not specify the functional form of the psychological process itself. They quantify the variance explained by a hypothesized path, but they don't provide the explicit, trial-by-trial equation for how a person transitions from one state (A) to another (M). Consequently, they can often be used to demonstrate that a mechanism might exist, but they are generally incapable of being strongly falsified in the way a precise, computational theory can be.
+
+Relying solely on correlational models risks falling into the trap of post hoc reasoning—finding a pattern and weaving a verbal story around it without ever exposing the causal assumptions to the crucible of falsification.
+
+This is why we must pivot from verbal theories and purely correlational models to formal theories: mathematical and computational models.
+
+Your task as the next generation of psychological scientists is to embrace this rigor of doubt.
+
+* Be Precise: If you have an idea, formalize it. Try to write the equation for it.
+* Seek Falsification: Don't love your theories; subject them to the harshest tests possible.
+* Build Mechanisms: Understand that prediction is not explanation. True psychological insight comes from building and testing the mechanistic theories that formal models allow.
+
+The complexity of the human mind demands the clarity of mathematics. It is time to step beyond just observing correlations and start building the formal
+
+# Models in Psychology
+
+In this chapter, we distinguish **natural‑language models**, verbal theories stated in everyday words, from **formal models**, the same ideas formalized as equations or code that yield numerical predictions.
+
+*Natural‑language model*: “People learn more about things when the outcome is surprising, and learn less when outcomes are expected.” 
+
+This model of learning is intuitive, but it leaves magnitudes and rules unspecified. While such a statement feels like an explanation, it fails as a scientific tool because it cannot be used to make precise predictions and because it leaves too much room for disagreement on the meanings of its parameters.
+
+**The Problem of "Hidden Parameters"**
+
+Natural language is inherently ambiguous and open to interpretation. When we use words like quickly, strongly, surprising, or often, we are relying on the listener to fill in the gaps with their own intuition. In a verbal theory, the "parameters" (the settings that control how the model behaves) are hidden inside the researcher's head, rather than written on the page. Because the rules are vague, a natural-language model cannot generate a precise point-prediction. It can only predict general "directions" (e.g., "learning will go up"). 
+
+This makes the theory nearly impossible to disprove. If the data shows a tiny increase, the theorist says, "See? It went up." If the data shows a massive increase, they say, "See? It went up." The model is too flexible to be useful for scientific purposes.
+
+**The "Pizza Slices" Analogy**
+
+To understand why this lack of precision makes it impossible for researchers to agree, consider the classic "Pizza Slices" example of computational modeling.
+
+Imagine two roommates, Alice and Bob, are trying to agree on a "verbal model" for how to share a pizza. Alice proposes the following natural-language model:
+
+- "I will take some slices because I am hungry, and you can have the rest."
+
+Alice and Bob might nod and agree that this sounds fair. They believe they have achieved consensus. However, this agreement is an illusion because the parameters have not been adequately defined.
+
+- Alice's interpretation: "I am starving, so 'some' means 6 slices. Bob gets 2.
+- "Bob's interpretation: "Polite people usually take 2 slices, so 'some' means 2. I get 6."
+
+When the pizza box opens, the natural-language model fails. Alice takes 6 slices, and Bob is furious. They didn't actually agree on the model; they agreed on a vague sentence that allowed them both to project their own assumptions onto the scenario.
+
+Now, imagine they used a Formal Model:
+
+- Let $Slices_{total} = 8$. Let $Hunger_{Alice} = 0.75$.
+
+$$Slices_{Alice} = Slices_{total} \times Hunger_{Alice}$$
+$$Slices_{Bob} = Slices_{total} - Slices_{Alice}$$
+Under the formal model, the prediction is precise: Alice eats 6 slices, Bob eats 2. Bob might still be unhappy about the outcome, but he cannot argue about the prediction. The disagreement is no longer about what the words mean, but about whether the parameter ($Hunger_{Alice}=0.75$) is fair. 
+
+**From Pizza to Psychology**
+
+In scientific fields, natural-language models create the same chaos as Alice and Bob’s pizza argument. One lab runs an experiment and claims the results support Theory A. Another lab runs a similar experiment, gets slightly different data, and claims it disproves Theory A. Because Theory A was written in words, both labs can twist the definitions of "surprising" or "expectation" to fit their data.
+
+Let's consider what would happen if physicists used natural-language models. Imagine if Isaac Newton unveiled his second law of motion, the "General Theory of Pushing Stuff." 
+
+- "When you push an object, it tends to go in the direction you pushed it.
+- If the object is really heavy, it won't go very fast, but if it's light, it will zoom away quite quickly. - Also, things generally stop eventually unless they are in space, where they tend to float on for a while.
+  
+Equipped with this knowledge, NASA engineers set out to land a rocket on Mars:
+
+- *Engineer A:* "Okay, according to the model, Mars is 'very far away,' so we will need a lot of fuel so we can push the rocket really fast."
+- *Engineer B:* "Agreed I'll put in a truckload?"
+- *Engineer A:* "Great!, then you should press the launch button."
+- *Engineer B:* "Got it. So... do I press the button now, or later?"
+- *Engineer A:* "Press it soon after."
+
+**The Result:** The rover misses Mars entirely and is currently drifting into the sun. Though seemingly ridiculous, this hypothetical exchange highlights exactly why formal models are necessary. 
+
+In psychology, we too often accept things like "The treatment improves anxiety" as a scientific result. But in physics, "The rocket goes up" isn't enough—you need to know exactly how much up, and exactly when it comes down. Without the math (the formal model), you can't understand what is needed to build a bridge, launch a satellite, understand the impact of traumatic events on children's development, understand attention, memory, or impulsivity, or even how to share a pizza.
+
+Formal models work by forcing researchers to expose their "hidden parameters." By committing to an equation (e.g., $\text{Prediction Error} = \text{Outcome} - \text{Expectation}$), the researcher removes the ambiguity. If the model predicts a value of +10 and the data shows +50, the model is wrong. There is no room for debate about what the word "increase" meant. This clarity is the *only* way to move a field from arguing over semantics to improving understanding by:
+
+* *Disambiguating competing explanations*. Two verbal theories can predict opposite learning curves once formalized.
+* *Quantifying mechanisms*. Parameters (e.g., a learning rate) become estimates we can compare across people, groups, or conditions.
+* *Accumulate evidence*. Models can be fit, compared, and refined using principled criteria (likelihood, cross‑validation), enabling cumulative science rather than one‑off findings.
+* *Bridge levels of analysis*. The same model can link behavior to neural signals (e.g., prediction errors), or to individual differences.
+* *Generalize*. Once specified, a model can be simulated under new tasks or interventions to generate new hypotheses.
+
+
+# Formal Modeling of Learning
+
+Let's see how formal models of learning are used in Psychology. Our goal is to implement two foundational models of learning, (1) the Rescorla-Wagner model and (2) a Bayesian learning model. By simulating these models, we can develop a much deeper intuition for how they work, what psychological phenomena they explain, and how they differ in their assumptions about the nature of learning.
 
 We will start with error-driven learning, where surprise is the engine of change, and then move to belief-updating, where the mind is modeled as a statistician collecting and weighing evidence.
 
-# Part 1: Error-Driven Learning: The Rescorla-Wagner Model
+## Error-Driven Learning: The Rescorla-Wagner Model
+
 The Rescorla-Wagner (R-W) model is arguably the most influential formal model of associative learning. Its central premise is simple but powerful: learning only happens when an outcome is surprising. The greater the surprise, the greater the learning.
 
-The model formalizes the relationship between a set of cues (Conditioned Stimuli, CS) and an outcome (Unconditioned Stimulus, US). It tracks the "associative strength" ($V$) for each cue, which represents how strongly that cue predicts the outcome.
+The model formalizes the relationship between a set of cues (Conditioned Stimuli, CS) and an outcome (Unconditioned Stimulus, US). It tracks the "associative strength" ($V$) for each cue, which represents how strongly that cue is associated with (i.e., predicts) the outcome.
 
-The R-W model elegantly explains several learning phenomena:
+**Think About the Learning Parameters...**
 
-1. Acquisition: As a cue is repeatedly paired with an outcome, the associative strength grows, forming a classic learning curve.
+Now put on your scientist cap and let's develop a formal theory about learning.  The first, and most important step, is to identify the relevant parameters from the natural-language theory. For example:
 
-2. Extinction: If the cue is later presented without the outcome, the expectation is violated (a "negative" surprise), and the associative strength gradually decreases.
+1. I can't really learn anything about something if it's not important to me or I'm not paying attention to it, so at least one parameter that contributes to learning must be related to the salience of the stimulus.
+2. Some people learn things faster than others and I can learn things faster if I'm super motivated, so we must also need a variable related to how quickly the learning happens...the learning rate.
+3. If I learn something like "gray clouds means I can expect rain", but one day I see gray clouds and it doesn't rain, then I would probably adjust my thinking/learning, so there should be some parameter to represent how an event is different from expectations. Maybe we could call this "prediction error". 
 
-3. Blocking: This is a critical prediction that sets the R-W model apart from simpler theories. If one cue (CS1, a light) already perfectly predicts an outcome, and then a new cue (CS2, a bell) is presented alongside the first cue, the organism learns very little about the new cue. In terms of the R-M model, the outcome is not surprising, so no new learning occurs. The "blocking" effect is one of the most robust and important phenomena in learning theory, and it has been demonstrated consistently in both animals and humans since the 1960s.
+**Translate Words to Math...**
 
-The Math and its Meaning
-The engine of the model is the Rescorla-Wagner equation, which calculates the change in associative strength ($\Delta V$) for a single cue on a single trial:
+1) So, I can completely ignore something, or I can pay full attention to it, or it can command my full attention (e.g, a bomb going off), so let's say that an event's salience can be represented by a number between 0 and 1, with 0 meaning zero attention/salience and one meaning full attention/salience.
 
-$$\Delta V = \alpha * \beta * (\lambda - \sum V)$$
+2) Ok, now I need to worry about the learning rate variable.  Let's say that if I don't care at all about what's happening, my learning rate will be 0, but if I'm super smart, or super motivated, my learning rate will be greater than zero with the value being proportional to the rate at which I learn.
+
+3) Prediction Error, PE: How do we define "surprise"? First, realize that in order to represent how things differ from our expectation, we first need to represent "Expectation" (E). Let's say it's a value between 0 and 1, representing the probability of getting a specific "Outcome" (O). This must also be a number. Let's use 1 for "It happened" and 0 for "It didn't happen."  Inherent in my natural language model was that my learning depends, at least in part, on the difference between what I expect to happen and what actually happened. A good definition is the difference between what you got and what you expected. This gives us our first equation: 
+
+$$PE = O - E$$
+
+- Our prediction error is related to the difference between what we observed, and what was expected.
+
+Now that the key parameters have been defined, we need to arrange them using an equation to make explicit how the parameters are related to one another.
+
+How does the new expectation relate to the old one? The model says we change it based on the "surprise." But by how much? We need a new rule. Let's use the "salience" or "attention" parameter (we can call it $\alpha$) that controls how much we learn from our surprise. This gives us a new equation: 
+
+$$E_{\text{new}} = E_{\text{old}} + (\alpha \times PE)$$
+Now we need to add the learning rate parameter.  Let's call it $\beta$ (beta). Like the salience parameter, $\alpha$, the learning rate interacts with the surprise to determine how much we learn.  Now we can express the equation as:
+
+$$E_{\text{new}} = E_{\text{old}} + (\alpha \times \beta \times PE)$$
+We're getting close, but still need to expand on the meaning of outcomes, $O$, and expectations, $E$, that are needed to compute the prediction error, $PE$.
+
+For simplicity, let's call the outcome variable $\lambda$ (lambda) and represent the occurrence of an outcome using the number 1 ($\lambda=1$)and the non-occurrence of an outcome using zero ($\lambda=0$).
+
+As for the model's expectations, $E$, those will be determined by the strengths of the associations, $V_{i}$, between cue $i$ and the outcome, $\lambda$. This is what the model has "learned".
+
+Thus, let's re-write $O-E$ as:
+
+$$\lambda - \sum_i V_i$$
+
+With this last component, we have constructed the engine of the Rescorla-Wagner model, which calculates the change in associative strength ($\Delta V$) on any given trial, sometimes called the "delta rule":
+
+$$\Delta V_i = \alpha_i * \beta * (\lambda - \sum_i V_i)$$
 
 Let's translate each term into its psychological meaning:
 
-$\Delta V$: The change in learning. This is what we want to calculate.
+- $\Delta V_i$: The change in associative strength, $V_i$, between cue $i$ and the outcome. This is what we want to calculate.
+- $\alpha$ (alpha): The salience of cue $i$. A loud bell (high $\alpha_{bell}$) will be learned about more quickly than a very soft bell (low $\alpha_{bell}$).
+- $\beta$ (beta): The learning rate associated with the outcome. A highly desirable piece of food (high $\beta$) will drive faster learning than a less desirable one.
+- $\lambda$ (lambda): The magnitude of the outcome that actually occurred. If food is present, $\lambda$ might be 1; if absent, it's 0.
+- $\sum_i V_i$ (sigma V): The total expectation. This is the sum of the associative strengths of all cues present on a trial. 
+- ($\lambda - \sum_i V_i$): The Prediction Error or "Surprise". This is the heart of the model. It's the difference between what actually happened ($\lambda$) and what the organism expected to happen ($\sum V$).
 
-$\alpha$ (alpha): The salience of the cue. A loud bell (high $\alpha$) will be learned about more quickly than a dim light (low $\alpha$).
+### Implement the R-W Model
 
-$\beta$ (beta): The learning rate associated with the outcome. A highly desirable piece of food (high $\beta$) will drive faster learning than a less desirable one.
+With just two multiplications and a subtraction, we could just do the computations by hand, but that could be tedious and prone to error, especially with larger simulations. Thus, we need to see how an experiment using the R-W model can be simulated in code.
 
-$\lambda$ (lambda): The magnitude of the outcome that actually occurred. If food is present, $\lambda$ might be 1; if absent, it's 0.
+Let's consider a simple experimental of classical conditioning in which a light or a bell is paired with food. First we need a way to represent these events, like presentation of the light and/or bell and/or food.  We stated above that events would be represented by zeros and ones to represent their absence or presence on any given trial. This is illustrated in the table below, showing *n* trials of pairing a light with food.
 
-$\sum V$ (sigma V): The total expectation. This is the sum of the associative strengths of all cues present on a trial.
+| Trial | Light | Bell | Food |
+| :---------- | :---------- | :--------- | :--------- |
+| 1     | 1     | 0    | 1    |
+| 2     | 1     | 0    | 1    |
+| 3     | 1     | 0    | 1    |
+| 4     | 1     | 0    | 1    |
+| 5     | 1     | 0    | 1    |
+| .     | .     | .    | .    |
+| .     | .     | .    | .    |
+| .     | .     | .    | .    |
+| *n*     | 1     | 0    | 1    |
 
-($\lambda - \sum V$): The Prediction Error or "Surprise". This is the heart of the model. It's the difference between what actually happened ($\lambda$) and what the organism expected to happen ($\sum V$).
+Now we need to represent the cognitive machinery specified by the model, in this case the model's learning rate ($\beta$), the salience of each cue stimulus ($\alpha_{light}$ and $\alpha_{bell}$), and the associative strength between each cue stimulus ($V_{light}$ and $V_{bell}$) and the outcome (food). 
 
-Implementation in R: Simulating the "Blocking" Effect
-Let's simulate the classic blocking experiment. We will have two cues (a light and a bell) and one outcome (food).
+1) Learning rate:
+  - $\beta = 1$
+  - Because it is greater than 0, the model can "learn" but we make no other assumptions about how fast it will learn.
+  
+2) Cue salience:
+  - $\lambda_{light} = \lambda_{bell}=0.5$
+  - Let's just assume that the two cues have the same salience.
+  
+3) Associative strength:
+  - $V_{light} = V_{bell}=0$
+  - Nothing has yet been learned, so it makes sense that there would be no preexisting association.
+  
+That's it!  All of the elements of our implementation of the R-M model are now in place.  All that remains is to run the simulation on the computer.  Using the values just established for the events on each trial and the cognitive machinery of the model, simply start with the first trial and apply the Rescorla-Wagner model to determine the change in associative strengths ($\Delta V_i$).  Then continue to the next trial and repeat until you have simulated all of the trials, updating $V_i$ by $\Delta V_i$ each time.
 
 ## Phase 1: Train the model by pairing the light with food for 10 trials.
+The code below demonstrates the setup and implementation of the model and its parameters.
+
 ```{r}
 # --- Establish Model Parameters ---
 alpha_light <- 0.5  # Salience of the light cue
@@ -130,7 +280,9 @@ for (trial in 1:nrow(Trials)) {
   light_strength_history <- c(light_strength_history, V_light)
   bell_strength_history <- c(bell_strength_history, V_bell)
 }
+```
 
+```{r, echo=FALSE}
 # --- Plot the Learning ---
 plot(light_strength_history,
      type = "b",              # "b" for "both" line and points
@@ -153,14 +305,32 @@ lines(bell_strength_history,
 
 # 2. Add the custom grid
 grid(col = "gray", lty = "dotted")
+
+# 4. Add a legend (Recommended)
+legend("right", 
+       legend = c("Light", "Bell"), 
+       col = c("blue", "red"), 
+       lwd = 2, 
+       pch = c(19, 17), # NA means no point for the dashed line
+       lty = c(1, 1))   # Line types (1=solid, 2=dashed)
 ```
+
+As you can see in the plot above, showing the associative strengths $V_{light}$ and $V_{bell}$ over the course of 10 trials of paring the light with food, the model predicts that the light will quickly become associated with food.  In other words, the model has "learned" the association. There is no change in $V_{bell}$ because it was never presented, so nothing should be learned.
+
+But what happens if we now introduce a new stimulus alongside the one the model has already learned? This scenario leads to one of the most famous and important phenomena in learning theory: the blocking effect. 
+
+In a blocking experiment, after Phase 1 (Light $\rightarrow$ Food) is complete, a new phase begins. In Phase 2, the original light and a new cue, like a bell, are presented together, followed by the same food reward (Light + Bell $\rightarrow$ Food). Intuitively, you might expect the model to now learn an association for the bell, just as it did for the light. However, the Rescorla-Wagner model predicts the exact opposite. 
+
+Because the light (with its high associative strength $V_{light}$) already fully predicts the food, the outcome is no longer "surprising." With no surprise, the prediction error ($PE$) is zero or very close to it. As the model's update rule shows ($E_{\text{new}} = E_{\text{old}} + (\alpha \times PE)$), if the prediction error ($PE$) is zero, no new learning can occur. 
+
+The pre-existing association of the light effectively "blocks" the model from forming a new association with the bell. This is a powerful, non-intuitive prediction that sets formal models apart from simple verbal theories. The "blocking" effect is one of the most robust and important phenomena in learning theory, and it has been demonstrated consistently in both animals and humans since the 1960s.
+
+Let's simulate the classic blocking experiment. We will use the same model that was trained in the example above and present it with 10 additional trials in which both the light and the bell are present.
 
 ## Phase 2: Add the Bell Stimulus 
 
-Now that the model has "learned" that the light predicts food, let's try presenting a second stimulus -the bell- along with the light.
-
 ```{r}
-# Note that model parameters have already been established above
+# Note that the model has already "learned" the association between the light and food above
 
 # 10 Trials of Bell, Light and Food present
 Trials <- data.frame(
@@ -169,6 +339,11 @@ Trials <- data.frame(
   Food  = c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
 )
 
+# The rest of the simulation is identical to the model above.
+```
+
+```{r, echo=FALSE}
+
 # Containers to Store results for plotting
 #light_strength_history <- c()
 #bell_strength_history <- c()
@@ -220,15 +395,27 @@ lines(bell_strength_history,
 
 # 2. Add the custom grid
 grid(col = "gray", lty = "dotted")
+
+# --- 3. ADD THIS LINE to separate the phases ---
+# 'v = 10.5' places a vertical line between 10 and 11
+abline(v = 10.1, col = "black", lwd = 2, lty = "dashed")
+
+# 4. Add a legend (Recommended)
+legend("right", 
+       legend = c("Light", "Bell", "Phase Change"), 
+       col = c("blue", "red", "black"), 
+       lwd = 2, 
+       pch = c(19, 17, NA), # NA means no point for the dashed line
+       lty = c(1, 1, 2))   # Line types (1=solid, 2=dashed)
 ```
 
-After ten more trials with both the light and the bell present, you can see that the association strength for the light stimulus reached asymptote because once it perfectly predicted the food, thus there was no prediction error and no further learning.  The light already perfectly predicts the food, so the outcome is no longer surprising, and learning about the bell is blocked.
+After ten more trials with both the light and the bell present, you can see that the association strength for the light stimulus reached asymptote because, once it perfectly predicted the food, there was no prediction error and no further learning.  The light already perfectly predicts the food, so the outcome is no longer surprising, and learning about the bell is "blocked".
 
 ## Extinguishing Learning
 
 Now let's see what happens when the light no longer predicts the food. You will see that as the learning about the light is extinguished, the model rapidly "forgets" the association between the light and the food.
 ```{r}
-# Note that model parameters have already been established above
+# Note that model has already been trained on the 20 trials described above
 
 # 10 Trials of Bell, Light and Food present
 Trials <- data.frame(
@@ -237,6 +424,10 @@ Trials <- data.frame(
   Food  = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 )
 
+# The rest of the simulation is identical to the model above.
+```
+
+```{r, echo=FALSE}
 # Containers to Store results for plotting
 #light_strength_history <- c()
 #bell_strength_history <- c()
@@ -288,7 +479,22 @@ lines(bell_strength_history,
 
 # 2. Add the custom grid
 grid(col = "gray", lty = "dotted")
+
+# --- 3. ADD THIS LINE to separate the phases ---
+# 'v = 10.5' places a vertical line between 10 and 11
+abline(v = 10.1, col = "black", lwd = 2, lty = "dashed")
+abline(v = 20.1, col = "black", lwd = 2, lty = "dashed")
+
+# 4. Add a legend (Recommended)
+legend("right", 
+       legend = c("Light", "Bell", "Phase Change"), 
+       col = c("blue", "red", "black"), 
+       lwd = 2, 
+       pch = c(19, 17, NA), # NA means no point for the dashed line
+       lty = c(1, 1, 2))   # Line types (1=solid, 2=dashed)
 ```
+
+On the first few trials, the model "expects" that food will be present because of the learned association between the light and the food, $V_{light}$, but the "surprise" (prediction error), drives rapid "unlearning" of the association. 
 
 # Belief Updating: An Introduction to Bayesian Learning
 Bayesian models offer a fundamentally different perspective on learning. Instead of tracking a single value like associative strength, The Bayesian model tracks its degree of "belief" about the world in the form of a probability distribution. Learning in this context is the process of updating these beliefs when new evidence is collected.
@@ -299,9 +505,10 @@ Bayesian models offer a fundamentally different perspective on learning. Instead
 
 2. Likelihood: How likely is your new observation, given your current belief? This is the new evidence.
 
-These two are combined via Bayes' rule to produce a *Posterior Belief* --an updated belief that integrates your prior belief with the new evidence. A key advantage of this approach is that it models not just what we believe, but also our certainty in that belief.
+These two are combined via Bayes' rule to produce a *Posterior Belief* --an updated belief that integrates your prior belief with the new evidence. A key advantage of this approach is that it models not just what we believe, but also a measure of our certainty in that belief.
 
-## Bayes' Rule: The Engine of Belief Updating
+**Bayes' Rule: The Engine of Belief Updating**
+
 The mathematical engine that combines the prior and the likelihood is a simple but profound formula known as Bayes' Rule. In its proportional form, it states that the posterior belief is proportional to the prior belief multiplied by the likelihood.
 
 The full formula is:
@@ -322,25 +529,70 @@ Because it is a little more complex than the R-W model, let's start with a simpl
 
 ***From the Formula to the Simple Rule: Conjugate Priors***
 
-Our belief about the coin's bias can be represented by a Beta probability distribution. This distribution is flexible and is defined by two shape parameters, a and b. A flat Beta(1, 1) represents a totally uncertain prior, while a sharply peaked Beta(100, 100) represents a very strong belief that the coin is fair.
+Our belief about the coin's bias can be represented by a Beta probability distribution. This distribution is flexible and is defined by two shape parameters, $\alpha$ and $\beta$. A flat $Beta(\alpha=1, \beta=1)$ represents a totally uncertain prior, while a sharply peaked $Beta(\alpha=5, \beta=5)$ represents a very strong belief that the coin is fair.
 
-The new evidence (the data from coin flips) can be described by a Binomial distribution, which gives the probability of getting *k* heads in *n* flips.
+```{r, echo=FALSE}
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+library(tidyr)
 
-Fortunately, the Beta distribution and the Binomial distribution are what is known as a "conjugate pair." This means that when you combine a Beta prior distribution with Binomial data using the full Bayes' Rule formula, the complex multiplication and division simplifies dramatically. The math works out such that the posterior is guaranteed to be another Beta distribution. This allows us to bypass the complex formula and use an incredibly simple update rule:
+# 1. Define the parameters (α and β) for the examples we want to show
+params <- tibble(
+  alpha = c(1, 5, 0.5, 5, 1, 2),
+  beta  = c(1, 5, 0.5, 1, 5, 5)
+)
+
+# 2. Create the plotting data
+# - We use crossing() to get every combination of x and our parameter pairs.
+# - We use seq(0.001, 0.999) to avoid 0 or 1, where the density
+#   can go to infinity for U-shapes (α < 1, β < 1).
+plot_data <- crossing(
+  x = seq(0.001, 0.999, by = 0.001),
+  params
+) %>%
+  mutate(
+    # 3. Calculate the probability density for each x using dbeta()
+    density = dbeta(x, alpha, beta),
+    
+    # 4. Create a clean label for each plot's title
+    label = paste0("α = ", alpha, ", β = ", beta)
+  )
+
+# 5. Create the plot
+ggplot(plot_data, aes(x = x, y = density)) +
+  geom_line(lwd = 1.2, color = "blue") +
+  
+  # This is the key: create a separate plot for each "label"
+  facet_wrap(~ label, scales = "free_y") +
+  
+  labs(
+    title = "Examples of the Beta Distribution",
+    x = "Value (x)",
+    y = "Probability Density"
+  ) +
+  theme_minimal() +
+  theme(
+    strip.text = element_text(face = "bold", size = 12), # Make facet titles bold
+    plot.title = element_text(size = 16, hjust = 0.5)
+  )
+```
+
+The new evidence (the data collected from flipping the coin) can be described by a Binomial distribution, which gives the probability of getting *k* heads in *n* flips.
+
+Fortunately, the Beta distribution and the Binomial distribution are what is known as a "conjugate pair." This means that when you combine a Beta prior distribution with Binomial data using the full Bayes' Rule formula, the complex computation simplifies dramatically. The math works out such that the posterior is guaranteed to be another Beta distribution. This allows us to bypass the complex formula and use an incredibly simple update rule:
 
 * heads_posterior = heads_prior + number_of_heads
 
 * tails_posterior = tails_prior + number_of_tails
 
-This simple addition is the direct result of applying Bayes' Rule to this special pair of distributions. It's a powerful shortcut that makes Bayesian updating computationally efficient and intuitive. Let's see how this kind of Bayesian updtating can be implemented in R. 
+This simple addition is the direct result of applying Bayes' Rule to this special pair of distributions. It's a powerful shortcut that makes Bayesian updating computationally efficient and intuitive. Let's see how this kind of Bayesian updating can be implemented in R. 
 
-## The Classic Biased Coin Example
-
-In order to demonstrate how beliefs are updated in the Bayesian model, we will present it with some data.  Specifically, we will present the model with the results of 20 flips of the coin.  For the purpose of illustration, we will make it so that the coin lands on heads 15 of the 20 times it was flipped.
+In order to demonstrate how beliefs are updated in the Bayesian model, we will present it with some data.  Specifically, we will present the model with the results of 20 flips of the coin.  For the purpose of illustration, we will make it so that the model initially has no expectations (flat prior) about the outcome, but observes that the coin lands on heads 15 of the 20 times it was flipped.
 
 * Think aboout it: How would your "beliefs" change if you had a coin that landed on heads 75% of the time
 
-```{r}
+```{r, echo=FALSE}
 # --- 1. Define the Prior Belief & Experiment ---
 # We start with an uninformative prior, Beta(1,1).
 initial_heads <- 1
@@ -427,13 +679,20 @@ ggplot(plot_data, aes(x = theta, y = density)) +
   theme(plot.title.position = "plot", # Align title to the left
         panel.grid.minor = element_blank())
 ```
+
 The resulting plots illustrate how the posterior beliefs change over time. Initially, the "Prior" is a flat line, indicating the belief that any bias is equally likely. After 5 trials, the "posterior" has begun to develop a peak, indicating a developing belief that the probability of getting heads when flipping the coin may be higher but the distribution is wide, indicating a lot of uncertainty about this belief. However, after 20 trials, the posterior is a sharp peak centered around 0.75 (15 heads / 20 flips). In other words, the model learned from the data, updating its belief over time and becoming much more certain about the coin's true bias.
 
 ## Bayesian Classical Conditioning
 
-Now that we've had a chance to understand the basic premise of Bayesian belief updating, let's consider the same classical conditioning situation that was learned by the Rescorla-Wagner model in which a light and/or bell is paird with food.  In the previous example we only needed to model the belief about whether or not the coin flip would be heads.  This time, we need to model two beliefs, (1) the probability that food will appear following the light and (2) the probability that food will appear following the bell.
+Now that we've had a chance to understand the basic premise of Bayesian belief updating, let's consider the same classical conditioning situation that was learned by the Rescorla-Wagner model in which a light and/or bell is paird with food.  In the previous example we only needed to model the belief about whether or not the coin flip would be heads.  This time, we need to model two beliefs, (1) the probability that food will appear following the light ($Beta(\alpha_{light},\beta_{light})$), and (2) the probability that food will appear following the bell ($Beta(\alpha_{bell},\beta_{bell})$).
 
-This model will be exposed to the exact same experimental setup as the Rescorla-Wagner model.  Namely, three blocks of ten trials.  The first ten "acquisition" trials are when the light is paired with the food.  In the second ten "compound" trials, the bell is added and food is paired with presentation of both stimuli (i.e., light+bell). Finally, in the last ten "extinction" trials, only the light is presented, it is not paired with the presentation of food.
+Just like before, we can think of the $\alpha$ and $\beta$ parameters as a scoreboard.  With the coin, $\alpha$ was the count of succesfully flipping heads and $\beta$ was the count of failing to flip heads (= count of tails).
+
+In this context, $\alpha_{light}$ will reflect the count of times the light "successfully" predicts food and $\beta_{light}$ will reflect the count of failures (light appears but not food).
+
+$\alpha_{bell}$ and $\beta_{bell}$ have equivalent interpretations with respect to the pairing of the bell and food.
+
+This model will be exposed to the exact same experimental trials as the Rescorla-Wagner model.  Namely, three blocks of ten trials.  The first ten "acquisition" trials are when the light is paired with the food.  In the second ten "compound" trials, the bell is added and food is paired with presentation of both stimuli (i.e., light+bell). Finally, in the last ten "extinction" trials, only the light is presented, it is not paired with the presentation of food.
 
 *Experimental Setup*
 
@@ -513,8 +772,6 @@ prior_df <- tibble(
   a_bell = initial_a, b_bell = initial_b
 )
 
-# --- THIS DATA PREP SECTION IS THE FIX ---
-
 # Combine the prior with the snapshots
 plot_prep_df <- bind_rows(prior_df, snapshots_df)
 
@@ -571,9 +828,17 @@ ggplot(dist_plot_data, aes(x = theta, y = density, fill = Cue, color = Cue)) +
         strip.text.x = element_text(size=10))
 ```
 
-This initial output illustrates the Prior distribution indicating the belief that the probability that food all probabilities were equally likely 
+- The first output illustrates the original prior distribution indicating the belief that the probability that food all probabilities were equally likely.
 
-```{r}
+- After the first 10 acquisition trials, you can see that the model has learned a strong belief that there is a high probability of getting food when the light appears.
+
+- When the bell is added to the light in the next 10 trials, the model begins to develop a belief about the bell too.
+
+- Finally, when the food is removed, but the light continues to appear on the last 10 trials, the model's beliefs about the light are adjusted accordingly.
+
+In order to compare the predictions of the Bayesian model to those of the R-W model, it might be easier to plot the mean of the belief distributions on each trial.
+
+```{r, echo=FALSE}
 # ---  Visualize the Learning Process ---
 
 # Plot 1: The Learning Curve (Comparable to Rescorla-Wagner)
@@ -618,12 +883,14 @@ The Rescorla-Wagner model is more forgetful. It only knows its current associati
 # Head-to-Head Comparison: The Illusory Correlation Task
 Now, instead of modeling classical conditioning, let's apply both models to a classic cognitive bias task to see how their different architectures lead to different insights.
 
-The Phenomenon: In an illusory correlation task, people see a series of behaviors performed by members of a majority group (Group A) and a minority group (Group B). The ratio of desirable to undesirable behaviors is identical for both groups, but because the minority group is smaller and undesirable behaviors are less frequent, the co-occurrence of these two rare events becomes highly salient. This is thought to lead people to form a biased judgment, overestimating the rate of undesirable behavior for the minority group.
+In a classic illusory correlation task, people see a series of behaviors performed by members of a majority group (Group A) and a minority group (Group B). The ratio of desirable to undesirable behaviors is identical for both groups, but because the minority group is smaller and undesirable behaviors are less frequent, the co-occurrence of these two rare events is thought to be highly salient. This high salience is thought to lead people to form a biased judgment, overestimating the rate of undesirable behavior for the minority group.
 
-Importantly, the illusory correlation isn't just about minority group biases, the illusory correlation has been shown to explain everything from diagnoses based on responses to the Rorschach test to the formation of personal superstitions. For example, an athlete might wear a specific pair of socks-a distinctive behavior-before a major victory, a rare outcome. The brain forges a powerful link between these two unusual events, creating a "lucky charm" out of pure coincidence. This same mechanism underlies many beliefs in the effectiveness of pseudoscientific remedies, where a person experiencing a fluctuating symptom feels better after trying an unusual treatment and incorrectly attributes their recovery to the treatment rather than to chance. At its core, the phenomenon is driven by a cognitive shortcut: our minds are highly sensitive to the joint occurrence of two rare or distinctive events, making that pairing feel more significant and frequent than it truly is. Once this initial, illusory link is formed, it is often cemented by confirmation bias, as we then tend to notice and remember subsequent instances that support the perceived correlation while ignoring the many times the pattern does not hold. In this way, illusory correlation is a fundamental feature of human cognition that helps explain how we construct patterns and causal theories—both real and imagined—to make sense of a complex world.
+Importantly, the illusory correlation isn't just about minority group biases, the illusory correlation has been shown to explain everything from diagnoses based on responses to the Rorschach test to the formation of personal superstitions. For example, an athlete might wear a specific pair of socks (a distinctive behavior) before a major victory (a rare outcome). Because of the high salience of these events, the brain forges a powerful link between them, creating a "lucky charm" out of pure coincidence. This same mechanism underlies many beliefs in the effectiveness of pseudoscientific remedies, where a person experiencing a fluctuating symptom feels better after trying an unusual treatment and incorrectly attributes their recovery to the treatment rather than to chance. 
+
+Once this initial, *illusory* link is formed, it is often cemented by confirmation bias, as we then tend to notice and remember subsequent instances that support the perceived correlation while ignoring the many times the pattern does not hold. In this way, illusory correlation is a fundamental feature of human cognition that helps explain how we construct both real and imagined theories to make sense of a complex world.
 
 ## Step 1: Create the Stimulus Data
-Let's create a simple dataset that represents two groups of people-Group A and Group B. The dataset will also contain a behavior describing each person. The true proportion of negative behaviors is the same for two groups (approx 20%), but Group A is much larger than Group B. Instead of listing the actual behavior in our sample dataset, we will just include a factor describing whether the behavior was positive or negative.
+Let's start by creating a simple dataset that represents two groups of people - Group A and Group B. The dataset will also contain a behavior describing each person. The true proportion of negative behaviors is the same for two groups (approx 20%), but Group A is much larger than Group B. Instead of listing the actual behavior in our sample dataset, we will just include a factor describing whether the behavior was positive or negative.
 
 ```{r}
 # --- Create the Illusory Correlation Dataset ---
@@ -647,15 +914,18 @@ shuffled_trials <- observations[sample(nrow(observations)), ]
 # Add a lambda (outcome) value for R-W model (1 for negative, 0 for positive)
 shuffled_trials$lambda <- ifelse(shuffled_trials$behavior == "negative", 1, 0)
 
+# Quick look at the data
+print(head(shuffled_trials))
+
 # Check the true proportions
 print(paste("Group A Negative Proportion:", group_a_neg / (group_a_pos + group_a_neg)))
 print(paste("Group B Negative Proportion:", group_b_neg / (group_b_pos + group_b_neg)))
 ```
 
 ## Step 2: Simulate the Rescorla-Wagner Model
-The R-W model will learn an association strength between each group and "negative behavior."
+Now let's see how the R-W model will learn an association strength between each group and "negative behavior."
 
-```{r}
+```{r,echo=FALSE}
 # --- R-W Simulation ---
 V_A <- 0 #Initial association between Group A and negative behaviors
 V_B <- 0 #Initiol association between Group B and negative behaviors
@@ -695,9 +965,9 @@ legend("topleft", legend=c("Group A", "Group B", "True Proportion"),
 ```
 
 ## Step 3: Simulate the Bayesian Beta-Binomial Model
-The Bayesian model will update its belief distribution for each group's rate of negative behavior.
+Now let's see how the Bayesian model will update its belief distribution for each group's rate of negative behavior.
 
-```{r}
+```{r,echo=FALSE}
 # --- Bayesian Simulation ---
 # Prior beliefs for both groups (uninformative)
 prior_a_A <- 1; prior_b_A <- 1
@@ -737,11 +1007,11 @@ ggplot(plot_data_bayes, aes(x=theta, y=density, color=Group)) +
        y="Density") +
   theme_minimal()
 ```
-***Interpretation of the Model's Predictions***
+**Interpretation of the Model's Predictions**
 
 Like the R-W model, the peaks (means) of both posterior distributions are centered very close to the true rate of 20%. Both models are "rational" in that they correctly estimate the central tendency of the data.
 
-Look at the width of the two distributions. The curve for Group B is noticeably shorter and wider than the curve for Group A. This visually represents the model's uncertainty. Because it has seen fewer examples from the minority Group B, its belief about Group B's true nature is less precise.
+Look at the width of the two belief distributions. The curve for Group B is noticeably shorter and wider than the curve for Group A. This visually represents the model's uncertainty. Because it has seen fewer examples from the minority Group B, its belief about Group B's true nature is less precise.
 
 Explaining the Bias: This difference in uncertainty provides a potential explanation for the illusory correlation bias. The Rescorla-Wagner model simply reports the learned statistic. The Bayesian model suggests that while the best guess for both groups is the same, the learner is far less confident about their judgment of the minority group. This lack of certainty could make the judgment more susceptible to being swayed by other factors, such as the high salience of rare events, leading to the biased human conclusion that R-W cannot explain.
 
@@ -754,12 +1024,13 @@ In the previous section, we showed how a rational Bayesian model's uncertainty c
 
 Let's hypothesize that a learner doesn't start with a blank slate. They may have a pre-existing societal bias that minority groups are more associated with negative outcomes. We can model this as a prior belief that is already skewed.
 
-## Step 1: Defining a Biased Prior
+**Step 1: Defining a Biased Prior**
+
 Instead of an uninformative Beta(1, 1) prior for Group B, let's use a Beta(3, 1) prior.
 
-**What this means:** This prior is equivalent to having already observed 3 "pseudo-examples" of negative behavior and only 1 "pseudo-example" of positive behavior before the experiment even starts. It's a belief, however weak, that the rate of negative behavior for Group B is likely to be high (peaking at a rate of (3-1)/(3+1-2) = 1, but with high uncertainty). We will keep the prior for the majority Group A as Beta(1, 1) (unbiased).
+* **What this means:** This prior is equivalent to having already observed 3 "pseudo-examples" of negative behavior and only 1 "pseudo-example" of positive behavior before the experiment even starts. It's a belief, however weak, that the rate of negative behavior for Group B is likely to be high. We will keep the prior for the majority Group A as Beta(1, 1) (unbiased).
 
-## Step 2: Rerunning the Simulation with the Biased Prior
+**Step 2: Rerunning the Simulation with the Biased Prior**
 We use the exact same data as before. The only thing we change is the starting belief for Group B.
 
 ```{r}
@@ -769,6 +1040,9 @@ prior_a_A_biased <- 1; prior_b_A_biased <- 1
 
 # Prior for Group B is BIASED towards negative behaviors
 prior_a_B_biased <- 3; prior_b_B_biased <- 1
+```
+
+```{r,echo=FALSE}
 
 # --- Recalculate Posteriors ---
 # Posterior for A is the same as before
@@ -807,9 +1081,9 @@ The posterior for Group A is unchanged, peaking at the true rate of 20%.
 
 However, the posterior for Group B is now visibly shifted to the right. Its peak is no longer at 0.2; the code output shows it's now around 0.25 or higher.
 
-Even though the model was presented with the exact same evidence, the biased prior "pulled" the final belief towards it. The model's final conclusion is that the rate of negative behavior for the minority group is indeed higher than for the majority group. The model has formed an illusory correlation.
+Even though the model was presented with the exact same evidence, the biased prior "pulled" the final belief towards it. The model's final conclusion is that the rate of negative behavior for the minority group is indeed higher than for the majority group. The model has exhibited an illusory correlation.
 
-This powerful demonstration shows that the Bayesian framework can not only represent rational learning under uncertainty but can also be used to precisely formalize and test hypotheses about how pre-existing cognitive biases shape our interpretation of evidence. It transforms a vague idea ("prior beliefs matter") into a specific, quantifiable prediction.
+This demonstration shows that the Bayesian framework can not only represent rational learning under uncertainty but can also be used to precisely formalize and test hypotheses about how pre-existing cognitive biases shape our interpretation of evidence. It transforms a vague idea ("prior beliefs matter") into a specific, quantifiable prediction.
 
 # Modeling A General Bias - Uniqeness
 
@@ -850,7 +1124,7 @@ This method more directly targets the specific cognitive mechanism thought to ca
 Experimental Setup:
 
 The experimental setup will be identical to that used earlier.
-```{r}
+```{r,echo=FALSE}
 # --- Create the Illusory Correlation Dataset ---
 set.seed(42) # For reproducible shuffling
 
@@ -878,14 +1152,14 @@ print(paste("Group B Negative Proportion:", group_b_neg / (group_b_pos + group_b
 ```
 
 Implement the new model:
-```{r}
+```{r,echo=FALSE}
 # --- 2. R-W Model Parameters ---
 V_A <- 0 # Initial association between Group A and negative behaviors
 V_B <- 0 # Initial association between Group B and negative behaviors
 
 alpha <- 0.3 # Base salience of the groups
 beta <- 0.5  # Base learning rate for behaviors
-salience_boost <- 5 # How much to amplify learning on "doubly distinctive" trials
+salience_boost <- 3 # How much to amplify learning on "doubly distinctive" trials
 
 # Containers to store history for plotting (start with initial values)
 history_V_A <- c(V_A)
@@ -948,7 +1222,7 @@ As you can see from the plot above, this Rescorla-Wagner model is capable of dem
 
 * Think about it: Why does this model require the salience boost to be very high OR require a large number of trials?
 
-1. ***The Bayesian model***
+2. ***The Bayesian model***
 
 Modifying the original Baysian model is conceptually very similar to how we modified the Rescorla-Wagner model. We will move the model from being a purely rational evidence-gatherer to a more human-like one by making it overweight rare, distinctive events.
 
@@ -976,7 +1250,7 @@ If Positive Behavior: b <- b + 1 (Positive behaviors are common and not distinct
 
 **Implementation in R**
 
-```{r}
+```{r,echo=FALSE}
 # --- 2. Bayesian Model Parameters ---
 # Start with uninformative priors (Beta(1,1)) for P(Negative|Group)
 negative_groupA <- 1; positive_groupA <- 1 # Belief for Majority Group A
@@ -1205,58 +1479,3 @@ print(best_params)
 ```
 
 ## Interpretation
-FIX BELOW INCORRECT
-they reflect two different, complementary psychological processes. The strength of the illusory correlation emerges from one, while the other describes how that learned bias is translated into action.
-
-Here’s a more detailed breakdown based on the model in your chapter:
-
-1. alpha_base: The Learning Parameter
-What it represents: alpha_base is the baseline learning rate. It reflects how quickly a person updates their beliefs in general. In our specific attention-modulated model, the actual learning rate on any trial is alpha_base + abs(prediction_error).
-
-How it relates to the illusory correlation: The illusory correlation in this model is not caused by alpha_base itself, but by the dynamic updating of alpha. The bias emerges because the learning rate gets a huge boost specifically after the most surprising events (a rare planet with rare negative feedback).
-
-Interpretation: A participant with a higher best-fit alpha_base is someone who learns more quickly from feedback overall. While this speed might contribute to how fast the illusory correlation forms, the parameter itself is a measure of general learning speed, not the bias directly. The bias is an emergent property of the learning rule.
-
-2. tau (τ): The Choice Parameter
-What it represents: tau is the inverse temperature or choice consistency parameter. It has nothing to do with learning; it governs the decision-making process after learning has occurred. It describes how faithfully a person's choices reflect their internal learned values (V).
-
-How it relates to the illusory correlation:
-
-A high tau means the person's choices are very deterministic. If their internal V for Planet Xylos is even slightly higher than for Zorg, they will almost always predict "negative" for Xylos. They are consistently acting on their learned bias.
-
-A low tau means the person's choices are more random or exploratory. Even if they have a strong internal bias (a big difference in their V values), their button presses might not consistently reflect it.
-
-Interpretation: tau tells you how much the participant's behavior is driven by their learned associations versus other factors (like guessing or inattention). It reflects the expression of the illusory correlation in their choices, but not its internal strength.
-
-Analogy: A Biased Coin
-Imagine two people are given a biased coin that lands on heads 70% of the time.
-
-Person A flips it 100 times and concludes it's a 70/30 coin.
-
-Person B only flips it 10 times and also concludes it's a 70/30 coin (this person has a very high alpha_base - they learn fast).
-
-Now, you ask them to bet on the next flip.
-
-Person A, confident in their knowledge, always bets on heads. They have a high tau.
-
-Person B, even though they believe it's 70/30, sometimes bets on tails just for fun. They have a low tau.
-
-In this analogy, the learned belief (70/30) is like the internal V values. alpha_base determines how many flips it took to reach that belief. tau determines how consistently they use that belief to place their bets.
-
-In summary: In your model, the illusory correlation is an emergent property of the attention-modulated learning rule. alpha_base tunes the overall speed of that process, while tau determines how consistently the resulting biased belief is expressed in the participant's actions.
-
-# Assignment
-For this assignment, you will be asked to think about the assumptions that are built into the examples we covered and to modify one of the models to address that assumption.  Your task is to create a new R-markdown file, using a combination of markdown and code blocks to address each of the items below.
-
-1) We examined how biased priors could be used to model social biases in the Bayesian learning model.  How would you implement pre-existing biases in the rational Rescorla-Wagner model?  Implement your proposed change and run the model. Explain how the R-W and Bayesian differ in their response to the addition of pre-existing biases.
-
-2) There is at least one major assumption built into both the R-W and Bayesian models of illusory correlation. This assumption has to do with prior "knowledge" that is programmed into the models.  Analyze the code and describe the assumption and how it is implemented in the model.
-
-3) Describe (in words) how you could fix the identified assumption to make the models more plausible. (*For example: I would change the $\alpha$ parameter so that...)*
-
-4) Copy the code for either the R-W or Bayesian model and implement the change(s) you described in #2.  Be sure to add comments to each line of code that you write or change, explaining what your addition/change does.
-
-5) Run both the original code and your new code, producing a graph of the trial-by-trial learning for each.  Write a few sentences explaining how the two models differ (if at all) in terms of their predicted learning patterns.
-
-
-

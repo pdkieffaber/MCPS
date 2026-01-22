@@ -6,9 +6,9 @@ output:
   pdf_document:
     toc: true
     toc_depth: 2
-  theme: darkly
   html_document:
     df_print: paged
+    theme: darkly
 ---
 
 ```{r setup, include=FALSE}
@@ -37,6 +37,46 @@ This is the most crucial concept in the Grammar of Graphics. The `aes()` functio
 
 ### 3) geom_...() (Geometric Objects):
 The geoms are the "verbs" of your plot. They determine what is actually drawn to represent the data. Each geom function adds a new layer to your plot. If you want a scatter plot, you use `geom_point()`. If you want a line chart, you use `geom_line()`. If you want a bar chart, you use `geom_bar()`. Because you add geoms as layers, you can easily combine them. For instance, you can create a scatter plot with a line of best fit by simply adding a `geom_point()` layer followed by a `geom_smooth()` layer.
+
+# Mapping vs. setting aesthetics in ggplot2
+
+In ggplot2, aesthetics are visual properties such as x, y, color, fill, size, shape, and alpha. A key rule is: if an aesthetic is inside aes(), you are mapping it to a variable in your data; if it is outside aes(), you are setting it to a constant value. Mapping is used when you want the plot to encode information (e.g., different groups shown with different colors). Setting is used when you want a fixed style (e.g., all points blue). For example, aes(color = condition) tells ggplot2 to color points by the values of condition and it will automatically create a legend. In contrast, color = "blue" makes all points blue and does not create a legend.
+
+For example, a mapping, where color represents a variable (creates a legend) would require a command like:
+
+```{r, eval=FALSE}
+ggplot(psych_data, aes(x = stress, y = rt, color = condition)) +
+  geom_point()
+```
+
+However, setting the point color to a constant style (blue; no legend) would look like this:
+
+```{r, eval=FALSE}
+ggplot(psych_data, aes(x = stress, y = rt)) +
+  geom_point(color = "blue")
+```
+
+**Common confusion:** writing aes(color = "blue") will not do what you intend because it maps the literal text "blue" as if it were a category, and you’ll often get a legend with a single level.
+
+# “+” layering: building a plot one layer at a time
+
+You my have already noticed this, but ggplot2 plots are built by adding layers with the + operator. You typically start with a base ggplot() call that defines the dataset and the core mappings, then you add layers such as geoms, scales, and labels. Each geom_*() adds a visual layer (points, lines, bars, etc.), and functions like labs() add titles and axis labels. A practical rule is to treat the plot like a sentence: start with the subject (ggplot(data, aes(...))), then add clauses (+ geom_point() + labs(...) + theme(...)).
+
+A common syntax pitfall is where you place the +. In R, it is safest to put + at the end of the line so R knows the command continues.
+
+# Recommended formatting: + at the end of the line
+ggplot(psych_data, aes(x = stress, y = rt_ms, color = condition)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE) +
+  labs(
+    title = "Stress and Reaction Time by Condition",
+    x = "Stress (1–7)",
+    y = "Reaction time (ms)"
+  )
+
+
+If you put + in the wrong place, you may see errors like “unexpected ‘+’” or “Cannot add ggproto objects together.” When that happens, check the line breaks first—most layering errors are formatting issues, not conceptual ones.
+
 
 # Basic Plots: Visualizing Relationships and Distributions
 
@@ -663,10 +703,8 @@ For this example, let's try using a dataset from the `psych` package (by William
 if (!require(psych)) install.packages("psych")
 if (!require(corrplot)) install.packages("corrplot")
 library(psych)
-library(corrplot
-        )
+library(corrplot)
 # Inspect the data
-?psych::bfi
 head(bfi)
 ```
 
@@ -997,7 +1035,7 @@ dev.off()
 
 
 ## Animations (Under Construction)
-```{r}
+```{r, echo=FALSE, eval=FALSE}
 # libraries:
 library(ggplot2)
 library(gganimate)

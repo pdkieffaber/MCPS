@@ -27,7 +27,7 @@ fill in later
 Git is a popular and powerful open-source, version control software.  Version control software manages changes in files as they are edited over time and by different users.  With Git, users can track changes made to files and back up old versions of files. When multiple variants of a product need to be managed or different people make changes, Git tracks the differences across branches.
 
 \subsection*{Installing Git}
-\subsubsection{Installing Git on Windows}
+\subsubsection{Windows}
 \begin{enumerate}
 \item Download Git for Windows
 	\begin{itemize}
@@ -53,7 +53,7 @@ Git is a popular and powerful open-source, version control software.  Version co
 	\end{itemize}
 \end{enumerate}
 
-\subsubsection{Git on macOS Option 1: Using Xcode Command Line Tools (Recommended)}
+\subsubsection{MacOS Option 1: Command Line Tools (Recommended)}
 \begin{enumerate}
 \item Open the Terminal application (in Applications > Utilities).
 \item Type the following command:
@@ -67,7 +67,7 @@ This will install Git along with compilers and other tools needed for software d
 Once the install is complete, try the ``git --version'' command again. You should now see a version number (e.g., git version 2.39.1).
 \end{enumerate}
 
-\subsubsection{Git on macOS Option 2: Install via Homebrew}
+\subsubsection{MacOS Option 2: Homebrew}
 \begin{enumerate}
 \item Open Terminal.
 
@@ -86,7 +86,7 @@ After installation, verify with:
 \subsection*{Configuring Git (All Platforms)}
 After installing Git, configure your identity so your commits (changes) are properly attributed.
 
-In your terminal (Git Bash or macOS Terminal), run:
+In your terminal (Git Bash, Command Prompt, or macOS Terminal), run:
 \begin{terminal}
 \terminalinput{git config \texttt{-}-global user.name ``Your Name''}|\\
 \terminalinput{git config \texttt{-}-global user.email ``your.email@example.com''}
@@ -143,7 +143,7 @@ Even when using a shared platform like GitHub, you will want to designate a loca
 		
 		Navigate to another directory using the ``cd'' (change directory) command:
 		\begin{terminal}
-		\terminalinput{cd Documents/Projects}
+		\terminalinput{cd \textasciitilde /Documents/Projects}
 		\end{terminal}
 
 		This moves you to the Projects folder inside Documents.
@@ -151,11 +151,6 @@ Even when using a shared platform like GitHub, you will want to designate a loca
 		To move up one level, type:
 		\begin{terminal}
 		\terminalinput{cd ..}
-		\end{terminal}
-
-		To go directly to your Desktop, type:
-		\begin{terminal}
-		\terminalinput{cd ~/Desktop}
 		\end{terminal}
 		
 		Again, use pwd to verify where you are.
@@ -181,7 +176,7 @@ Even when using a shared platform like GitHub, you will want to designate a loca
 
 	Navigate to another directory using the ``cd'' (change directory) command:
 	\begin{terminal}
-	\terminalinput{cd C:\\Users\\YourUsername\\Documents\\Projects}
+	\terminalinput{cd C:\textbackslash{}Users\textbackslash{}YourUsername\textbackslash{}Documents\textbackslash{}Projects}
 	\end{terminal}
 	(Replace YourUsername with your Windows username.)
 
@@ -190,11 +185,6 @@ Even when using a shared platform like GitHub, you will want to designate a loca
 	To move up one level, type:
 	\begin{terminal}
 	\terminalinput{cd ..}
-	\end{terminal}
-
-	To go to a specific location, like the Desktop:
-	\begin{terminal}
-	\terminalinput{cd ~/Desktop}
 	\end{terminal}
 	
 	\end{itemize}
@@ -456,7 +446,7 @@ Once you have finished developing the bootstrapping\_code.R file and you have co
 
 Start the merge process by first switching back to the main branch and pull the latest changes:
 \begin{terminal}
-\terminalinput{git checkout main}
+\terminalinput{git checkout main}\\
 \terminalinput{git pull origin main}
 \end{terminal}
 
@@ -767,49 +757,36 @@ Git tags are a powerful way to mark specific points in your repository's history
 \newpage
 \section{Assignment}
 \begin{enumerate}
-\item Initial Setup by Instructor
+\item Create (if you haven't already) an account on GitHub (\weblink{https://github.com}) and log into your account.
 
-Create a GitHub repo (public or private) with:
-		\begin{itemize}
-		\item A LaTeX template
-		\item A bibliography file (refs.bib)
-		\item A repo with the folder structure:
+\item On the GitHub website, create a new public repository named ``ReproducibleResearch\_FIRST\_LAST'' (replace FIRST and LAST with your first and last names respectively).
 
-research-report/\\
-|---- main.tex\\
-|---- intro.tex\\
-|---- methods.tex\\
-|---- results.tex\\
-|---- discussion.tex\\
-|---- main.tex\\
-|---- references.bib\\
-|---- README.md
-
-\end{itemize}
-\item Student Instructions
-	\begin{enumerate}
-	\item Fork the PSYC672 repo
-		\begin{enumerate}
-		\item Visit \weblink{https://github.com/pdkieffaber/PSYC672}.
-		\item Click ``Fork'' (top right)
-		\item This will create a new fork in your GitHub account.
-		\end{enumerate}
-	\item Clone the fork to your computer:
+	\begin{itemize}
+	\item Click the Repositories tab
+	\item Click the ``New'' button to create a new repository
+	\end{itemize}
+\item Clone your new repository to your computer:
 	\begin{terminal}
-	\terminalinput{git clone https://github.com/STUDENT-USERNAME/PSYC672.git}\\
-	\terminalinput{cd PSYC672}
+	\terminalinput{cd SOME\_FOLDER}\\
+	\terminalinput{git clone LINK\_TO\_YOUR\_REPOSITORY}\\
+	\terminalinput{cd ReproducibleResearch\_FIRST\_LAST}
 	\end{terminal}
-	\item Edit the README.txt file, adding the line, ``\textit{First Last}-FAll, 2025'' (replace \textit{First} with your first name and \textit{Last} with your last name)
-	\item Commit changes and push:
+	
+\item Create (or edit) the README.txt file, adding the line, ``\textit{First Last}-Spring, 2026'' (replace \textit{First} with your first name and \textit{Last} with your last name)
+
+\item Commit changes and push them back to GitHub:
 	\begin{terminal}
 	\terminalinput{git add .}\\
 	\terminalinput{git commit -m ``Added my introduction section''}\\
 	\terminalinput{git push origin main}
 	\end{terminal}
-	\end{enumerate}
+	
+\item Visit the spreadsheet \href{https://docs.google.com/spreadsheets/d/1L9bVyOK4S6QU2VVjuUZQyv07SR5BpAGEGkK9tA4zqBA/edit?usp=sharing}{HERE} and add your name and the link to your updated repository.\\
+\footnotesize{(https://docs.google.com/spreadsheets/d/1L9bVyOK4S6QU2VVjuUZQyv07SR5BpAGEGkK9tA4zqBA/edit?usp=sharing)}
+	
 \end{enumerate}
 
-\printglossary[type=datacollection,style=twocolumn]
+\printglossary[type=reproducibleresearch,style=twocolumn]
 %\printglossary
 %\glsresetall
 \newpage

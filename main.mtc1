@@ -1,10 +1,10 @@
 {\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {1.1}What is Reproducible Research?}{\reset@font\mtcSfont 10}{section.1.1}}
 {\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {1.2}Introduction to Git}{\reset@font\mtcSfont 10}{section.1.2}}
-{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Installing Git on Windows}{\reset@font\mtcSSSfont 11}{section*.5}}
-{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Git on macOS Option 1: Using Xcode Command Line Tools (Recommended)}{\reset@font\mtcSSSfont 11}{section*.6}}
-{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Git on macOS Option 2: Install via Homebrew}{\reset@font\mtcSSSfont 11}{section*.7}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Windows}{\reset@font\mtcSSSfont 11}{section*.5}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode MacOS Option 1: Command Line Tools (Recommended)}{\reset@font\mtcSSSfont 11}{section*.6}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode MacOS Option 2: Homebrew}{\reset@font\mtcSSSfont 11}{section*.7}}
 {\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Navigation Using the Terminal or Command Prompt}{\reset@font\mtcSSSfont 12}{section*.10}}
-{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Creating a Repository}{\reset@font\mtcSSSfont 14}{section*.11}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Creating a Repository}{\reset@font\mtcSSSfont 13}{section*.11}}
 {\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Connect to a Remote Repository}{\reset@font\mtcSSSfont 14}{section*.12}}
 {\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Cloning a Repository}{\reset@font\mtcSSSfont 16}{section*.14}}
 {\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Example Workflow}{\reset@font\mtcSSSfont 19}{section*.18}}

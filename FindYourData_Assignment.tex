@@ -1,0 +1,262 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+  11pt,
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage[]{libertine}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage[]{natbib}
+\bibliographystyle{apsr}
+\usepackage{hyperref}
+\usepackage{array}
+\usepackage{caption}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage[table]{xcolor}
+\usepackage{multirow}
+\usepackage{hhline}
+\usepackage{calc}
+\usepackage{tabularx}
+\usepackage{fontawesome}
+\usepackage[para,online,flushleft]{threeparttable}
+\usepackage{wrapfig}
+\captionsetup[wrapfigure]{justification=raggedright,singlelinecheck=false}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Finding Your Dataset},
+  pdfauthor={Data Science for the Psychological Sciences},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Finding Your Dataset}
+\author{Data Science for the Psychological Sciences}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Purpose}\label{purpose}
+
+In data science, the single most important early skill is learning to
+locate, evaluate, and justify a dataset that is appropriate for a
+research question. This assignment asks you to identify a public
+dataset, assess its quality and constraints, and propose a feasible
+analysis plan.
+
+\textbf{Student tasks and deliverables}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Find three public datasets and briefly record:
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Dataset name + source
+\item
+  Topic/domain (psychology, mental health, public health, politics,
+  etc.)
+\item
+  Unit of analysis (people, countries, counties, survey responses, etc.)
+\item
+  Approximate sample size and key variables
+\item
+  Access method (direct download vs registration; file format)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Provide link if available
+  \end{itemize}
+\item
+  Documentation availability (codebook/data dictionary)
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Select one of the datasets and write a short proposal with the
+  following sections:
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Dataset overview
+\item
+  Source, citation, licensing/terms-of-use
+\item
+  Unit of analysis, time span, sampling frame
+\item
+  Key variables (at least 6) and why they matter to you
+\item
+  Documentation and data quality
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Do the data look interpretable? Is there a codebook?
+  \end{itemize}
+\item
+  3 potential research questions
+\end{itemize}
+
+\section{Curated public dataset list}\label{curated-public-dataset-list}
+
+Choose three of the datasets below \textbf{OR} find your own.
+
+\subsection{Mental health / psychiatry / substance
+use}\label{mental-health-psychiatry-substance-use}
+
+NSDUH (National Survey on Drug Use and Health) --- substance use, mental
+health indicators, treatment utilization (public-use files).
+\href{https://www.samhsa.gov/data/data-we-collect/nsduh-national-survey-drug-use-and-health/datafiles}{SAMHSA}
+
+BRFSS (Behavioral Risk Factor Surveillance System) --- U.S. health
+behaviors, preventive care, chronic conditions; huge sample; state-level
+focus. \href{https://www.cdc.gov/brfss/annual_data/annual_data.htm}{CDC}
+
+NHIS (National Health Interview Survey) --- health status, access,
+behaviors; rich health and demographic content.
+\href{https://www.cdc.gov/nchs/nhis/documentation/index.html}{CDC}
+
+NHANES --- interviews + exams + lab measures; includes mental health and
+health behavior modules across waves.
+\href{https://wwwn.cdc.gov/nchs/nhanes/Default.aspx}{CDC}
+
+YRBSS (Youth Risk Behavior Surveillance System) --- adolescent risk
+behaviors (sleep, substance use, mental health--related items vary by
+year). \href{https://www.cdc.gov/yrbs/data/index.html}{CDC}
+
+\subsection{Psychology and behavioral science (open research
+data)}\label{psychology-and-behavioral-science-open-research-data}
+
+Collaborative Psychiatric Epidemiology Surveys (CPES) - Harmonized U.S.
+mental health surveys (includes NCS-R plus major race/ethnicity-focused
+components) used for studying prevalence, correlates, and treatment
+patterns.
+\href{https://www.icpsr.umich.edu/web/ICPSR/studies/20240/versions/V3}{icpsr.umich.edu}
+
+NESARC (National Epidemiologic Survey on Alcohol and Related Conditions;
+waves and NESARC-III) - Very strong for comorbidity (substance use +
+mood/anxiety/personality disorders, etc.) and demographic correlates;
+documentation and access pathways are well established.
+\href{https://catalog.data.gov/dataset/national-epidemiologic-survey-on-alcohol-and-related-conditions-nesarcwave-1-20012002-and-}{Data.gov}
+
+NSDUH (National Survey on Drug Use and Health) public-use files - Annual
+U.S. survey with mental illness indicators, suicidal ideation/behavior
+items (varies by year), and treatment variables---excellent for
+population trends and disparities.
+\href{https://www.samhsa.gov/data/data-we-collect/nsduh-national-survey-drug-use-and-health/datafiles}{SAMHSA}
+
+\subsection{Politics and public
+opinion}\label{politics-and-public-opinion}
+
+ANES (American National Election Studies) --- U.S. political attitudes,
+vote choice, ideology, demographics.
+\href{https://electionstudies.org/data-center/}{ANES}
+
+CES/CCES (Cooperative Election Study) --- large U.S. survey; common
+content + modules; excellent for modeling turnout/attitudes.
+\href{https://cces.gov.harvard.edu/}{CES/CCES}
+
+GSS (General Social Survey) --- long-running U.S. social attitudes,
+demographics, and repeated items.
+\href{https://gss.norc.org/get-the-data.html}{GSS}
+
+Pew Research Center datasets --- many public microdata releases after a
+period of time; great topical coverage.
+\href{https://www.pewresearch.org/download-datasets}{Pew Research
+Center}
+
+\subsection{Cross-national attitudes, values, and
+governance}\label{cross-national-attitudes-values-and-governance}
+
+European Social Survey (ESS) --- cross-national attitudes/behavior;
+strong documentation; repeated rounds.
+\href{https://www.europeansocialsurvey.org/data-portal}{European Social
+Survey}
+
+World Values Survey (WVS) --- global values/attitudes across waves;
+broad psychosocial variables.
+\href{https://www.worldvaluessurvey.org/WVSContents.jsp}{worldvaluessurvey.org}
+
+V-Dem (Varieties of Democracy) --- country-year democracy
+indicators/indices; good for political context variables.
+\href{https://v-dem.net/data/the-v-dem-dataset/}{V-Dem}
+
+\subsection{Population, inequality, and social determinants (useful for
+psych/public health
+context)}\label{population-inequality-and-social-determinants-useful-for-psychpublic-health-context}
+
+IPUMS USA (ACS/Census harmonized extracts) --- demographics, income,
+education, migration; great for social determinants questions (requires
+free registration and extract request).
+\href{https://usa.ipums.org/usa/data.shtml}{IPUMS USA}
+
+DHS Program (Demographic and Health Surveys) --- global health and
+demographics; requires account approval; strong for public health and
+international comparisons. \href{https://www.dhsprogram.com/data/}{DHS
+Program}
+
+\bibliography{Introduction2R.bib}
+
+\end{document}

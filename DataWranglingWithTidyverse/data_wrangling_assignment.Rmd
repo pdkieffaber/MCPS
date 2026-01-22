@@ -1,0 +1,321 @@
+---
+title: "Data Wrangling Pipeline Project"
+author: "YOUR NAME"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    df_print: paged
+  pdf_document:
+    toc: true
+    toc_depth: '3'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE
+)
+
+library(tidyverse)
+library(janitor)   # optional but helpful: clean_names(), tabyl()
+library(skimr)     # optional but helpful: skim()
+```
+
+# Overview (read first)
+
+## Purpose
+In this project you will build a **reproducible data wrangling pipeline** using the Tidyverse. You will:
+
+1. **Choose a publicly available dataset** of your interest.
+2. **Import** the data into R.
+3. **Tidy** the dataset into an analysis-ready form (long vs. wide as appropriate).
+4. **Diagnose and document missingness**, then make defensible handling decisions.
+5. **Aggregate and summarize** the data to answer a focused question.
+6. Create **several descriptive plots** and interpret them in writing.
+
+## Time expectations
+You have **one week**. The goal is not to do the most complex analysis; it is to demonstrate a clean, defensible wrangling workflow.
+
+## Submission
+Submit **one HTML** (knitted from this Rmd) and **your Rmd** source file.
+If your dataset is small enough, include it (CSV) in your submission folder; otherwise provide a direct download link and document import steps.
+
+---
+
+# 1. Dataset selection and research question
+
+## 1.1 Data source and citation
+Describe your data source (who produced it, where you accessed it, and when you downloaded it). Provide a link.
+
+- Data source:
+- Link:
+- Date accessed:
+- License / terms of use (if stated):
+
+## 1.2 Research question (keep it narrow)
+Write **one** clear question your summaries/plots will answer. Examples:
+- How does outcome Y vary by group X over time?
+- Which categories are most common, and how have they changed?
+- What is the distribution of variable X, and how does it differ across groups?
+
+
+## 1.3 What is one row per what?
+State the “grain” of the final tidy dataset you expect (e.g., one row per person per year; one row per county per month).
+
+---
+
+# 2. Import the data
+
+## 2.1 Import code
+Use a readr function appropriate to your file format (e.g., `read_csv()`, `read_tsv()`, `read_delim()`).
+
+```{r import}
+# Option A: local file in your project folder
+# df_raw <- read_csv("YOUR_FILE.csv")
+
+# Option B: direct URL import (works for many raw CSV links)
+# df_raw <- read_csv("https://.../YOUR_FILE.csv")
+
+# Option C: multiple files (read and combine)
+# files <- list.files("data/", pattern = "\\.csv$", full.names = TRUE)
+# df_raw <- files |> map_dfr(read_csv)
+
+#head(df_raw)
+```
+
+## 2.2 Quick sanity checks
+Document what you see immediately after import.
+
+```{r import_checks}
+#glimpse(df_raw)
+#summary(df_raw)
+```
+
+Write 3–5 bullets:
+- What are the key variables?
+- Any obvious type issues (numbers imported as text, dates as character)?
+- Any obvious missingness?
+- Any obviously “messy” structure (wide format, multiple variables in one column, etc.)?
+
+---
+
+# 3. Make the data tidy
+
+## 3.1 Clean names and types
+Do cleanup: consistent names, variable values, and correct data types.
+
+```{r clean_names_types}
+#library(janitor) # for clean_names() function
+
+#df <- df_raw %>%
+#  clean_names() %>%        # snake_case names
+#  mutate(
+    # Examples (edit to your needs):
+    # date = as.Date(date),
+    # year = as.integer(year),
+    # amount = readr::parse_number(amount),
+#  )
+
+#glimpse(df)
+```
+
+## 3.2 Subset the data
+Create a subset of the data that you will use for this assignment.  
+- Select only the columns relevant to the three analyses you will conduct below.
+- Select only those observations (i.e., rows) you will be using.
+
+```{r subset_data}
+# Example pattern:
+# df_subset <- df %>%
+#   filter(c(ID,Gender,Dose,Day,Anxiety)) %>%
+#   select(Gender=="Male") 
+
+#glimpse(df_tidy)
+```
+
+## 3.3 Reshape if needed
+If your data is in a “wide spreadsheet” form (e.g., multiple years/months as columns), use `pivot_longer()` to make it tidy. If it’s already tidy, state that clearly and skip.
+
+```{r reshape_if_needed}
+# Example pattern:
+# df_tidy <- df %>%
+#   pivot_longer(
+#     cols = starts_with("value_"),
+#     names_to = "year",
+#     values_to = "value",
+#     names_transform = list(year = readr::parse_number)
+#   )
+
+df_tidy <- df  # replace with your tidied object if you reshape
+glimpse(df_tidy)
+```
+
+Explain what you did and why:
+- Which columns became key-value pairs (if any)?
+- What do rows/columns represent now?
+
+---
+
+# 4. Missingness: diagnose, document, and decide
+
+In a summary: you should quantify where data are missing and then make a decision that you can justify.
+
+## 4.1 Column-level missingness summary
+Create a compact table of missing counts and percent missing by column.
+
+```{r missing_by_col}
+#missing_by_col <- df_tidy %>%
+#  summarise(across(everything(), ~ sum(is.na(.x)))) %>%
+#  pivot_longer(
+#    cols = everything(),
+#    names_to = "column",
+#    values_to = "n_missing"
+#  ) %>%
+#  mutate(
+#    pct_missing = n_missing / nrow(df_tidy),
+#    n_nonmissing = nrow(df_tidy) - n_missing
+#  ) %>%
+#  arrange(desc(pct_missing))
+
+#missing_by_col
+```
+
+Write 2–4 sentences:
+- Which columns have the most missingness?
+- Is the missingness “small and ignorable,” or “large and potentially consequential”?
+
+## 4.2 Missingness by subgroup 
+If you have a meaningful grouping variable (region, year, category), check whether missingness is concentrated.
+
+```{r missing_by_group}
+# Replace group_var with a real variable in your dataset
+# missing_by_group <- df_tidy %>%
+#   group_by(group_var) %>%
+#   summarise(across(everything(), ~ mean(is.na(.x)))) %>%
+#   pivot_longer(-group_var, names_to = "column", values_to = "pct_missing") %>%
+#   arrange(desc(pct_missing))
+#
+# missing_by_group
+```
+
+Interpretation prompt:
+- Do any groups have much higher missingness than others?
+- What bias might be introduced if you drop rows with missing values?
+
+## 4.3 Your handling decision (filter vs. fill vs. other)
+Choose and apply a missingness strategy for at least **one** important variable.
+
+Options (choose what is defensible for your context):
+- **Filter** rows using `drop_na()` (ideally on key variables only).
+- **Rule-based fill** using `replace_na()` (only when a replacement is meaningful, e.g., missing count implies 0).
+- **Impute** with a simple strategy (mean/median within group) and clearly label it as imputation.
+- **Keep missingness** but model/plot it explicitly (e.g., include an “Unknown” category).
+
+```{r missingness_action}
+#df_clean <- df_tidy %>%
+  # Example 1: Drop rows missing key fields
+  # tidyr::drop_na(id, outcome_var)
+
+  # Example 2: Rule-based fill
+  # tidyr::replace_na(list(count = 0, category = "Unknown"))
+
+#glimpse(df_clean)
+```
+
+Write a short justification:
+- Why this approach (filter/fill/impute/keep)?
+- What is a plausible bias risk and how did you mitigate it?
+
+---
+
+# 6. Summaries and aggregations
+
+Create at least **two** summary tables:
+1. A **descriptive baseline** table (counts, averages, medians).
+2. A **question-driven** summary that directly answers your research question.
+
+```{r summaries}
+# Example baseline summary
+#baseline_summary <- df_final %>%
+#  summarise(
+#    n_rows = n(),
+#    n_cols = ncol(df_final)
+    # add context-specific summaries here
+#  )
+#baseline_summary
+
+# Example grouped summary
+# grouped_summary <- df_final %>%
+#   group_by(group_var) %>%
+#   summarise(
+#     n = n(),
+#     avg_value = mean(value, na.rm = TRUE)
+#   ) %>%
+#   arrange(desc(avg_value))
+# grouped_summary
+```
+
+Write 3–6 sentences interpreting what the summaries show.
+
+---
+
+# 7. Descriptive plots (minimum: 3)
+
+Create at least **three** plots. Your plots should be readable:
+- clear title
+- labeled axes
+- appropriate geometry for variable types
+
+Suggested set:
+- Distribution of a numeric variable (histogram/density)
+- Comparison across categories (bar chart, boxplot)
+- Compare two continuous variables (scatterplot)
+- Trend over time (line chart) if you have a time variable
+
+```{r plot1}
+# ggplot(df_final, aes(x = numeric_var)) +
+#   geom_histogram(bins = 30) +
+#   labs(title = "Distribution of ...", x = "...", y = "Count")
+```
+
+```{r plot2}
+# ggplot(df_final, aes(x = category_var)) +
+#   geom_bar() +
+#   coord_flip() +
+#   labs(title = "Counts by ...", x = "...", y = "Count")
+```
+
+```{r plot3}
+# ggplot(df_final, aes(x = time_var, y = numeric_var, color = group_var)) +
+#   geom_line() +
+#   labs(title = "Trend of ...", x = "...", y = "...")
+```
+
+For each plot, write 2–3 sentences interpreting the key pattern(s).
+
+---
+
+# 8. Final deliverables checklist
+
+Confirm you have included:
+
+- [ ] Clear data source citation and download/import notes  
+- [ ] `glimpse()` and initial diagnostics  
+- [ ] A tidy dataset (`df_tidy`) with documented “one row per what”  
+- [ ] Missingness summary table (`missing_by_col`) and discussion of missingness risk  
+- [ ] A justified missingness decision (filter/fill/impute/keep) and code implementing it  
+- [ ] At least two summary tables  
+- [ ] At least three descriptive plots with interpretation  
+- [ ] Reproducible knit (no manual steps required)
+
+---
+
+# 9. Session info
+
+```{r session_info}
+sessionInfo()
+```

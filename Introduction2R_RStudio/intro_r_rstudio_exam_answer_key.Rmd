@@ -1,0 +1,204 @@
+---
+title: "Answer Key: Exam — Introduction to R & RStudio"
+author: ""
+date: ""
+output:
+  pdf_document:
+    toc: false
+    number_sections: false
+---
+
+> This answer key corresponds to **intro_r_rstudio_exam_20_questions.Rmd**.
+
+# Reference objects
+
+```{r reference_objects, eval=FALSE}
+x <- 10
+y <- 5
+
+ages <- c(25, 31, 19, 42, 50, 22)
+
+student_data <- data.frame(
+  ID = c(101, 102, 103, 104),
+  Name = c("Alice", "Bob", "Charlie", "David"),
+  Score = c(88, 92, 75, 85),
+  Major = c("Biology", "History", "Math", "Biology")
+)
+```
+
+# Part A — Describe the output
+
+## 1) Output
+
+- `5 + 3` prints **8**
+- `10 - 4` prints **6**
+- `6 * 7` prints **42**
+- `20 / 4` prints **5**
+
+---
+
+## 2) Output
+
+- `10 %% 3` prints **1**
+- `%%` computes the **remainder** after division (modulus operator).
+
+---
+
+## 3) Output
+
+With `x <- 10`, `y <- 5`:
+
+- `x == 10` prints **TRUE**
+- `y != 5` prints **FALSE**
+- `x > y` prints **TRUE**
+
+---
+
+## 4) Output
+
+- `(x > 5) & (y < 10)` prints **TRUE**
+- `(x == 5) | (y == 5)` prints **TRUE**
+- `!(x > y)` prints **FALSE**
+
+---
+
+## 5) Output
+
+With `ages <- c(25, 31, 19, 42, 50, 22)`:
+
+- `ages[3]` returns **19**
+- `ages[c(1, 5)]` returns **c(25, 50)**
+- `ages[2:4]` returns **c(31, 19, 42)**
+
+---
+
+## 6) Output
+
+- `ages[seq(1, length(ages), by = 2)]` returns the odd-position elements: **c(25, 19, 50)**
+
+---
+
+## 7) Output
+
+- `student_data$Score` returns **c(88, 92, 75, 85)**
+- `mean(student_data$Score)` returns **85**
+
+---
+
+## 8) Output
+
+- `student_data[3, ]` returns the **third row** (a 1-row data frame):  
+  `ID = 103`, `Name = "Charlie"`, `Score = 75`, `Major = "Math"`
+- `student_data[, 2]` returns the **Name column** (a character vector):  
+  `c("Alice", "Bob", "Charlie", "David")`
+- `student_data[3, 2]` returns the single value **"Charlie"**
+- `student_data[, c("Name", "Major")]` returns a **data frame** with two columns (`Name`, `Major`) and all rows.
+
+# Part B — Find and fix the error
+
+## 9) Debugging
+
+Correct comparison:
+
+```{r a9, eval=FALSE}
+x == 10
+```
+
+---
+
+## 10) Debugging
+
+Missing comma. Correct:
+
+```{r a10, eval=FALSE}
+student_data[3, ]
+```
+
+---
+
+## 11) Debugging
+
+Missing comma to indicate “all columns.” Correct:
+
+```{r a11, eval=FALSE}
+high_scorers <- student_data[student_data$Score > 85, ]
+```
+
+---
+
+## 12) Debugging
+
+Package name must be a character string:
+
+```{r a12, eval=FALSE}
+install.packages("dplyr")
+```
+
+---
+
+## 13) Debugging
+
+Missing closing parenthesis:
+
+```{r a13, eval=FALSE}
+library(dplyr)
+```
+
+---
+
+## 14) Debugging
+
+Search term must be a character string:
+
+```{r a14, eval=FALSE}
+help.search("correlation")
+```
+
+# Part C — Write the R code
+
+## 15) Write code
+
+```{r a15, eval=FALSE}
+age <- 52
+```
+
+---
+
+## 16) Write code
+
+```{r a16, eval=FALSE}
+name <- "Jordan"
+```
+
+---
+
+## 17) Write code
+
+```{r a17, eval=FALSE}
+is_complete <- TRUE
+```
+
+---
+
+## 18) Write code
+
+```{r a18, eval=FALSE}
+student_data[, c("Name", "Major")]
+```
+
+---
+
+## 19) Write code
+
+```{r a19, eval=FALSE}
+biology_majors <- student_data[student_data$Major == "Biology", ]
+```
+
+---
+
+## 20) Write code
+
+```{r a20, eval=FALSE}
+class(student_data)
+str(student_data)
+```

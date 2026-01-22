@@ -1,0 +1,206 @@
+---
+title: "Quiz: Data Wrangling and the Tidyverse"
+author: ""
+date: "Data Science for the Psychological Sciences"
+output:
+  pdf_document:
+    toc: false
+    number_sections: false
+---
+
+**Instructions:** Select the best answer for each question. Each question is worth **1 point**.
+
+---
+
+## Question 1 (1 point)
+
+**What is the role of the `group_by()` function in data analysis?**
+
+A. To import external datasets  
+B. To clean column names  
+C. To visualize data  
+D. To segment data into groups for analysis  
+
+**Correct answer:** D
+
+---
+
+## Question 2 (1 point)
+
+**Which function would you use to filter specific rows in a dataset?**
+
+A. `filter()`  
+B. `arrange()`  
+C. `mutate()`  
+D. `select()`  
+
+**Correct answer:** A
+
+---
+
+## Question 3 (1 point)
+
+**What does the function `summarise()` do in dplyr?**
+
+A. It creates summary statistics for groups of data  
+B. It visualizes data in a plot  
+C. It imports datasets from files  
+D. It filters data based on conditions  
+
+**Correct answer:** A
+
+---
+
+## Question 4 (1 point)
+
+**What should each column in tidy data represent?**
+
+A. A variable  
+B. An observation  
+C. A data type  
+D. A summary row  
+
+**Correct answer:** A
+
+---
+
+## Question 5 (1 point)
+
+**In Tidyverse, what is the pipe operator (`%>%`) used for?**
+
+A. To connect different databases  
+B. To increase data storage  
+C. To visualize data  
+D. To chain together multiple data functions  
+
+**Correct answer:** D
+
+---
+
+## Question 6 (1 point)
+
+**What is one common problem you might encounter with raw data?**
+
+A. Data contains too many colors  
+B. Data is too organized  
+C. Missing values  
+D. Data is too small  
+
+**Correct answer:** C
+
+---
+
+## Question 7 (1 point)
+
+**If you want to create a new column based on existing data, which dplyr function would you use?**
+
+A. `mutate()`  
+B. `create()`  
+C. `transform()`  
+D. `add_column()`  
+
+**Correct answer:** A
+
+---
+
+## Question 8 (1 point)
+
+**What is the benefit of cleaning column names in a dataset?**
+
+A. It adds complexity to the dataset  
+B. It makes the names easier to work with and prevents errors  
+C. It makes the dataset smaller  
+D. It makes column names harder to remember  
+
+**Correct answer:** B
+
+---
+
+## Question 9 (1 point)
+
+**Which Tidyverse function is commonly used to read in CSV data?**
+
+A. `import_csv()`  
+B. `load_csv()`  
+C. `fetch_csv()`  
+D. `read_csv()`  
+
+**Correct answer:** D
+
+---
+
+## Question 10 (1 point)
+
+**According to the 80/20 Rule of Data Science, what percentage of time is typically spent on data wrangling?**
+
+A. 80%  
+B. 50%  
+C. 30%  
+D. 20%  
+
+**Correct answer:** A
+
+---
+
+## Question 11 (1 point)
+
+**What is data wrangling primarily about?**
+
+A. Storing data in databases  
+B. Creating predictive models  
+C. Transforming raw data into a clean, structured format  
+D. Printing reports  
+
+**Correct answer:** C
+
+---
+
+## Question 12 (1 point)
+
+**What is a tibble?**
+
+A. A modern take on data frames in R  
+B. A visualization tool  
+C. A kind of statistical model  
+D. A type of dataset  
+
+**Correct answer:** A
+
+---
+
+## Question 13 (1 point)
+
+**What is the main advantage of using the Tidyverse package in R?**
+
+A. It offers better performance than base R  
+B. It is only for statistical analysis  
+C. It eliminates the need for data cleaning  
+D. It provides a cohesive set of tools for data science  
+
+**Correct answer:** D
+
+---
+
+## Question 14 (1 point)
+
+**What type of data is considered categorical?**
+
+A. Data that is numerical and continuous  
+B. Data that contains dates  
+C. Data that has a specific order  
+D. Data that can be divided into groups or categories  
+
+**Correct answer:** D
+
+---
+
+## Question 15 (1 point)
+
+**Which of the following is considered a tidy dataset?**
+
+A. A dataset where each variable is in its own column  
+B. A dataset with aggregated data only  
+C. A dataset with multiple variables in one column  
+D. A dataset with missing values in a row  
+
+**Correct answer:** A

@@ -1,0 +1,439 @@
+---
+title: "Programming II Assignment: Loops & Flow Control"
+subtitle: "Data Science for the Psychological Sciences"
+author: "Student Name"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: false
+    toc_depth: 2
+    number_sections: false
+  pdf_document:
+    toc: false
+    number_sections: false
+    latex_engine: xelatex
+geometry: margin=1in
+fontsize: 11pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE
+)
+options(htmltools.dir.version = FALSE)
+```
+
+# Overview and instructions
+
+## Purpose
+This assignment is focused on:
+
+- 
+
+## What to submit
+Submit **two files**:
+
+1. `Lastname_Firstname_Programming_II_Assignment.Rmd`
+2. The knitted output: `Lastname_Firstname_Programming_II_Assignment.html`
+
+Your report must **knit without errors**.
+
+**General expectations**
+- Your functions should be readable and use clear names.
+- You must demonstrate tests (function calls) that show your functions work.
+
+---
+
+# Part 1: Variables and Basic Operations
+
+## Problem 1: Area of a Rectangle
+
+Create two variables, `width` and `height`, and assign them numeric
+values (e.g., 10 and 5). Calculate the area of the rectangle
+(`width * height`) and store it in a variable called `area`. Print the
+`area`.
+
+```{r  p1_solution}
+# Your code here
+```
+
+## Problem 2: Full Name Greeting
+
+Create a variable `first_name` and a variable `last_name`. Use the
+`paste()` function to combine them into a single string that says
+"Hello, [First Name] [Last Name]!" and print the result.
+
+```{r p2_solution}
+# Your code here
+```
+
+## Problem 3: Is the Number Even?
+
+Write a **function** that takes a number as input and determines whether
+or not that number is odd or even, returning the logical `TRUE` if the
+number is even or `FALSE` if the number is odd. (Hint: the modulus
+operator `%%` might come in handy here). Call the function twice after
+you've created it to demonstrate that it works.
+
+```{r p3_solution}
+# Your code here
+```
+
+------------------------------------------------------------------------
+
+# Part 2: Vectors and Logical Operators
+
+## Problem 4: Monthly Expenses
+
+Create a data frame named `expenses` that contains the following
+"expense categories": rent, groceries, utilities, transportation, and
+entertainment with the corresponding "amounts": `800` `250` `120` `300` `150`. Use logical indexing and the `sum()`
+function to compute monthly expenses *excluding* entertainment.
+
+```{r p4_solution}
+# Your code here
+```
+
+## Problem 5: Accessing Vector Elements
+
+Using the `expenses` vector from the previous problem, write code to
+access and print only the expense for groceries (the 2nd element) and
+the expense for entertainment (the 5th element).
+
+```{r p5_solution}
+# Your code here
+```
+
+## Problem 6: Which Expenses are High?
+
+Using the `expenses` vector, write a line of code that returns a logical
+vector (`TRUE`/`FALSE` values) indicating which expenses are greater
+than `200`.
+
+```{r p6_solution}
+# Your code here
+```
+
+## Problem 7: Checking Expenses in a Data Frame
+
+Create a data frame with the following column names: (1) Month (2) Rent,
+(3) Groceries, (4) Travel, and (5) Holiday. The values in the month
+column should include January-December Use any reasonable \$ values for
+Rent, Groceries, and Travel each of the six months. The Holiday column
+should contain logical values (i.e., TRUE or FALSE) indicating whether
+or not the month contains a major Holiday typically associated with travel (this may vary from person to
+person).
+
+Assuming that travel costs are likely to be higher in months where there
+is a holiday, use indexing and the `mean()` function to compute the
+average travel expense in months where there is a holiday and in months
+that do not include a holiday.
+
+```{r p6b_solution}
+# Your code here
+```
+
+------------------------------------------------------------------------
+
+# Part 3: Flow Control and Loops
+
+## Problem 8: Movie Rating Guide
+Imagine a movie rating system. Write an `if`/`else if`/`else` statement that checks a variable `rating` and
+prints: - "Excellent!" if the rating is 8 or higher. - "Good" if the
+rating is between 5 and 8 (exclusive of 8). - "Poor" for anything else.
+Test your code with `rating <- 8`, `rating<-6`, and `rating<-2`.
+
+```{r p7_solution}
+rating <- 9
+# Your if/else if/else statement here
+```
+
+## Problem 9: Temperature Conversion Loop
+You have a vector of temperatures in Celsius. Use a `for` loop to iterate through each
+temperature, convert it to Fahrenheit, and print the result. The formula
+is `(Celsius * 9/5) + 32`.
+
+```{r p8_solution}
+celsius_temps <- c(0, 15, 30, -5)
+
+# Your for loop here
+```
+
+## Problem 10: Reaching a Savings Goal 
+
+You want to save \$50. You start with \$10 and save \$5 each week. Use a `while` loop to determine how
+many weeks it will take to reach your goal. Inside the loop, you should
+increment the weeks and add to your savings. Print the final number of
+weeks.
+
+```{r p9_solution}
+savings <- 10
+goal <- 50
+weeks <- 0
+
+# Your while loop here
+
+print(paste("It will take", weeks, "weeks to reach the goal."))
+```
+
+
+## Problem 11: Create a Subset Data Frame 
+The `mtcars` dataset is already built into R. For this first step, create a *new* data frame
+called `my_cars` that contains only four columns from `mtcars`: `mpg`
+(Miles Per Gallon), `hp` (Horsepower), `wt` (Weight), and `cyl`
+(Cylinders). (Hint: `new_df <- old_df[, c("col1", "col2")]`). Print the
+first few rows of your new data frame using `head()`.
+
+```{r p10_solution}
+# Your code here
+```
+
+## Problem 12: Find the Highest Horsepower
+
+Using the `my_cars` data frame you just created, use a `for` loop to find the highest horsepower of any car in your subset.
+
+```{r p11_solution}
+# Your code here
+```
+
+## Problem 13: Calculate Average Horsepower
+Write a *function* that will calculate the average horsepower from the `hp` column of your `my_cars` data frame, separately for the 4-cylinder and 8-cylinder cars (indicated in the `cyl` column) and return the two means in a list object.
+
+Once you have it working, test it on the original mt_cars data set.
+
+```{r p12_solution}
+# Your code here
+```
+
+------------------------------------------------------------------------
+
+# Part 4: Bringing It All Together
+
+## Problem 14: Interactive Number Guessing Game
+This problem will test your ability to combine `readline()`, a `while` loop, and
+`if/else if/else` statements to create a simple interactive program.
+
+**Your Goal:** Write a script that plays a number guessing game with the
+user.
+
+**Instructions:**
+
+1.  **Set a secret number.** Create a variable named `secret_number` and
+    assign it an integer value between 1 and 100 (e.g., `42`).
+
+2.  **Create a loop.** 
+  - HINT: Use `while (TRUE)` to create a loop that will run forever until you explicitly tell it to stop.
+  - Set a maximum number of "guesses" and loop until that maximum number of guesses has been met.
+
+3.  **Get user input.** Inside the loop, use `readline()` to prompt the
+    user to guess a number. Store their input in a variable.
+
+4.  **Convert the input.** Remember that `readline()` returns a
+    character string. You must convert the user's input into a number
+    using `as.numeric()` before you can compare it to your
+    `secret_number`.
+
+5.  **Check the guess.** Use an `if/else if/else` statement with logical
+    operators to check the user's guess against the `secret_number`:
+
+    -   If the guess is **less than** the secret number, print "Too low!
+        Guess again."
+    -   If the guess is **greater than** the secret number, print "Too
+        high! Guess again."
+    -   If the guess is **equal to** the secret number, print a success
+        message like "Correct! You guessed the number!" and then use the
+        `break` command to exit the `while` loop.
+    -   Keep track of how many guesses the user takes using a
+        `guess_counter` variable that is initially set to 0. Inside the
+        loop, add 1 to the counter for each guess. When the user guesses
+        correctly, include the number of guesses in the success message
+        (e.g., "Correct! You guessed the number in 5 tries!").
+
+```{r p16_solution}
+# 1. Set the secret number
+secret_number <- 42
+
+print("I'm thinking of a number between 1 and 100.")
+
+# 2. Start the loop{
+  
+#}
+```
+
+**Problem 15: The Fuel Efficiency Expert**
+
+**Objective:** Your goal is to analyze the `mtcars` dataset to
+automatically generate a performance summary. You will write a script
+that iterates through the different cylinder groups (4, 6, and 8
+cylinders), calculates the average fuel efficiency for each group, and
+then prints a customized evaluation based on that average.
+
+This problem will require you to use a `for` loop, perform logical
+indexing to filter a data frame, and use `if`/`else if`/`else`
+statements to make decisions.
+
+**Instructions:**
+
+1.  **Create a vector of cylinder groups.** Make a vector named
+    `cylinder_groups` that contains the unique cylinder values you want
+    to analyze: `c(4, 6, 8)`.
+
+2.  **Start a `for` loop.** Write a `for` loop that iterates through
+    each value in your `cylinder_groups` vector.
+
+3.  **Inside the loop, filter the data.** For each cylinder count in the
+    loop, use **logical indexing** to create a temporary subset of the
+    `mtcars` data frame that contains *only* the cars with that number
+    of cylinders.
+
+4.  **Calculate the average MPG.** For the temporary subset you just
+    created, calculate the mean of the `mpg` column. Store this value in
+    a variable (e.g., `avg_mpg`).
+
+5.  **Use conditional logic to evaluate efficiency.** Write an
+    `if`/`else if`/`else` statement that checks the `avg_mpg` you just
+    calculated:
+
+    -   If `avg_mpg` is greater than 25, print a message like:
+        `"Cars with [X] cylinders are highly fuel-efficient."`
+
+    -   If `avg_mpg` is between 18 and 25 (inclusive), print a message
+        like: `"Cars with [X] cylinders have moderate fuel efficiency."`
+
+    -   Otherwise (if `avg_mpg` is less than 18), print a message like:
+        `"Cars with [X] cylinders are not fuel-efficient."`
+
+6.  Make sure to replace `[X]` in your print statements with the actual
+    cylinder count from the current loop iteration. The `paste()`
+    function will be very helpful here.
+
+**Starter Code:**
+
+```{r efficiency_expert_solution}
+# 1. Create a vector of cylinder groups to loop through
+cylinder_groups <- c(4, 6, 8)
+
+# 2. Start the for loop
+for (cyl in cylinder_groups) {
+  
+  # 3. Use logical indexing to create a subset for the current cylinder group
+  # (Your code here)
+  
+  # 4. Calculate the average MPG for the subset
+  # (Your code here)
+
+  # 5. Use if/else if/else to check the average MPG and print a summary
+  # (Your code here)
+
+}
+```
+
+**Expected Output:** When you run your completed code, you should see
+something similar to the following output in your console:
+
+```         
+[1] "Cars with 4 cylinders are highly fuel-efficient."
+[1] "Cars with 6 cylinders have moderate fuel efficiency."
+[1] "Cars with 8 cylinders are not fuel-efficient."
+```
+
+------------------------------------------------------------------------
+
+**Problem 16: The Plant Species Analyst**
+
+**Objective:** You are an assistant to a botanist who is studying iris
+flowers. The botanist has a theory that the species with the largest
+average petal area is the most resilient. Your task is to analyze the
+built-in `iris` dataset to identify which of the three species has the
+largest average petal area.
+
+This problem will require you to get unique values for a column using
+the `unique()` function, loop through those values using a `for` loop,
+perform logical indexing, create a new calculated value, and use an `if`
+statement with "tracker" variables to find the maximum value across all
+categories.
+
+**Instructions:**
+
+1.  **Get the unique species.** First, create a vector called
+    `species_names` that contains the unique species from the
+    `iris$Species` column. The `unique()` function will be perfect for
+    this.
+
+2.  **Initialize "tracker" variables.** Before you start the loop, you
+    need variables to keep track of the winner. Create two variables:
+
+    -   `max_avg_petal_area` and set it to `0`.
+    -   `winning_species` and set it to an empty string `""`.
+
+3.  **Start a `for` loop.** Write a `for` loop that iterates through
+    each name in your `species_names` vector.
+
+4.  **Inside the loop, filter the data.** For each species, use
+    **logical indexing** to create a temporary subset of the `iris` data
+    frame.
+
+5.  **Calculate petal area.** For your temporary subset, calculate the
+    average petal area. You can estimate this as
+    `mean(subset$Petal.Length * subset$Petal.Width)`. Store this value
+    in a variable like `current_avg_area`.
+
+6.  **Use an `if` statement to check for a new winner.** Compare the
+    `current_avg_area` to your `max_avg_petal_area` tracker.
+
+    -   If the current species' average petal area is greater than the
+        max area found so far, you have a new winner! You must update
+        both of your tracker variables:
+        -   Set `max_avg_petal_area` to the `current_avg_area`.
+        -   Set `winning_species` to the name of the current species.
+
+7.  **After the loop, print the final result.** Once the loop has
+    finished checking all the species, your tracker variables will hold
+    the final answer. Print a single, formatted summary sentence
+    announcing the winner. The `paste()` function will be helpful.
+
+**Starter Code:**
+
+```{r species_analyst_solution}
+# 1. Get the unique species from the iris dataset
+species_names <- unique(iris$Species)
+
+# 2. Initialize tracker variables
+max_avg_petal_area <- 0
+winning_species <- ""
+
+# 3. Start the for loop to iterate through each species
+for (species in species_names) {
+  
+  # 4. Use logical indexing to create a subset for the current species
+  # (Your code here)
+
+  # 5. Calculate the average petal area for the subset
+  # (Your code here)
+
+  # 6. Use an if statement to check if this species is the new winner
+  # (Your code here)
+  
+}
+
+# 7. Print the final result after the loop is finished
+# (Your code here)
+```
+
+**Expected Output:** When your code is run correctly, it should produce
+a single summary line that looks like this:
+
+```         
+[1] "The winning species is virginica with an average petal area of 10.88"
+```
+
+*(Note: Your exact number might vary slightly depending on rounding,
+which is fine.)*
+
+# Acknowledgments (required only if you used outside help)
+
+List any people, websites, or tools you used. Be specific enough that your work is transparent.
+
+-

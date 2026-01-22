@@ -1,0 +1,423 @@
+---
+title: "Quiz: Data Wrangling with the Tidyverse (with Solutions)"
+author: ""
+date: ""
+output:
+  pdf_document:
+    toc: false
+    number_sections: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE
+)
+
+library(tidyverse)
+```
+
+# Shared mini-datasets (used across questions)
+
+```{r data}
+sales <- tibble::tribble(
+  ~order_id, ~date,        ~store, ~category,   ~units, ~revenue,
+  "A001",    "2025-01-01", "WBG",  "Coffee",     2,     8.50,
+  "A002",    "2025-01-01", "WBG",  "coffee ",    1,     4.25,
+  "A003",    "2025-01-02", "WBG",  "Tea",        NA,    3.75,
+  "A004",    "2025-01-02", "RVA",  "COFFEE",     3,     NA,
+  "A005",    "2025-01-03", "RVA",  "Tea",        2,     7.50,
+  "A006",    "2025-01-03", "WBG",  "Snacks",     5,     12.00
+)
+
+weather <- tibble::tribble(
+  ~date,        ~temp_f, ~precip_in,
+  "2025-01-01",  42,     0.00,
+  "2025-01-02",  39,     0.20,
+  "2025-01-03",  45,     NA
+)
+
+wide_temps <- tibble::tribble(
+  ~day, ~Temp_Month_1, ~Temp_Month_2,
+   1,        42,           NA,
+   2,        39,           NA,
+   3,        45,           NA,
+   1,        NA,           50,
+   2,        NA,           48
+)
+```
+
+\newpage
+
+# Questions
+
+## 1) Import + types (very brief code)
+
+The `sales$date` column is currently character. Write **one line** of code to convert it to a `Date` column in the `sales` tibble.
+
+```{r q1, eval=FALSE}
+# YOUR CODE
+```
+
+---
+
+## 2) Count categories (very brief code)
+
+Write **one line** of code to produce a frequency table of `category` values in `sales`, sorted from most common to least common.
+
+```{r q2, eval=FALSE}
+# YOUR CODE
+```
+
+---
+
+## 3) String cleaning (very brief code)
+
+Write a `mutate()` line that creates `category_clean` by:
+- lowercasing,
+- trimming whitespace,
+- and converting to title case (e.g., `"coffee"` → `"Coffee"`).
+
+```{r q3, eval=FALSE}
+# YOUR CODE
+```
+
+---
+
+## 4) Missingness diagnostics (very brief code)
+
+Write code to compute **percent missing** for `revenue` in `sales` (a single number).
+
+```{r q4, eval=FALSE}
+# YOUR CODE
+```
+
+---
+
+## 5) Filtering missing values (brief code)
+
+Write code to remove rows where `units` is missing **or** `revenue` is missing.
+
+```{r q5, eval=FALSE}
+# YOUR CODE
+```
+
+---
+
+## 6) Summarise correctly (identify and fix an error)
+
+This code errors or returns the wrong result:
+
+```r
+sales %>%
+  summarise(avg_rev = mean(revenue))
+```
+
+Write the corrected version so it returns the average revenue **ignoring missing values**.
+
+```{r q6, eval=FALSE}
+# YOUR CODE
+```
+
+---
+
+## 7) Grouped summaries (brief code)
+
+Write code to compute `avg_revenue` by `store` (one row per store), ignoring missing revenue.
+
+```{r q7, eval=FALSE}
+# YOUR CODE
+```
+
+---
+
+## 8) `na.rm` misconception (short written response)
+
+A student writes:
+
+```r
+sales %>%
+  summarise(
+    total_units = sum(units, na.rm = TRUE),
+    avg_revenue = mean(revenue, na.rm = TRUE)
+  )
+```
+
+In **1–2 sentences**, describe **one important limitation** of relying only on `na.rm = TRUE` for missing data handling.
+
+**Your answer:**
+
+---
+
+## 9) Join keys and type mismatch (identify + fix)
+
+A student tries:
+
+```r
+sales %>%
+  left_join(weather, by = "date")
+```
+
+but gets lots of missing `temp_f` after the join.
+
+Give **one likely reason** based on this dataset and show **one line** that fixes it.
+
+```{r q9, eval=FALSE}
+# YOUR CODE + BRIEF NOTE
+```
+
+---
+
+## 10) Validate a join with `anti_join()` (brief code)
+
+Write code to identify dates that appear in `sales` but do **not** appear in `weather`.
+
+```{r q10, eval=FALSE}
+# YOUR CODE
+```
+
+---
+
+## 11) Join explosion detection (brief code)
+
+Write code that checks whether `weather` has duplicate join keys on `date`. If duplicates exist, the output should show them.
+
+```{r q11, eval=FALSE}
+# YOUR CODE
+```
+
+---
+
+## 12) Reshape wide → long (brief code)
+
+Using `wide_temps`, write code to create a long table with columns:
+- `day`
+- `month` (values like `1`, `2`)
+- `temp`
+
+```{r q12, eval=FALSE}
+# YOUR CODE
+```
+
+---
+
+## 13) Remove pivot artifacts (brief code)
+
+After reshaping `wide_temps` to long, many rows will have `temp = NA`. Write **one line** of code to remove those rows.
+
+```{r q13, eval=FALSE}
+# YOUR CODE
+```
+
+---
+
+## 14) `case_when()` recoding (brief code)
+
+Write code to create `store_type` in `sales` where:
+- `"WBG"` → `"Williamsburg"`
+- `"RVA"` → `"Richmond"`
+- otherwise → `"Other"`
+
+```{r q14, eval=FALSE}
+# YOUR CODE
+```
+
+---
+
+## 15) Common grouping mistake (spot and correct)
+
+A student expects **one row total**, but gets two:
+
+```r
+sales %>%
+  group_by(store) %>%
+  summarise(n = n())
+```
+
+They later run:
+
+```r
+sales %>%
+  group_by(store) %>%
+  summarise(n = n()) %>%
+  summarise(total = sum(n))
+```
+
+1. In **1–2 sentences**, explain why they got two rows in the first step.  
+2. Provide a **single pipeline** that returns **one row** with:
+   - `n_total` (total rows),
+   - `n_wbg` (rows where store == "WBG"),
+   - `n_rva` (rows where store == "RVA").
+
+```{r q15, eval=FALSE}
+# YOUR CODE + BRIEF NOTE
+```
+
+\newpage
+
+# Solutions (not evaluated)
+
+> Instructor note: All solution code chunks are set to `eval=FALSE` so the document will knit without executing solutions.
+
+## 1) Import + types
+
+```{r a1, eval=FALSE}
+sales <- sales %>% mutate(date = as.Date(date))
+```
+
+---
+
+## 2) Count categories
+
+```{r a2, eval=FALSE}
+sales %>% count(category, sort = TRUE)
+```
+
+---
+
+## 3) String cleaning
+
+```{r a3, eval=FALSE}
+sales %>%
+  mutate(
+    category_clean = category %>%
+      stringr::str_to_lower() %>%
+      stringr::str_trim() %>%
+      stringr::str_to_title()
+  )
+```
+
+---
+
+## 4) Percent missing for `revenue`
+
+```{r a4, eval=FALSE}
+sales %>% summarise(pct_missing_revenue = mean(is.na(revenue)))
+```
+
+---
+
+## 5) Remove rows where `units` OR `revenue` is missing
+
+```{r a5, eval=FALSE}
+sales %>% tidyr::drop_na(units, revenue)
+```
+
+(Equivalent: `filter(!is.na(units) & !is.na(revenue))`.)
+
+---
+
+## 6) Correct `summarise()` ignoring missingness
+
+```{r a6, eval=FALSE}
+sales %>% summarise(avg_rev = mean(revenue, na.rm = TRUE))
+```
+
+---
+
+## 7) Average revenue by store
+
+```{r a7, eval=FALSE}
+sales %>%
+  group_by(store) %>%
+  summarise(avg_revenue = mean(revenue, na.rm = TRUE), .groups = "drop")
+```
+
+---
+
+## 8) Limitation of only using `na.rm = TRUE`
+
+Example correct responses (any one is sufficient):
+
+- "`na.rm = TRUE` drops missing values only within the calculation; it does not diagnose why values are missing or whether missingness is systematic (which can bias results)."
+- "It produces a number but hides the fact that the sample size changed and can mask group differences in missingness."
+
+---
+
+## 9) Join mismatch: fix incompatible key types
+
+A common cause is that one `date` column is `Date` and the other is character. Fix by aligning types before the join.
+
+```{r a9, eval=FALSE}
+sales %>%
+  mutate(date = as.Date(date)) %>%
+  left_join(weather %>% mutate(date = as.Date(date)), by = "date")
+```
+
+---
+
+## 10) Dates in `sales` not present in `weather`
+
+```{r a10, eval=FALSE}
+sales %>%
+  distinct(date) %>%
+  anti_join(weather, by = "date")
+```
+
+---
+
+## 11) Duplicate key check in `weather`
+
+```{r a11, eval=FALSE}
+weather %>% count(date) %>% filter(n > 1)
+```
+
+---
+
+## 12) Reshape `wide_temps` to long
+
+```{r a12, eval=FALSE}
+temps_long <- wide_temps %>%
+  pivot_longer(
+    cols = starts_with("Temp_Month_"),
+    names_to = "month",
+    values_to = "temp",
+    names_prefix = "Temp_Month_"
+  ) %>%
+  mutate(month = as.integer(month))
+
+temps_long
+```
+
+---
+
+## 13) Remove pivot artifacts (missing `temp`)
+
+```{r a13, eval=FALSE}
+temps_long %>% drop_na(temp)
+```
+
+(Equivalent: `filter(!is.na(temp))`.)
+
+---
+
+## 14) Recode with `case_when()`
+
+```{r a14, eval=FALSE}
+sales %>%
+  mutate(
+    store_type = case_when(
+      store == "WBG" ~ "Williamsburg",
+      store == "RVA" ~ "Richmond",
+      TRUE ~ "Other"
+    )
+  )
+```
+
+---
+
+## 15) Grouping explanation + one-row summary
+
+**Explanation:** `group_by(store)` splits the data into groups, so `summarise(n = n())` produces **one row per group** (here, one per store).
+
+A single pipeline returning one row:
+
+```{r a15, eval=FALSE}
+sales %>%
+  summarise(
+    n_total = n(),
+    n_wbg   = sum(store == "WBG"),
+    n_rva   = sum(store == "RVA")
+  )
+```

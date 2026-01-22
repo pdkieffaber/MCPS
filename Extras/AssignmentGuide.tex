@@ -1,0 +1,466 @@
+\documentclass[11pt]{scrartcl}
+
+%------------------------------------------------
+% Page layout & typography
+%------------------------------------------------
+\usepackage[margin=1in]{geometry}
+\usepackage{microtype}
+\usepackage{setspace}
+\onehalfspacing
+
+% Palatino-like font for a bookish look
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[sc]{mathpazo}
+\linespread{1.05}
+
+\usepackage{inconsolata} % nicer monospace
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+
+\usepackage{wasysym} %provides \Square and \Checkbox
+
+%------------------------------------------------
+% Colors
+%------------------------------------------------
+\definecolor{dsBlue}{HTML}{1F4E79}
+\definecolor{dsLight}{HTML}{E8F0FA}
+\definecolor{dsAccent}{HTML}{CC6600}
+\definecolor{dsGrey}{HTML}{444444}
+
+%------------------------------------------------
+% Hyperref settings
+%------------------------------------------------
+\hypersetup{
+  colorlinks=true,
+  linkcolor=dsBlue,
+  urlcolor=dsAccent,
+  citecolor=dsBlue
+}
+
+%------------------------------------------------
+% Section styling
+%------------------------------------------------
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{dsBlue}}
+  {\thesection}{0.75em}{}
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{dsGrey}}
+  {\thesubsection}{0.75em}{}
+
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries\color{dsGrey}}
+  {\thesubsubsection}{0.75em}{}
+
+%------------------------------------------------
+% Header / footer
+%------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textit{Using GitHub Classroom with RStudio}}
+\rhead{\textit{Student Guide}}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{%
+  \color{dsLight}\leaders\hrule height \headrulewidth\hfill}}
+
+%------------------------------------------------
+% tcolorbox styles
+%------------------------------------------------
+\tcbset{
+  colback=white,
+  colframe=dsBlue,
+  coltitle=dsBlue,
+  arc=2mm,
+  boxrule=0.8pt,
+  left=8pt,
+  right=8pt,
+  top=6pt,
+  bottom=6pt,
+  enhanced,
+  breakable
+}
+
+\newtcolorbox{infoBox}[1][]{
+  title=\textbf{#1},
+  colback=dsLight,
+  colframe=dsBlue
+}
+
+\newtcolorbox{warningBox}[1][]{
+  title=\textbf{#1},
+  colback=white,
+  colframe=dsAccent
+}
+
+\newtcolorbox{checklistBox}[1][]{
+  title=\textbf{#1},
+  colback=dsLight,
+  colframe=dsAccent
+}
+
+%------------------------------------------------
+% Title
+%------------------------------------------------
+\title{\vspace{-1.5em}Using GitHub Classroom with RStudio\\[0.5em]
+  \large A Step--by--Step Guide for This Course}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+\vspace{-1.5em}
+
+\section{Overview}
+
+In this course, you will use \textbf{GitHub Classroom} and \textbf{RStudio} for all programming assignments.
+
+For each assignment:
+
+\begin{enumerate}[label=\arabic*., nosep]
+  \item You will click a \textbf{GitHub Classroom invitation link}.
+  \item GitHub Classroom will create a \textbf{private GitHub repository (``repo'') just for you} (or your team).
+  \item You will \textbf{clone} that repo to your computer as an \textbf{RStudio Project}.
+  \item You will do all your work in RStudio and use \textbf{Git (via RStudio)} to \textbf{commit and push} your changes back to GitHub.
+  \item At the deadline, whatever is in your GitHub repo is considered your submission (unless I tell you otherwise).
+\end{enumerate}
+
+\section{Before You Start: Install and Set Things Up}
+
+You need the following on your computer.
+
+\subsection{Create a GitHub Account}
+
+\begin{enumerate}[label=\arabic*., nosep]
+  \item Go to \url{https://github.com}.
+  \item Sign up (ideally with your university email).
+  \item Choose a username you are comfortable having associated with the course.
+\end{enumerate}
+
+You will use this same account all semester.
+
+\subsection{Install R and RStudio}
+
+\begin{enumerate}[label=\arabic*., nosep]
+  \item Install \textbf{R} (latest version) from CRAN:\\
+  \url{https://cloud.r-project.org/}
+  \item Install \textbf{RStudio Desktop} (free version):\\
+  \url{https://posit.co/download/rstudio-desktop/}
+\end{enumerate}
+
+\subsection{Install Git}
+
+\begin{enumerate}[label=\arabic*., nosep]
+  \item Install \textbf{Git}:
+  \begin{itemize}[nosep]
+    \item Windows: \url{https://git-scm.com/download/win}
+    \item macOS: use Homebrew (\verb|brew install git|) or download from \url{https://git-scm.com/download/mac}
+    \item Linux: use your package manager (e.g., \verb|sudo apt install git|)
+  \end{itemize}
+  \item After installing Git, open \textbf{RStudio} and make sure RStudio sees it:
+  \begin{enumerate}[label*=\arabic*., nosep]
+    \item In RStudio: \texttt{Tools} $\rightarrow$ \texttt{Global Options\ldots} $\rightarrow$ \texttt{Git/SVN}.
+    \item You should see the path to the Git executable (e.g., \texttt{C:/Program Files/Git/bin/git.exe}).
+    \item If it says Git is not installed, browse to the Git executable manually or restart RStudio after installing Git.
+  \end{enumerate}
+\end{enumerate}
+
+\subsection{Configure Git in RStudio (Name and Email)}
+
+You only do this once per computer.
+
+\begin{enumerate}[label=\arabic*., nosep]
+  \item In RStudio: \texttt{Tools} $\rightarrow$ \texttt{Global Options\ldots} $\rightarrow$ \texttt{Git/SVN}.
+  \item Ensure Git is enabled (version control interface is available).
+  \item In the \textbf{Terminal} tab in RStudio (or your system terminal), run:
+\end{enumerate}
+
+\begin{verbatim}
+git config --global user.name "Your Name"
+git config --global user.email "your_email@example.com"
+\end{verbatim}
+
+Use the same email you used for GitHub.
+
+\section{Accepting a GitHub Classroom Assignment}
+
+For each assignment I will give you a \textbf{GitHub Classroom invitation link}, for example in the LMS.
+
+\begin{enumerate}[label=\arabic*., nosep]
+  \item Click the link.
+  \item Log in to GitHub if prompted.
+  \item You may see a page asking you to \textbf{confirm your GitHub username}; follow the prompts.
+  \item GitHub Classroom will create \textbf{your private assignment repository}. Wait until you see a message like ``Your assignment repository has been created.''
+  \item Click \textbf{``Go to your assignment repository''}.
+\end{enumerate}
+
+You should now be on a GitHub page with a repository name like:
+\begin{center}
+\texttt{assignment-01-yourusername}
+\end{center}
+
+This is your own copy of the starter code for that assignment.
+
+\section{Clone the Assignment into RStudio (as a Project)}
+
+You will work \textbf{locally} on your computer using RStudio.
+
+\subsection{Copy the Repository URL from GitHub}
+
+\begin{enumerate}[label=\arabic*., nosep]
+  \item On your assignment repository page, click the \textbf{green ``Code'' button}.
+  \item Make sure the \textbf{``HTTPS''} tab is selected.
+  \item Copy the URL shown (something like):\\[0.25em]
+  \texttt{https://github.com/COURSE\_ORG/assignment-01-yourusername.git}
+\end{enumerate}
+
+\subsection{Create an RStudio Project from the Git Repository}
+
+\begin{enumerate}[label=\arabic*., nosep]
+  \item Open \textbf{RStudio}.
+  \item Go to \texttt{File} $\rightarrow$ \texttt{New Project\ldots}
+  \item Choose \textbf{``Version Control''}.
+  \item Choose \textbf{``Git''}.
+  \item In the \textbf{Repository URL} field, paste the URL you copied from GitHub.
+  \item Choose a \textbf{local folder} where you want the project to live (e.g., \verb|~/Courses/DataScience/|).
+  \item Optionally change the \textbf{Project directory name}; otherwise RStudio will use the repo name.
+  \item Click \textbf{``Create Project''}.
+\end{enumerate}
+
+RStudio will:
+
+\begin{itemize}[nosep]
+  \item Clone the repository from GitHub to your computer.
+  \item Open it as an \textbf{RStudio Project} (you will see the project name in the top-right of RStudio).
+  \item Show all assignment files in the \textbf{Files} pane.
+\end{itemize}
+
+From now on, always open the RStudio Project for this assignment before working on it:
+\begin{itemize}[nosep]
+  \item \texttt{File} $\rightarrow$ \texttt{Open Project\ldots} $\rightarrow$ select the \texttt{.Rproj} file for that assignment.
+\end{itemize}
+
+\section{Get Oriented in the Assignment Project}
+
+Within RStudio, look for:
+
+\begin{itemize}[nosep]
+  \item The \textbf{Files} pane: shows all files in the repo.
+  \item The \textbf{Git} pane: shows changes you have made (used for commits and pushes).
+  \item The \textbf{README.md} file: usually contains assignment instructions.
+  \item Starter R scripts or R Markdown/Quarto files (e.g., \texttt{assignment01.R}, \texttt{analysis.Rmd}, etc.).
+\end{itemize}
+
+Before doing anything:
+
+\begin{enumerate}[label=\arabic*., nosep]
+  \item Open \texttt{README.md} and read the instructions.
+  \item Identify which files you are supposed to edit (e.g., \texttt{analysis.Rmd}, \texttt{functions.R}).
+  \item Note any instructions about \textbf{running tests} or \textbf{how the assignment will be graded}.
+\end{enumerate}
+
+\section{Work on the Assignment in RStudio}
+
+\subsection{Edit the Code}
+
+\begin{enumerate}[label=\arabic*., nosep]
+  \item Open the relevant \texttt{.R}, \texttt{.Rmd}, or \texttt{.qmd} files.
+  \item Write your code, comments, and narrative as required.
+  \item Run code chunks or lines as you go to test your work:
+  \begin{itemize}[nosep]
+    \item Use \texttt{Ctrl+Enter} / \texttt{Cmd+Enter} to run lines or selections.
+    \item For R Markdown/Quarto, you can knit/render to preview the report if required.
+  \end{itemize}
+\end{enumerate}
+
+\subsection{Run Any Tests (If Provided)}
+
+Some assignments may include test scripts (e.g., \texttt{testthat} tests).
+
+\begin{itemize}[nosep]
+  \item Look for files or instructions like \texttt{tests/}, \texttt{test\_*.R}, or guidance in the README.
+  \item Follow the instructions to run tests (e.g., \verb|source("tests/run_tests.R")|).
+  \item Fix any failing tests before submission if possible.
+\end{itemize}
+
+\section{Save Your Work and Use Git Within RStudio\\(Commit \& Push)}
+
+Your work ``counts'' for the course only when it is \textbf{pushed to GitHub}.
+
+There are three levels of saving:
+
+\begin{enumerate}[label=\arabic*., nosep]
+  \item \textbf{Save file} in RStudio (\texttt{Ctrl+S} / \texttt{Cmd+S}): updates the file on your computer.
+  \item \textbf{Commit}: save a snapshot of your changes in the local Git history.
+  \item \textbf{Push}: send your commits to GitHub (so the instructor can see them).
+\end{enumerate}
+
+\subsection{Stage and Commit Changes}
+
+\begin{enumerate}[label=\arabic*., nosep]
+  \item In RStudio, click the \textbf{Git} tab (usually next to Environment/History).
+  \item You will see a list of files with changes (with checkboxes).
+  \item Check the box next to each file you want to include in the commit (usually all your edited files).
+  \item Click \textbf{``Commit''}.
+    \begin{itemize}[nosep]
+      \item A new window will open showing:
+      \begin{itemize}[nosep]
+        \item Staged files (top-right).
+        \item Diff (changes) (bottom).
+        \item Commit message box (top-left).
+      \end{itemize}
+    \end{itemize}
+  \item In the \textbf{commit message} box, write a short description of what you changed, e.g.:
+    \begin{itemize}[nosep]
+      \item \texttt{Implement main function for Q1}
+      \item \texttt{Fix plot labels and add summary}
+    \end{itemize}
+  \item Click \textbf{``Commit''} in that window.
+  \item Close the commit window after you see a success message.
+\end{enumerate}
+
+You can commit as often as you like---small, frequent commits are good practice.
+
+\subsection{Push Your Commits to GitHub}
+
+After committing:
+
+\begin{enumerate}[label=\arabic*., nosep]
+  \item In the \textbf{Git} tab in RStudio, click the \textbf{green up arrow} labeled \textbf{``Push''}.
+  \item The first time you push, you may be asked to:
+    \begin{itemize}[nosep]
+      \item Log in to GitHub, or
+      \item Use a Personal Access Token instead of a password (if prompted, follow GitHub's instructions).
+    \end{itemize}
+  \item Wait for the push to complete. You should see a short message in the pop-up or the RStudio Console indicating success.
+\end{enumerate}
+
+To confirm:
+
+\begin{enumerate}[label=\arabic*., nosep]
+  \item Go back to the assignment repository page on GitHub in your browser.
+  \item Refresh the page.
+  \item You should see:
+    \begin{itemize}[nosep]
+      \item Your latest commit message.
+      \item Updated files.
+    \end{itemize}
+\end{enumerate}
+
+If you do not see your changes on GitHub, your push did not complete correctly---try again or ask for help.
+
+\section{Check Autograding (If Enabled)}
+
+If the assignment uses \textbf{autograding}, tests will run automatically on GitHub each time you push.
+
+To see results:
+
+\begin{enumerate}[label=\arabic*., nosep]
+  \item On GitHub, go to your assignment repository.
+  \item Look for:
+    \begin{itemize}[nosep]
+      \item A badge or link labelled \textbf{``Actions''}, \textbf{``Checks''}, or \textbf{``Autograding results''}.
+    \end{itemize}
+  \item Click into the latest run to see:
+    \begin{itemize}[nosep]
+      \item Which tests passed.
+      \item Which tests failed.
+      \item Any score or feedback provided.
+    \end{itemize}
+\end{enumerate}
+
+Use this information to:
+
+\begin{itemize}[nosep]
+  \item Fix issues.
+  \item Commit and push again.
+  \item Re-check results (unless there is a push limit specified in the instructions).
+\end{itemize}
+
+\section{Submission: What Counts as ``Handed In''}
+
+For this course, \textbf{your submission is whatever is in your GitHub assignment repository at the deadline}, unless I give you different instructions.
+
+That means:
+
+\begin{itemize}[nosep]
+  \item If your code is only saved locally in RStudio but not pushed to GitHub, I cannot see it.
+  \item If your latest changes are not committed and pushed, they do not count.
+\end{itemize}
+
+Before the deadline, make sure you:
+
+\begin{enumerate}[label=\arabic*., nosep]
+  \item Save all files in RStudio.
+  \item Stage and \textbf{commit} your final changes.
+  \item \textbf{Push} to GitHub.
+  \item Refresh your GitHub repo page and confirm your files and recent commits are visible.
+\end{enumerate}
+
+If there are any additional steps (e.g., pasting your repo URL into the LMS), I will specify those in the assignment instructions.
+
+%------------------------------------------------
+% Common Problems Box
+%------------------------------------------------
+\begin{warningBox}[Common Problems and How to Handle Them]
+
+\subsubsection*{Problem 1: ``My code is done in RStudio, but I do not see it on GitHub.''}
+\begin{itemize}[nosep]
+  \item Did you \textbf{commit} your changes?
+  \item Did you \textbf{push} after committing?
+  \item Check the RStudio Git tab: if there are uncommitted changes, commit them. Then push.
+\end{itemize}
+
+\subsubsection*{Problem 2: ``RStudio says `Push rejected' or asks me for credentials.''}
+\begin{itemize}[nosep]
+  \item Make sure you are logged in with your GitHub account and using the correct repository URL.
+  \item If GitHub no longer accepts your password, you may need to create a \textbf{Personal Access Token}:
+    \begin{itemize}[nosep]
+      \item Generate a token in your GitHub account settings.
+      \item Use that token instead of a password when RStudio asks.
+    \end{itemize}
+  \item If you are stuck, ask for help early.
+\end{itemize}
+
+\subsubsection*{Problem 3: ``I clicked the assignment link and it says I already accepted.''}
+\begin{itemize}[nosep]
+  \item That is fine. There is \textbf{one repo per assignment per student}.
+  \item Click the link again; it should take you to \textbf{your existing repo}.
+\end{itemize}
+
+\subsubsection*{Problem 4: ``I cloned using the wrong GitHub account.''}
+\begin{itemize}[nosep]
+  \item Tell the instructor as soon as possible.
+  \item Always use the \textbf{same GitHub account} for this course.
+\end{itemize}
+
+\end{warningBox}
+
+%------------------------------------------------
+% Checklist Box
+%------------------------------------------------
+\begin{checklistBox}[Quick Checklist Before Each Deadline]
+
+Before you consider an assignment ``done,'' verify:
+
+\begin{itemize}[leftmargin=2em]
+  \item[\Square] I can open the assignment as an \textbf{RStudio Project}.
+  \item[\Square] I have implemented all required code / written my answers in the specified files.
+  \item[\Square] The code runs without errors (or I have documented limitations).
+  \item[\Square] I have \textbf{committed} my latest changes with a clear message.
+  \item[\Square] I have \textbf{pushed} to GitHub from RStudio and see my changes on GitHub.
+  \item[\Square] I have checked any \textbf{autograding results} (if they exist).
+  \item[\Square] I have followed any additional submission instructions (e.g., linking the repo in the LMS).
+\end{itemize}
+
+If you follow these steps, you will be using GitHub and RStudio much like professional data scientists do, and it will make your work easier to manage, debug, and share throughout the course.
+
+\end{checklistBox}
+
+\end{document}

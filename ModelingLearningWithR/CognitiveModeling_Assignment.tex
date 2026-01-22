@@ -1,0 +1,244 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Cognitive Models Research Report},
+  pdfauthor={{[}YOUR NAME},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Cognitive Models Research Report}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{An Investigation into the StarWars Data}
+\author{{[}YOUR NAME}
+\date{2025-11-17}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+The Model: Hyperbolic Temporal DiscountingPsychological Relevance: This
+is the quintessential model of impulsivity, self-control, and addiction.
+It's used to explain why people (or animals) often choose a small,
+immediate reward (e.g., drinking, procrastination) over a large, delayed
+reward (e.g., health, a finished project). It bridges the gap between
+learning (R-W) and decision-making.The Assignment Idea:Implement the
+Model: Have students write a function for the hyperbolic discounting
+equation: \(V = A / (1 + kD)\), where \(V\) is subjective value, \(A\)
+is the reward amount, \(D\) is the delay, and \(k\) is the individual's
+discount rate (impulsivity).Simulate a ``Preference Reversal'': Ask them
+to model a choice between a Small-Immediate Reward (e.g., \(A=10, D=0\))
+and a Large-Delayed Reward (e.g., \(A=20, D=10\)).Run the Simulation:
+Have them plot the subjective value (\(V\)) of both options as the delay
+to the Small-Immediate reward counts down (e.g., from \(D=20\) to
+\(D=0\)).Key Insight (The Graph): The student's plot should show a
+``crossover.'' Far away, the large reward is always more valuable. But
+as the small reward becomes immediately available, its value spikes,
+causing the ``preference reversal'' that models a lapse in
+self-control.Connect to Psychology: Ask them to plot two lines: one for
+a ``low \(k\)'' individual (patient) and one for a ``high \(k\)''
+individual (impulsive) and explain the difference.
+
+The Model: The ``Multi-Armed Bandit'' (Q-Learning) 🎰 Psychological
+Relevance: This is a simple but powerful Reinforcement Learning (RL)
+model. It's the most natural next step from Rescorla-Wagner. While R-W
+learns to predict an outcome (``the bell means food is coming''), a
+Q-learning model learns to make a choice to get a reward (``I should
+pull this lever to get food''). It's the classic model for the
+exploration vs.~exploitation trade-off, which is fundamental to all
+decision-making.
+
+The Assignment Idea:
+
+Set up the ``Casino'': Create a simulation with three ``slot machines''
+(three ``armed bandits''). Each machine has a different, hidden
+probability of paying out (e.g., Machine A pays 50\% of the time, B pays
+30\%, C pays 70\%).
+
+Implement the ``Agent'': The student creates an ``agent'' that starts
+with no knowledge. The agent's ``brain'' is a simple vector of Q-values
+(Quality values), one for each machine, all starting at 0.
+
+The ``Learning'' Loop (Trial-by-Trial):
+
+The agent has to choose a machine to pull. This is where you introduce
+the Softmax Decision Rule. The agent is more likely to pick machines
+with high Q-values, but there's a small chance (regulated by a
+``temperature'' parameter) it will explore a low-Q-value machine.
+
+After pulling, the ``casino'' (your code) gives a reward (1 or 0).
+
+The agent then updates its Q-value for only the machine it chose, using
+an update rule that looks just like Rescorla-Wagner: Q{[}chosen{]} =
+Q{[}chosen{]} + alpha * (reward - Q{[}chosen{]})
+
+Key Insight (The Graph): Ask them to plot two things: 1) The Q-values
+over time (they should converge on the true probabilities) and 2) The
+percent of choices for each machine over time (they should see the agent
+``discover'' the 70\% machine and eventually exploit it).
+
+The Model: Schelling's Segregation Model (Agent-Based) 🏘️ Psychological
+Relevance: This is a classic agent-based model (ABM) from social
+psychology/sociology. It's a powerful demonstration of how complex,
+large-scale social patterns (like segregated neighborhoods) can emerge
+from very simple, seemingly harmless individual ``rules'' or
+preferences.
+
+The Assignment Idea:
+
+Create the ``City'': Have the student create an N x N matrix (e.g.,
+20x20) to represent the city.
+
+Populate the City: Randomly sprinkle two ``types'' of agents (e.g., A
+and B) into the city, leaving some empty spots.
+
+Define the ``Happiness'' Rule (The Cognitive Part): Each agent has a
+simple preference: ``I will be `happy' as long as at least X\% of my 8
+neighbors are like me.'' The key is to set X to a low, non-racist value,
+like 30\% (i.e., ``I don't want to be the only one'').
+
+The ``Simulation'' Loop:
+
+Write a loop that runs for 50 ``rounds.''
+
+In each round, the code finds all ``unhappy'' agents.
+
+It then moves each unhappy agent to a random empty spot in the city.
+
+Key Insight (The Graph): Ask them to plot the state of the city (the
+matrix) at Round 1 (random chaos) and at Round 50. They will be shocked
+to see that the city has become highly segregated. The ``A''s will all
+be in one part of town, and the ``B''s in another, even though no agent
+``wanted'' segregation. This is a profound lesson in emergent social
+phenomena.
+
+\section{Decision-making}\label{decision-making}
+
+The Model: A ``Two-Alpha'' Reinforcement Learning AgentInstead of one
+``association'' (\(\Delta V\)) like in R-W, this agent tracks an
+Expectancy (\(E\)) for each of the four decks (A, B, C, D), all starting
+at 0.The key insight is that healthy people and patients learn from
+gains and losses differently. We can model this with two separate
+learning rates:\(\alpha_{gain}\) (Alpha-Gain): How much the agent learns
+from a better-than-expected outcome.\(\alpha_{loss}\) (Alpha-Loss): How
+much the agent learns from a worse-than-expected outcome.The Update Rule
+(The ``Delta Rule''):Choose a deck (e.g., Deck A).Get the outcome (e.g.,
+Win \$100, Lose \$0).Calculate the Prediction Error (PE): PE = (Win -
+Loss) - E{[}Deck A{]}If PE \textgreater{} 0 (it's a gain), update using
+\(\alpha_{gain}\):E{[}Deck A{]} = E{[}Deck A{]} + alpha\_gain * PEIf PE
+\textless{} 0 (it's a loss), update using \(\alpha_{loss}\):E{[}Deck
+A{]} = E{[}Deck A{]} + alpha\_loss * PEThe ``Cognitive Knob'' (The
+Psychology):Healthy Agent: Symmetrical learning. alpha\_gain = 0.1 and
+alpha\_loss = 0.1. They learn from pain just as much as they learn from
+pleasure.''Patient'' Agent (Myopic): Asymmetrical learning. alpha\_gain
+= 0.1 but alpha\_loss = 0.01. They are excited by gains but functionally
+ignore or underweight the long-term punishments.The Assignment: Modeling
+the Iowa Gambling TaskObjective: Simulate a ``Healthy'' and a
+``Patient'' agent to understand how a simple cognitive bias (ignoring
+losses) leads to self-defeating choices.Part 1: Build the ``Casino''
+(The IGT Environment)First, students must write a function that
+simulates the IGT. Give them this payoff schedule:DeckRewardLoss
+FrequencyLoss
+AmountA+\$10050\%-\$250B+\$10010\%-\$1250C+\$5050\%-\$50D+\$5010\%-\$250Net
+(A/B): -\$25 per 10 cards. Net (C/D): +\$25 per 10 cards.Task: Write a
+function pull\_card(deck) that, when called, returns a list(win, loss)
+for one of the four decks.Part 2: Build the ``Agent'' (The Cognitive
+Model)Task: Write a function update\_expectancy(E\_old, win, loss,
+alpha\_gain, alpha\_loss) that takes the old expectancy and the outcome,
+and returns the new expectancy using the two-alpha delta rule.Part 3:
+The Choice Rule (Softmax)How does the agent choose? It uses the Softmax
+(or Boltzmann) decision rule. This rule translates the expectancy values
+into choice probabilities.Task: Give them the Softmax equation and have
+them write a function choose\_deck(E\_vector, tau).E\_vector is the list
+of expectancies (e.g., c(E\_A, E\_B, E\_C, E\_D)).tau (Temperature) is a
+``consistency'' parameter.1 A low tau means the agent always picks the
+highest E (exploits). A high tau means it chooses randomly
+(explores).Part 4: The Simulation (Putting it all together)Task: Run a
+simulation for two agents (Healthy vs.~Patient) over 100 trials.Healthy
+Agent Simulation:Set alpha\_gain = 0.1, alpha\_loss = 0.1.Loop 100
+times. In each loop:Choose a deck using choose\_deck().Get the (win,
+loss) from your pull\_card() function.Update the expectancy for that
+deck only using update\_expectancy().Record which deck was
+chosen.Patient Agent Simulation:Do the exact same thing, but with
+alpha\_gain = 0.1 and alpha\_loss = 0.01.Part 5: The ``Aha!'' Moment
+(The Graph)Task: Plot the results. The best way is to plot the
+percentage of choices from ``Bad Decks'' (A \& B) over time.Create a
+plot showing ``Trial Number'' (1-100) on the x-axis.On the y-axis, show
+the cumulative percentage of choices made from Decks A \& B.Plot two
+lines: one for the Healthy Agent, one for the Patient Agent.Expected
+Insight:The Healthy Agent's line will decrease over time. They will
+start by sampling all decks, but as they learn from the large
+punishments, they will ``learn'' to prefer the ``Good'' decks C \& D.The
+Patient Agent's line will stay high or even increase. Because they
+ignore the losses (alpha\_loss = 0.01), the big +\$100 rewards from
+Decks A \& B look amazing to them. They never learn that these decks are
+bankrupting them.This directly models the myopic, self-defeating
+behavior seen in the task and provides a clear cognitive mechanism
+(asymmetrical learning) for why it happens.
+
+\end{document}

@@ -103,79 +103,100 @@ In social psychology, graph theory has become instrumental in analyzing group dy
 \section{Conducting Graph Theoretical Analyses}
 Network data suitable for graph theory analysis can come from many sources, including social connections, neural recordings, communication patterns, or any system with discrete elements that interact. The key is identifying meaningful nodes (the elements) and edges (their relationships). For example, in EEG data, nodes might be electrodes while edges represent functional connectivity between brain regions. Data are typically organized into an adjacency matrix (showing which nodes connect to each other) but can also be organized into an edge list (explicitly listing all connections).
 
+\begin{figure}[h]
+\begin{tcolorbox}[halign=center, drop shadow, title=Binary \& Weighted Adjacency Matrices ,colback=white,colframe=WMgreen,
+  colbacktitle=WMgreen,]
 \begin{tikzpicture}[scale=0.8]
-    % Binary Adjacency Matrix
-    \begin{scope}[shift={(-6,0)}]
-        \node at (-1,4) {Binary Adjacency Matrix};
-        
-        % Draw matrix grid
-        \foreach \x in {0,1,2,3} {
-            \foreach \y in {0,1,2,3} {
-                \draw (\x,\y) rectangle (\x+1,\y+1);
-            }
-        }
-        
-        % Add labels
-        \foreach \x/\l in {0/A,1/B,2/C,3/D} {
-            \node at (\x+0.5,3.5) {\l};
-            \node at (-0.5,3-\x) {\l};
-        }
-        
-        % Fill in binary values (0/1)
-        \node at (0.5,2.5) {0};
-        \node at (1.5,2.5) {1};
-        \node at (2.5,2.5) {1};
-        \node at (3.5,2.5) {0};
-    \end{scope}
-    
-    % Weighted Adjacency Matrix
-    \begin{scope}[shift={(0,0)}]
-        \node at (-1,4) {Weighted Adjacency Matrix};
-        
-        % Draw matrix grid
-        \foreach \x in {0,1,2,3} {
-            \foreach \y in {0,1,2,3} {
-                \draw (\x,\y) rectangle (\x+1,\y+1);
-            }
-        }
-        
-        % Add labels
-        \foreach \x/\l in {0/A,1/B,2/C,3/D} {
-            \node at (\x+0.5,3.5) {\l};
-            \node at (-0.5,3-\x) {\l};
-        }
-        
-        % Fill in weighted values
-        \node at (0.5,2.5) {0.0};
-        \node at (1.5,2.5) {0.8};
-        \node at (2.5,2.5) {0.4};
-        \node at (3.5,2.5) {0.0};
-    \end{scope}
-    
-    % Binary Edge List
-    \begin{scope}[shift={(-6,-5)}]
-        \node at (0,4) {Binary Edge List};
-        
-        \node[align=left] at (0,2.5) {
-            A -- B \\
-            A -- C \\
-            B -- D \\
-            C -- D
-        };
-    \end{scope}
-    
-    % Weighted Edge List
-    \begin{scope}[shift={(0,-5)}]
-        \node at (0,4) {Weighted Edge List};
-        
-        \node[align=left] at (0,2.5) {
-            A -- B (0.8) \\
-            A -- C (0.4) \\
-            B -- D (0.6) \\
-            C -- D (0.7)
-        };
-    \end{scope}
+  % Common styles
+  \tikzset{
+    title/.style   = {anchor=south, font=\bfseries},
+    collabel/.style= {anchor=south},
+    rowlabel/.style= {anchor=east}
+  }
+
+  % ---------- Binary Adjacency Matrix (LEFT) ----------
+  \begin{scope}[shift={(-6.25,0)}]
+    % Title centered over the 4x4 grid (center x = 2)
+    \node[title] at (2,5.2) {Binary Adjacency Matrix};
+
+    % Draw matrix grid
+    \foreach \x in {0,1,2,3} {
+      \foreach \y in {0,1,2,3} {
+        \draw (\x,\y) rectangle (\x+1,\y+1);
+      }
+    }
+
+    % Column labels (above grid)
+    \foreach \x/\l in {0/A,1/B,2/C,3/D} {
+      \node[collabel] at (\x+0.5,4.25) {\l};
+    }
+    % Row labels (left of grid; top-to-bottom A..D)
+    \foreach \y/\l in {3/A,2/B,1/C,0/D} {
+      \node[rowlabel] at (-0.25,\y+0.5) {\l};
+    }
+
+    % Binary values
+    \node at (0.5,2.5) {0};
+    \node at (1.5,2.5) {1};
+    \node at (2.5,2.5) {1};
+    \node at (3.5,2.5) {0};
+  \end{scope}
+
+  % ---------- Weighted Adjacency Matrix (RIGHT, pushed further right) ----------
+  \begin{scope}[shift={(2.5,0)}]
+    % Title centered over the 4x4 grid (center x = 2)
+    \node[title] at (2,5.2) {Weighted Adjacency Matrix};
+
+    % Draw matrix grid
+    \foreach \x in {0,1,2,3} {
+      \foreach \y in {0,1,2,3} {
+        \draw (\x,\y) rectangle (\x+1,\y+1);
+      }
+    }
+
+    % Column labels (above grid)
+    \foreach \x/\l in {0/A,1/B,2/C,3/D} {
+      \node[collabel] at (\x+0.5,4.25) {\l};
+    }
+    % Row labels (left of grid; top-to-bottom A..D)
+    \foreach \y/\l in {3/A,2/B,1/C,0/D} {
+      \node[rowlabel] at (-0.25,\y+0.5) {\l};
+    }
+
+    % Weighted values
+    \node at (0.5,2.5) {0.0};
+    \node at (1.5,2.5) {0.8};
+    \node at (2.5,2.5) {0.4};
+    \node at (3.5,2.5) {0.0};
+  \end{scope}
+
+  % ---------- Binary Edge List (centered under left matrix) ----------
+  \begin{scope}[shift={(-6.25,-5)}]
+    \node[title] at (2,4) {Binary Edge List};
+    \node[align=center, anchor=north] at (2,3.2) {
+      A -- B\\
+      A -- C\\
+      B -- D\\
+      C -- D
+    };
+  \end{scope}
+
+  % ---------- Weighted Edge List (centered under right matrix) ----------
+  \begin{scope}[shift={(2.5,-5)}]
+    \node[title] at (2,4) {Weighted Edge List};
+    \node[align=center, anchor=north] at (2,3.2) {
+      A -- B (0.8)\\
+      A -- C (0.4)\\
+      B -- D (0.6)\\
+      C -- D (0.7)
+    };
+  \end{scope}
 \end{tikzpicture}
+ \captionof{figure}{Illustration of binary (left) and weighted (right) adjacency matrices.}
+  \label{fig:MatrixTypes}
+ \end{tcolorbox}
+ \end{figure}
+ 
 
 In EEG research, each electrode recording brain activity serves as a node in the network. The relationships between these nodes are quantified through various measures of functional connectivity. These connections can be measured through phase locking values, which capture the consistency of phase relationships between signals from different electrodes, correlation coefficients that measure the linear relationship between electrode signals, or more sophisticated measures like Granger causality that assess directional influences between brain regions. This approach allows researchers to understand how different brain regions communicate and coordinate during various cognitive tasks or states.
 

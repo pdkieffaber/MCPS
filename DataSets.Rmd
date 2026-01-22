@@ -1,0 +1,46 @@
+---
+title: "Cluster Analysis Research Report"
+subtitle: "An Investigation into [Your Dataset Name]"
+author: "Your Name"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    theme: flatly           # A clean, professional font/color theme
+    highlight: tango        # Subtle code highlighting (if you choose to show any)
+    toc: true               # specifices a 'Table of Contents'
+    toc_float:              # Makes the TOC float on the left as you scroll
+      collapsed: false
+      smooth_scroll: true
+    number_sections: true   # Adds 1.1, 1.2 numbers to headings
+    df_print: paged         # Turns ugly data frames into interactive tables
+    code_download: true     # Allows the reader to download the Rmd source code
+---
+
+```{r setup, include=FALSE}
+# This global option ensures NO code appears in the final file
+knitr::opts_chunk$set(
+  echo = FALSE,       # Hide code
+  message = FALSE,    # Hide package loading messages
+  warning = FALSE,    # Hide warnings
+  fig.align = "center" # Center all graphs
+)
+```
+
+# https://vincentarelbundock.github.io/Rdatasets/articles/data.html
+```{r}
+#install.packages("AER")
+library(AER)
+```
+
+```{r}
+data("Affairs")
+head(Affairs)
+```
+
+```{r}
+#install.packages("carData")
+library("carData")
+
+data("Salaries")
+head(Salaries)
+```

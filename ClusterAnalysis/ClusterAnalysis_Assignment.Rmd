@@ -1,0 +1,199 @@
+---
+title: "Cluster Analysis Research Report"
+subtitle: "An Investigation into [Your Dataset Name]"
+author: "Your Name"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    theme: flatly           # A clean, professional font/color theme
+    highlight: tango        # Subtle code highlighting (if you choose to show any)
+    toc: true               # specifices a 'Table of Contents'
+    toc_float:              # Makes the TOC float on the left as you scroll
+      collapsed: false
+      smooth_scroll: true
+    number_sections: true   # Adds 1.1, 1.2 numbers to headings
+    df_print: paged         # Turns ugly data frames into interactive tables
+    code_download: true     # Allows the reader to download the Rmd source code
+---
+
+```{r setup, include=FALSE}
+# This global option ensures NO code appears in the final file
+knitr::opts_chunk$set(
+  echo = FALSE,       # Hide code
+  message = FALSE,    # Hide package loading messages
+  warning = FALSE,    # Hide warnings
+  fig.align = "center" # Center all graphs
+)
+```
+
+**Goal.** Pick a publicly available dataset, ask a concrete question about how observations might group together, then (1) determine a sensible number of clusters using the elbow and silhouette methods, (2) compare K‑means, Hierarchical (Ward.D2), and DBSCAN, (3) select and justify a final solution, and (4) compare clusters on at least one validation variable not used to form clusters.
+
+**What to submit:** An R Markdown (.Rmd) and a knitted HTML that reads like a research report (Use this document or another with the same YAML header and setup chunk).
+
+Include figure captions and refer to figures/tables in the text.
+
+# Choose a dataset & question
+
+- Identify ≥ 1 external validation variable (numeric or categorical) not used in clustering.
+
+- Question examples
+  - “Do students cluster into profiles based on Big Five item scores?”
+  - “Do adults cluster by health behaviors (sleep, activity, alcohol, BMI)?”
+  - “Do survey respondents cluster by trust, religiosity, and ideology?”
+
+# Pre‑process & feature selection
+
+- Select features to represent the construct(s) in your question. Justify your choices briefly.
+- Handle missingness, remove extreme outliers if necessary.
+- Standardize numeric features used for clustering (z‑scores).
+
+
+8Note: If you include categorical variables, keep them out of the clustering step and use them later as validation variables.*
+
+# Decide the number of clusters with elbow & silhouette
+- Show all visualizations and explain logic
+
+# Fit and visualize three methods
+
+- K‑means (with chosen k)
+  - Use multiple starts (e.g., nstart = 25).
+  - Report cluster sizes and total WSS.
+  - Visuals: PCA scatter (PC1 vs. PC2) colored by cluster, silhouette plot for the K‑means solution.
+  - Briefly profile clusters (table/plot of standardized feature means per cluster).
+
+- Hierarchical agglomerative (Ward.D2; cut at k)
+  - Distance: Euclidean on standardized features.
+  - Linkage: method = "ward.D2".
+  - Visuals: dendrogram with horizontal cut at chosen k, PCA scatter by cluster.
+  - Briefly profile clusters as above.
+- DBSCAN (density‑based; k-free)
+  - Choose parameters using the k‑NN distance plot:
+  - kNNdistplot(X, k = minPts) and pick $\epsilon$ at the “knee” of the curve.
+  - Fit DBSCAN; report number of clusters and noise proportion (points labeled 0).
+  - Visuals: PCA scatter with colors for clusters and a distinct mark for noise; optionally a cluster‑profile plot for non‑noise clusters.
+
+Compare the three: show side‑by‑side PCA overlays and a compact table of cluster counts, average silhouette, and (optionally) ARI between K‑means and Hierarchical to quantify agreement.
+
+# Pick a final solution & justify
+
+Choose one of the three as your recommended solution. State why you did not pick the others (one sentence each).
+
+# Validate clusters on an external variable
+
+Pick 1 or morer validation variable(s) not used in clustering.
+
+Conclude with one paragraph interpreting what the clusters mean substantively relative to your question.
+
+# Data Options
+**1. bfi (Big Five Inventory)**
+
+- R Package: psych
+- Psychological Relevance: This is a quintessential psychology dataset. It contains responses from 2,800 individuals on the Big Five personality traits (Agreeableness, Conscientiousness, Extraversion, Neuroticism, Openness). It's ideal for a core psychology question: "Are there distinct 'personality profiles' or 'types' that emerge from these traits?"
+- Key Variables (for Clustering):
+  - A1, A2, A3, A4, A5: Agreeableness items.
+  - C1, C2, C3, C4, C5: Conscientiousness items.
+  - E1, E2, E3, E4, E5: Extraversion items.
+  - N1, N2, N3, N4, N5: Neuroticism items.
+  - O1, O2, O3, O4, O5: Openness items.
+- Note: You can cluster on all 25 items, or you can first create 5 "scale scores" (e.g., mean(A1:A5)) and cluster on those 5 scores.
+- Key Variables (for Validation/Interpretation):
+  - gender: (1=Male, 2=Female)
+  - education: (1=HS, 5=Graduate)
+  - age: (Numeric)
+- You can cluster on personality, then check if your clusters have different average ages or gender distributions.
+- Loading Instructions:
+
+```{r}
+# You must install the package first
+#install.packages("psych")
+
+# Load the library
+library(psych)
+
+# Load the data
+data("bfi")
+
+# --- IMPORTANT ---
+# This dataset contains missing values (NA).
+# You must handle them before clustering.
+# A simple (but not always best) way is to remove them:
+bfi_clean <- na.omit(bfi)
+```
+
+
+**2. anorexia (Anorexia Treatment Data)**
+
+- R Package: MASS (usually comes with R, but good to install)
+- Psychological Relevance: This is a classic clinical psychology dataset. It tracks the pre- and post-treatment weights of 72 young women with anorexia who were assigned to one of three different therapies. It's perfect for finding patient subtypes.
+- Key Variables (for Clustering):
+  - Prewt: Patient's weight before treatment.
+  - Postwt: Patient's weight after treatment.
+  - Weight.Change: (A variable you can create) How much weight the patient gained.
+- Key Variables (for Validation/Interpretation):
+  - Treat: (Cont, CBT, FT) The treatment type they received.
+- Key Question: After finding clusters (e.g., "Low Pre-weight, High Gain" vs. "High Pre-weight, Low Gain"), you can check if one Treat group was more common in a "successful" cluster.
+- Loading Instructions:
+
+```{r}
+# Install the package if needed
+#install.packages("MASS")
+
+# Load the library
+library(MASS)
+
+# Load the data
+data("anorexia")
+
+# --- PRO TIP ---
+# You can cluster on pre-treatment state, or you can
+# engineer a new feature to cluster on:
+anorexia$Weight.Change <- anorexia$Postwt - anorexia$Prewt
+```
+
+**3. USArrests (US Arrests Data)**
+
+- R Package: datasets (built-in, no install needed)
+- Psychological Relevance: This dataset is used in social psychology and criminology. It contains crime statistics for 50 US states. The clustering goal is to identify "profiles" of states, moving beyond simple labels like "high crime" or "low crime."
+- Key Variables (for Clustering):
+  - Murder: Arrests per 100,000.
+  - Assault: Arrests per 100,000.
+  - Rape: Arrests per 100,000.
+  - UrbanPop: Percent of the population that is urban.
+- Key Variables (for Validation/Interpretation):
+  - The row names (States).
+- Key Question: After clustering, you can plot the clusters on a US map (as we did previously). This provides powerful geographic validation (e.g., "Do all the 'High-Violence, Rural' states fall in the Southeast?").
+- Loading Instructions:
+```{r}
+# Load the data (it's already available)
+data("USArrests")
+```
+
+**4. College (US College Data)**
+
+- R Package: ISLR
+- Psychological Relevance: This dataset is perfect for educational psychology or sociology. It contains statistics for 777 US colleges. The goal is to segment universities into "types" (e.g., "Small Liberal Arts," "Large Public," "Elite Private").
+- Key Variables (for Clustering): (There are many!)
+  - Accept / Enroll: Number of students.
+  - Top10perc / Top25perc: Academic quality of students.
+  - Outstate: Out-of-state tuition (a proxy for cost/prestige).
+  - Expend: Instructional expenditure per student.
+  - S.F.Ratio: Student-to-Faculty ratio.
+- Key Variables (for Validation/Interpretation):
+  - Private: (Yes/No)
+- Key Question: After clustering on stats, how well do your clusters map onto the Private "Yes/No" label? Do you find more than two clusters (e.g., did you find a "Super-Elite Private" cluster that is distinct from other private schools)?
+- Loading Instructions:
+```{r}
+# Install the package first
+#install.packages("ISLR")
+
+# Load the library
+library(ISLR)
+
+# Load the data
+data("College")
+
+# --- PREPARATION ---
+# The college names are row names, so convert to column labeled "College".
+#College <- rownames_to_column(College, var = "College")
+```
+

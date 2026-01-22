@@ -1,0 +1,406 @@
+---
+title: "Test: Introduction to Programming in R (Base R Only)"
+author: ""
+date: ""
+output:
+  pdf_document:
+    toc: false
+    number_sections: false
+---
+
+> **Instructions:** Answer all 30 questions.  
+> Each question is one of the following types:  
+> (1) **Describe output/behavior** of R code (focus on type/structure/what prints),  
+> (2) **Find and fix an error**,  
+> (3) **Write R code** to achieve a specific goal,  
+> (4) **Short debugging/reasoning** (brief and specific).  
+>
+> Do **not** do hand calculations; when appropriate, describe results in terms of **type, length, names, or which branch runs**.
+
+# Reference objects (used across questions)
+
+You may assume the following objects exist. (They are provided for context; you do **not** need to run them during the test.)
+
+```{r reference_objects, eval=FALSE}
+# Basic vectors
+nums <- c(-2, 0, 3, NA, 10)
+letters_vec <- c("alpha", "beta", "gamma")
+
+# Simple data frame (base R)
+df <- data.frame(
+  id = 1:6,
+  group = c("A", "A", "B", "B", "B", "A"),
+  score = c(10, NA, 8, 9, NA, 7),
+  stringsAsFactors = FALSE
+)
+
+# A simple function with one input (used for behavior questions)
+make_label <- function(x) {
+  if (is.na(x)) {
+    "missing"
+  } else if (x >= 9) {
+    "high"
+  } else {
+    "low"
+  }
+}
+
+# A simple function with multiple outputs via a list
+summarize_missing <- function(x) {
+  list(
+    n_total = length(x),
+    n_missing = sum(is.na(x)),
+    any_missing = any(is.na(x))
+  )
+}
+```
+
+\newpage
+
+# Part A — Describe the output/behavior (Questions 1–12)
+
+## 1) Output/behavior: assignment vs printing
+
+```{r q1, eval=FALSE}
+x <- 5
+x
+y <- x + 1
+```
+
+Which lines print output to the console, and what is printed (in general terms)?
+
+---
+
+## 2) Output/behavior: `class()` vs `typeof()`
+
+```{r q2, eval=FALSE}
+class(nums)
+typeof(nums)
+```
+
+What is the difference between what these two functions report (conceptually)?
+
+---
+
+## 3) Output/behavior: missingness propagation
+
+```{r q3, eval=FALSE}
+mean(nums)
+```
+
+Does this return `NA` or a numeric value? Why?
+
+---
+
+## 4) Output/behavior: removing missing values
+
+```{r q4, eval=FALSE}
+mean(nums, na.rm = TRUE)
+```
+
+How does this behavior differ from Question 3?
+
+---
+
+## 5) Output/behavior: `ifelse()` is vectorized
+
+```{r q5, eval=FALSE}
+ifelse(is.na(nums), "MISSING", "PRESENT")
+```
+
+Describe the output’s **type** and **length**.
+
+---
+
+## 6) Output/behavior: vectorized function call (conceptual)
+
+```{r q6, eval=FALSE}
+sapply(df$score, make_label)
+```
+
+What is returned (type/length), and why does this work even though `make_label()` uses `if`?
+
+---
+
+## 7) Output/behavior: list names
+
+```{r q7, eval=FALSE}
+out <- summarize_missing(nums)
+names(out)
+```
+
+What does `names(out)` return?
+
+---
+
+## 8) Output/behavior: list element extraction
+
+```{r q8, eval=FALSE}
+out$any_missing
+```
+
+What is the type of this value (logical/numeric/character/list)?
+
+---
+
+## 9) Output/behavior: base R subsetting by condition
+
+```{r q9, eval=FALSE}
+df[df$group == "B", ]
+```
+
+What is returned (data type/structure), and how many rows should it contain?
+
+---
+
+## 10) Output/behavior: selecting a single column
+
+```{r q10, eval=FALSE}
+df[df$group == "B", "score"]
+```
+
+What is returned (a vector or a data frame), and what is its length?
+
+---
+
+## 11) Output/behavior: `if` / `else` branch (no arithmetic)
+
+```{r q11, eval=FALSE}
+z <- NA
+if (is.na(z)) {
+  print("missing")
+} else {
+  print("present")
+}
+```
+
+What is printed?
+
+---
+
+## 12) Output/behavior: `for` loop printing
+
+```{r q12, eval=FALSE}
+for (g in unique(df$group)) {
+  print(paste("Group:", g))
+}
+```
+
+How many lines are printed, and what is their general format?
+
+\newpage
+
+# Part B — Find and fix the error (Questions 13–22)
+
+## 13) Error: `if` condition must be length 1
+
+```{r q13, eval=FALSE}
+x <- c(TRUE, FALSE)
+if (x) print("yes")
+```
+
+Why is this an error, and provide one correct fix.
+
+---
+
+## 14) Error: using `=` instead of `==` in a condition
+
+```{r q14, eval=FALSE}
+x <- 3
+if (x = 3) print("equal")
+```
+
+Identify the mistake and provide the corrected line.
+
+---
+
+## 15) Error: missing comma in data frame indexing
+
+```{r q15, eval=FALSE}
+df[df$group == "A"]
+```
+
+Explain what is wrong and provide corrected code that returns **all columns** for group A.
+
+---
+
+## 16) Error: wrong argument name
+
+```{r q16, eval=FALSE}
+mean(nums, na_rm = TRUE)
+```
+
+What is the error, and what is the corrected function call?
+
+---
+
+## 17) Error: unmatched parentheses
+
+```{r q17, eval=FALSE}
+print(paste("ID:", df$id[1])
+```
+
+Fix the syntax.
+
+---
+
+## 18) Error: function braces/structure
+
+```{r q18, eval=FALSE}
+first_last <- function(x) 
+  first <- x[1]
+  last <- x[length(x)]
+  list(first = first, last = last)
+}
+```
+
+Identify the syntax problem and provide a corrected function definition.
+
+---
+
+## 19) Error: infinite loop risk
+
+```{r q19, eval=FALSE}
+i <- 1
+while (i <= 3) {
+  print("looping")
+}
+```
+
+What is the problem, and what single line must be added (or modified) so the loop terminates?
+
+---
+
+## 20) Error/logic: returning multiple values
+
+```{r q20, eval=FALSE}
+two_outputs <- function(x) {
+  a <- head(x, 1)
+  b <- tail(x, 1)
+  a
+  b
+}
+```
+
+What does this function actually return, and how should it be rewritten to return **both** values?
+
+---
+
+## 21) Error: calling a function with a misspelled argument
+
+```{r q21, eval=FALSE}
+proportion_above <- function(x, cutoff = 0) {
+  mean(x > cutoff, na.rm = TRUE)
+}
+
+proportion_above(nums, cutof = 3)
+```
+
+Why does the call fail, and what is the corrected call?
+
+---
+
+## 22) Error: mixing character and numeric in arithmetic
+
+```{r q22, eval=FALSE}
+a <- "10"
+a + 1
+```
+
+Describe the error in plain language and give one line of code to fix it.
+
+\newpage
+
+# Part C — Write R code (Questions 23–30)
+
+## 23) Write code: define a simple function
+
+Write a function `is_missing(x)` that returns `TRUE` if `x` is `NA` and `FALSE` otherwise.
+
+```{r q23, eval=FALSE}
+# YOUR CODE
+```
+
+---
+
+## 24) Write code: safe mean (behavior-focused)
+
+Write a function `safe_mean(x)` that returns:
+- `NA_real_` if **all** values of `x` are missing, otherwise
+- `mean(x, na.rm = TRUE)`
+
+```{r q24, eval=FALSE}
+# YOUR CODE
+```
+
+---
+
+## 25) Write code: default arguments
+
+Write a function `clip_to_range(x, low = 0, high = 7)` that clips values below `low` up to `low`, and values above `high` down to `high`.
+
+```{r q25, eval=FALSE}
+# YOUR CODE
+```
+
+---
+
+## 26) Write code: named argument call
+
+Show a call that clips `c(-2, 1, 3, 10)` to the range **0 to 7** using **named arguments**.
+
+```{r q26, eval=FALSE}
+# YOUR CODE
+```
+
+---
+
+## 27) Write code: return a named list
+
+Write a function `descriptive_flags(x)` that returns a named list with:
+- `any_missing` (logical)
+- `all_missing` (logical)
+- `n_missing` (numeric)
+
+```{r q27, eval=FALSE}
+# YOUR CODE
+```
+
+---
+
+## 28) Write code: use `ifelse()` to label a vector
+
+Write one line of code that creates a character vector `status` from `nums` where missing values become `"missing"` and non-missing become `"present"`.
+
+```{r q28, eval=FALSE}
+# YOUR CODE
+```
+
+---
+
+## 29) Write code: `for` loop that builds a result vector
+
+Write code that loops over `nums` and produces a new vector `labels` such that:
+- `"missing"` if the element is `NA`
+- `"nonmissing"` otherwise
+
+(You may use preallocation with `character(length(nums))`.)
+
+```{r q29, eval=FALSE}
+# YOUR CODE
+```
+
+---
+
+## 30) Creative debugging prompt: “read your own code”
+
+You are given the following buggy function. Write **two** lines you would add (e.g., `print()` statements) to help you debug what values are flowing through the function, and briefly state what you are trying to learn from those prints.
+
+```{r q30, eval=FALSE}
+mystery <- function(x) {
+  y <- x[x > 0]
+  if (length(y) == 0) return(NA_real_)
+  mean(y, na.rm = TRUE)
+}
+# Add two debugging lines (do not rewrite the whole function)
+```

@@ -1,0 +1,494 @@
+---
+title: "Data Visualization Exam (20 Questions) — With Answer Key"
+author: ""
+date: ""
+output:
+  pdf_document:
+    toc: false
+    number_sections: false
+fontsize: 11pt
+geometry: margin=1in
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE)
+```
+
+# Instructions
+
+- Answer all questions.
+- For questions that ask you to *write code*, write a single R command or short pipeline.
+- For questions that ask you to *describe output*, describe the resulting plot (type of plot, what is mapped to what, and the main visual encodings).
+- Unless a question says otherwise, assume the relevant packages (e.g., **ggplot2**, **dplyr**) are available.
+
+---
+
+# Questions
+
+## 1) Identify core ggplot components (describe output)
+
+```r
+p <- ggplot(starwars, aes(x = height, y = mass)) +
+  geom_point()
+```
+
+1. Identify the **data**, **aesthetic mappings**, and **geom** in this code.
+2. Describe what the plot would show (in words).
+
+---
+
+## 2) Mapping vs. setting aesthetics (describe output)
+
+Consider the two alternatives below:
+
+```r
+ggplot(starwars, aes(height, mass)) +
+  geom_point(aes(color = gender))
+```
+
+```r
+ggplot(starwars, aes(height, mass)) +
+  geom_point(color = "blue")
+```
+
+1. Which one will create a **legend**, and why?
+2. In the one that uses `aes(color = gender)`, what is being encoded by color?
+
+---
+
+## 3) Debug a common `+` layering error (find/fix error)
+
+This code produces an error:
+
+```r
+ggplot(starwars, aes(height, mass))
++ geom_point()
+```
+
+1. What is the likely issue?
+2. Rewrite the code in a correct, “safe” format.
+
+---
+
+## 4) Debug a “literal value mapped as a category” error (describe + fix)
+
+What does the following code do, and why is it usually not what the author intends? Provide a corrected version.
+
+```r
+ggplot(starwars, aes(height, mass, color = "blue")) +
+  geom_point()
+```
+
+---
+
+## 5) Missingness warnings in ggplot (describe + write code)
+
+The code below often produces a warning about rows being removed:
+
+```r
+ggplot(starwars, aes(height, mass)) +
+  geom_point()
+```
+
+1. What is the warning *usually* telling you?
+2. Write one dplyr pipeline that removes incomplete rows **for the variables needed by the plot** before plotting.
+
+---
+
+## 6) Bar chart vs. column chart (find/fix error)
+
+This attempt is conceptually wrong for the intended goal “average MPG by cylinder”:
+
+```r
+ggplot(mtcars, aes(x = factor(cyl), y = mpg)) +
+  geom_bar()
+```
+
+1. What does `geom_bar()` compute by default?
+2. Write correct code to plot **mean(mpg)** by `cyl` (hint: either summarize then `geom_col()`, or use `stat_summary()`).
+
+---
+
+## 7) Grouped bar chart interpretation (describe output)
+
+```r
+ggplot(mtcars, aes(x = factor(cyl), fill = factor(gear))) +
+  geom_bar(position = "dodge") +
+  labs(x = "Cylinders", fill = "Gears")
+```
+
+Describe the plot: What are the bars counting, and how is grouping represented?
+
+---
+
+## 8) Histogram defaults and binning (describe + write code)
+
+```r
+ggplot(starwars, aes(mass)) +
+  geom_histogram()
+```
+
+1. What message/warning do you commonly see the first time you run a histogram with defaults?
+2. Rewrite the histogram specifying either `bins = 20` **or** `binwidth = 10`.
+
+---
+
+## 9) Boxplot interpretation (describe output)
+
+```r
+ggplot(starwars, aes(x = gender, y = height)) +
+  geom_boxplot()
+```
+
+In plain language, explain what the **box**, **median line**, **whiskers**, and **outlier points** represent.
+
+---
+
+## 10) Why add jitter to a boxplot? (explain)
+
+```r
+ggplot(starwars, aes(x = gender, y = height)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.15, alpha = 0.4)
+```
+
+Why is `geom_jitter()` commonly added to boxplots? What does it help you see?
+
+---
+
+## 11) Labels with `labs()` (write code)
+
+Starting from this plot:
+
+```r
+p <- ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point()
+```
+
+Write a `+ labs(...)` call that adds:
+- a title `"Fuel economy vs. weight"`
+- x-axis label `"Weight (1000 lbs)"`
+- y-axis label `"MPG"`
+
+---
+
+## 12) Manual scales and named vectors (find issue + fix)
+
+A student writes:
+
+```r
+ggplot(starwars, aes(height, mass, color = gender)) +
+  geom_point() +
+  scale_color_manual(values = c("red", "blue"))
+```
+
+1. What is risky about providing an **unnamed** vector to `scale_color_manual()`?
+2. Rewrite the scale using a **named vector** (use any two colors), assuming levels `"male"` and `"female"`.
+
+---
+
+## 13) Rotate crowded x-axis labels (write code)
+
+Write a `theme(...)` line that rotates x-axis tick labels 45 degrees and right-justifies them (hint: `element_text(angle = ..., hjust = ...)`).
+
+---
+
+## 14) Faceting (describe output)
+
+```r
+ggplot(starwars, aes(height)) +
+  geom_histogram(bins = 15) +
+  facet_wrap(~ gender)
+```
+
+Describe how the output differs from a single histogram. What does `facet_wrap(~ gender)` do?
+
+---
+
+## 15) Combining plots with patchwork (describe output)
+
+Assume `p1` and `p2` are ggplot objects.
+
+1. What layout is produced by `p1 + p2`?
+2. What layout is produced by `p1 / p2`?
+
+---
+
+## 16) Heatmap from a correlation matrix (describe output)
+
+Consider this heatmap approach:
+
+```r
+cor_long <- as.data.frame(as.table(bfi_cor))
+
+ggplot(cor_long, aes(Var1, Var2, fill = Freq)) +
+  geom_tile() +
+  scale_fill_gradient2(midpoint = 0, limit = c(-1, 1))
+```
+
+1. What do `Var1`, `Var2`, and `Freq` represent?
+2. What does `scale_fill_gradient2(midpoint = 0, limit = c(-1, 1))` imply about the fill colors?
+
+---
+
+## 17) Choropleth maps as “join + polygon plot” (describe + fix warning)
+
+You see code like:
+
+```r
+states_map <- map_data("state")
+
+state_data <- data.frame(
+  region = tolower(state.name),
+  stress_index = runif(50, 40, 80)
+)
+
+us_map <- left_join(states_map, state_data, by = "region")
+
+ggplot(us_map, aes(long, lat, group = group, fill = stress_index)) +
+  geom_polygon(color = "black", size = 0.2) +
+  coord_fixed(1.3)
+```
+
+1. Why is there a `left_join()` here? What is being combined?
+2. Why does the example use `tolower(state.name)`?
+3. Newer ggplot2 versions warn that `size` for lines is deprecated. Rewrite the `geom_polygon()` line to avoid that warning.
+
+---
+
+## 18) Saving a high-resolution ggplot (write code)
+
+Write a `ggsave()` call that saves a plot object named `p` as `"my_plot.png"` with:
+- width 8 inches, height 6 inches
+- 300 dpi
+
+---
+
+## 19) Saving a non-ggplot figure (write code + explain)
+
+Why might you need to use a “graphics device” workflow like `png()` / `dev.off()` instead of `ggsave()`?
+
+Write a minimal template that saves a non-ggplot plot to a PNG file.
+
+---
+
+## 20) 2D density plots (describe output)
+
+```r
+ggplot(bfi_person, aes(Extraversion, Neuroticism)) +
+  geom_density_2d_filled()
+```
+
+1. What problem is a 2D density plot often used to address (relative to a scatter plot)?
+2. What does the filled shading represent?
+
+\newpage
+
+# Answer Key
+
+## 1) Identify core ggplot components (describe output)
+
+- **Data:** `starwars`
+- **Aesthetic mappings:** `aes(x = height, y = mass)` maps `height` to x-axis and `mass` to y-axis.
+- **Geom:** `geom_point()` (scatter plot points)
+- **Description:** A scatter plot showing each character as a point, positioned by height (x) and mass (y).
+
+---
+
+## 2) Mapping vs. setting aesthetics (describe output)
+
+1. The first plot (`aes(color = gender)`) creates a **legend** because it **maps** color to a variable; ggplot must explain the mapping.
+2. Color encodes the grouping variable `gender` (different colors per gender level).
+
+---
+
+## 3) Debug a common `+` layering error (find/fix error)
+
+1. The `+` must be attached to the previous line; starting a new line with `+` often triggers `unexpected '+'` or related layering errors.
+2. Correct format:
+
+```r
+ggplot(starwars, aes(height, mass)) +
+  geom_point()
+```
+
+---
+
+## 4) Debug a “literal value mapped as a category” error (describe + fix)
+
+- `color = "blue"` **inside** `aes()` maps the literal text `"blue"` as if it were a categorical level, often creating a one-level legend.
+- Correct versions:
+
+```r
+ggplot(starwars, aes(height, mass)) +
+  geom_point(color = "blue")
+```
+
+(or, if mapping by a variable is intended)
+
+```r
+ggplot(starwars, aes(height, mass, color = gender)) +
+  geom_point()
+```
+
+---
+
+## 5) Missingness warnings in ggplot (describe + write code)
+
+1. The warning typically means some rows have `NA` in required aesthetics (`height` or `mass`) so ggplot **drops** them.
+2. Example fix:
+
+```r
+starwars %>%
+  filter(!is.na(height), !is.na(mass)) %>%
+  ggplot(aes(height, mass)) +
+  geom_point()
+```
+
+---
+
+## 6) Bar chart vs. column chart (find/fix error)
+
+1. `geom_bar()` defaults to counting rows per x level (`stat = "count"`), ignoring `y` for “heights.”
+2. Correct (summarize then `geom_col()`):
+
+```r
+mtcars %>%
+  group_by(cyl) %>%
+  summarise(mean_mpg = mean(mpg), .groups = "drop") %>%
+  ggplot(aes(x = factor(cyl), y = mean_mpg)) +
+  geom_col()
+```
+
+---
+
+## 7) Grouped bar chart interpretation (describe output)
+
+A **count** (frequency) bar chart: bars show how many cars are in each cylinder category (`cyl`), and bars are split side-by-side (dodged) by `gear` levels.
+
+---
+
+## 8) Histogram defaults and binning (describe + write code)
+
+1. Common message: that `stat_bin()` is using a default number of bins (often 30) and you may want to pick `bins` or `binwidth`.
+2. Example:
+
+```r
+ggplot(starwars, aes(mass)) +
+  geom_histogram(bins = 20)
+```
+
+(or)
+
+```r
+ggplot(starwars, aes(mass)) +
+  geom_histogram(binwidth = 10)
+```
+
+---
+
+## 9) Boxplot interpretation (describe output)
+
+- **Box:** the interquartile range (IQR), from 25th to 75th percentile.
+- **Median line:** 50th percentile.
+- **Whiskers:** values within a typical range from the box (commonly up to 1.5 × IQR from the quartiles).
+- **Outliers:** points beyond whiskers (unusually high/low observations under the boxplot rule).
+
+---
+
+## 10) Why add jitter to a boxplot? (explain)
+
+Jitter adds (slight) random horizontal noise so overlapping points become visible. It helps you see the **distribution of individual observations**, sample size differences, and clustering that the box alone can hide.
+
+---
+
+## 11) Labels with `labs()` (write code)
+
+```r
+p +
+  labs(
+    title = "Fuel economy vs. weight",
+    x = "Weight (1000 lbs)",
+    y = "MPG"
+  )
+```
+
+---
+
+## 12) Manual scales and named vectors (find issue + fix)
+
+1. Unnamed vectors rely on the **order of factor levels**, which can change; colors can silently “swap” across runs/datasets.
+2. Named scale example:
+
+```r
+scale_color_manual(values = c(male = "blue", female = "red"))
+```
+
+---
+
+## 13) Rotate crowded x-axis labels (write code)
+
+```r
+theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+---
+
+## 14) Faceting (describe output)
+
+It creates **one histogram per gender level**, displayed as separate panels with the same binning rules, enabling comparisons of distributions across groups.
+
+---
+
+## 15) Combining plots with patchwork (describe output)
+
+1. `p1 + p2` places plots side-by-side in a single row.
+2. `p1 / p2` stacks plots vertically in a single column.
+
+---
+
+## 16) Heatmap from a correlation matrix (describe output)
+
+1. `Var1` and `Var2` identify the row/column variable names in the matrix; `Freq` is the numeric cell value (here, the correlation value).
+2. It uses a diverging scale centered at 0, with colors constrained to the range [-1, 1]. Positive and negative correlations will be visually contrasted around the midpoint.
+
+---
+
+## 17) Choropleth maps as “join + polygon plot” (describe + fix warning)
+
+1. The join merges **geometry** (state polygon coordinates) with **attributes** (`stress_index`) so each polygon can be colored by the attribute.
+2. `map_data("state")` uses lowercase region names; lowercasing ensures join keys match.
+3. Use `linewidth` instead of `size`:
+
+```r
+geom_polygon(color = "black", linewidth = 0.2)
+```
+
+---
+
+## 18) Saving a high-resolution ggplot (write code)
+
+```r
+ggsave("my_plot.png", plot = p, width = 8, height = 6, units = "in", dpi = 300)
+```
+
+---
+
+## 19) Saving a non-ggplot figure (write code + explain)
+
+`ggsave()` is designed for **ggplot objects**; some plots (e.g., base graphics or plots from non-ggplot packages) require opening a device, drawing, and closing.
+
+Template:
+
+```r
+png("my_figure.png", width = 1200, height = 900, res = 150)
+# ...make the plot here (base plot, corrplot, etc.)...
+dev.off()
+```
+
+---
+
+## 20) 2D density plots (describe output)
+
+1. It helps with **overplotting** when many points overlap in dense regions; density contours/filled bins summarize concentration.
+2. The fill indicates **estimated density levels** (where observations are more or less concentrated in the x–y plane).

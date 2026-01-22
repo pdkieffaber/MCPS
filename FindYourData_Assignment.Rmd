@@ -1,0 +1,116 @@
+---
+output: 
+  pdf_document:
+    citation_package: natbib
+    keep_tex: TRUE
+    fig_caption: TRUE
+    latex_engine: pdflatex
+bibliography: Introduction2R.bib
+header-includes:
+  - \usepackage{hyperref}
+  - \usepackage{array}   
+  - \usepackage{caption}
+  - \usepackage{graphicx}
+  - \usepackage{siunitx}
+  - \usepackage[table]{xcolor}
+  - \usepackage{multirow}
+  - \usepackage{hhline}
+  - \usepackage{calc}
+  - \usepackage{tabularx}
+  - \usepackage{fontawesome}
+  - \usepackage[para,online,flushleft]{threeparttable}
+  - \usepackage{wrapfig}
+  - \captionsetup[wrapfigure]{justification=raggedright,singlelinecheck=false}
+biblio-style: apsr
+title: "Finding Your Dataset"
+#thanks: "Data Science for the Psychological Sciences. **Current version**: `r format(Sys.time(), '%B %d, %Y')`"
+author: "Data Science for the Psychological Sciences"
+#abstract: ""
+#keywords: "r, r markdown"
+#date: "`r format(Sys.time(), '%B %d, %Y')`"
+geometry: margin=1in
+fontfamily: libertine
+fontsize: 11pt
+# spacing: double
+endnote: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE,
+                      message=FALSE, warning=FALSE)
+options(htmltools.dir.version = FALSE)
+```
+
+# Purpose
+
+In data science, the single most important early skill is learning to locate, evaluate, and justify a dataset that is appropriate for a research question. This assignment asks you to identify a public dataset, assess its quality and constraints, and propose a feasible analysis plan.
+
+**Student tasks and deliverables**
+
+1. Find three public datasets and briefly record:
+  - Dataset name + source
+  - Topic/domain (psychology, mental health, public health, politics, etc.)
+  - Unit of analysis (people, countries, counties, survey responses, etc.)
+  - Approximate sample size and key variables
+  - Access method (direct download vs registration; file format)
+    - Provide link if available
+  - Documentation availability (codebook/data dictionary)
+
+2. Select one of the datasets and write a short proposal with the following sections:
+  - Dataset overview
+  - Source, citation, licensing/terms-of-use
+  - Unit of analysis, time span, sampling frame
+  - Key variables (at least 6) and why they matter to you
+  - Documentation and data quality
+    - Do the data look interpretable? Is there a codebook?
+  - 3 potential research questions
+
+
+# Curated public dataset list
+Choose three of the datasets below **OR** find your own.
+
+## Mental health / psychiatry / substance use
+
+NSDUH (National Survey on Drug Use and Health) — substance use, mental health indicators, treatment utilization (public-use files). [SAMHSA](https://www.samhsa.gov/data/data-we-collect/nsduh-national-survey-drug-use-and-health/datafiles)
+
+BRFSS (Behavioral Risk Factor Surveillance System) — U.S. health behaviors, preventive care, chronic conditions; huge sample; state-level focus. [CDC](https://www.cdc.gov/brfss/annual_data/annual_data.htm)
+
+NHIS (National Health Interview Survey) — health status, access, behaviors; rich health and demographic content. [CDC](https://www.cdc.gov/nchs/nhis/documentation/index.html)
+
+NHANES — interviews + exams + lab measures; includes mental health and health behavior modules across waves. [CDC](https://wwwn.cdc.gov/nchs/nhanes/Default.aspx)
+
+YRBSS (Youth Risk Behavior Surveillance System) — adolescent risk behaviors (sleep, substance use, mental health–related items vary by year). [CDC](https://www.cdc.gov/yrbs/data/index.html)
+
+## Psychology and behavioral science (open research data)
+
+Collaborative Psychiatric Epidemiology Surveys (CPES) - Harmonized U.S. mental health surveys (includes NCS-R plus major race/ethnicity-focused components) used for studying prevalence, correlates, and treatment patterns. [icpsr.umich.edu](https://www.icpsr.umich.edu/web/ICPSR/studies/20240/versions/V3)
+
+NESARC (National Epidemiologic Survey on Alcohol and Related Conditions; waves and NESARC-III) - Very strong for comorbidity (substance use + mood/anxiety/personality disorders, etc.) and demographic correlates; documentation and access pathways are well established. [Data.gov](https://catalog.data.gov/dataset/national-epidemiologic-survey-on-alcohol-and-related-conditions-nesarcwave-1-20012002-and-)
+
+NSDUH (National Survey on Drug Use and Health) public-use files - Annual U.S. survey with mental illness indicators, suicidal ideation/behavior items (varies by year), and treatment variables—excellent for population trends and disparities. [SAMHSA](https://www.samhsa.gov/data/data-we-collect/nsduh-national-survey-drug-use-and-health/datafiles)
+
+## Politics and public opinion
+
+ANES (American National Election Studies) — U.S. political attitudes, vote choice, ideology, demographics. [ANES](https://electionstudies.org/data-center/)
+
+CES/CCES (Cooperative Election Study) — large U.S. survey; common content + modules; excellent for modeling turnout/attitudes. [CES/CCES](https://cces.gov.harvard.edu/)
+
+GSS (General Social Survey) — long-running U.S. social attitudes, demographics, and repeated items. [GSS](https://gss.norc.org/get-the-data.html)
+
+Pew Research Center datasets — many public microdata releases after a period of time; great topical coverage. 
+[Pew Research Center](https://www.pewresearch.org/download-datasets)
+
+## Cross-national attitudes, values, and governance
+
+European Social Survey (ESS) — cross-national attitudes/behavior; strong documentation; repeated rounds. 
+[European Social Survey](https://www.europeansocialsurvey.org/data-portal)
+
+World Values Survey (WVS) — global values/attitudes across waves; broad psychosocial variables. [worldvaluessurvey.org](https://www.worldvaluessurvey.org/WVSContents.jsp)
+
+V-Dem (Varieties of Democracy) — country-year democracy indicators/indices; good for political context variables. [V-Dem](https://v-dem.net/data/the-v-dem-dataset/)
+
+## Population, inequality, and social determinants (useful for psych/public health context)
+
+IPUMS USA (ACS/Census harmonized extracts) — demographics, income, education, migration; great for social determinants questions (requires free registration and extract request). [IPUMS USA](https://usa.ipums.org/usa/data.shtml)
+
+DHS Program (Demographic and Health Surveys) — global health and demographics; requires account approval; strong for public health and international comparisons. [DHS Program](https://www.dhsprogram.com/data/)

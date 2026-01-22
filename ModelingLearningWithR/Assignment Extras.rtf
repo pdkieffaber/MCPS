@@ -1,0 +1,82 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2761
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 AppleColorEmoji;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 The Model: The "Multi-Armed Bandit" (Q-Learning) 
+\f1 \uc0\u55356 \u57264 
+\f0 \
+Psychological Relevance: This is a simple but powerful Reinforcement Learning (RL) model. It's the most natural next step from Rescorla-Wagner. While R-W learns to predict an outcome ("the bell means food is coming"), a Q-learning model learns to make a choice to get a reward ("I should pull this lever to get food"). It's the classic model for the exploration vs. exploitation trade-off, which is fundamental to all decision-making.\
+\
+The Assignment Idea:\
+\
+Set up the "Casino": Create a simulation with three "slot machines" (three "armed bandits"). Each machine has a different, hidden probability of paying out (e.g., Machine A pays 50% of the time, B pays 30%, C pays 70%).\
+\
+Implement the "Agent": The student creates an "agent" that starts with no knowledge. The agent's "brain" is a simple vector of Q-values (Quality values), one for each machine, all starting at 0.\
+\
+The "Learning" Loop (Trial-by-Trial):\
+\
+The agent has to choose a machine to pull. This is where you introduce the Softmax Decision Rule. The agent is more likely to pick machines with high Q-values, but there's a small chance (regulated by a "temperature" parameter) it will explore a low-Q-value machine.\
+\
+After pulling, the "casino" (your code) gives a reward (1 or 0).\
+\
+The agent then updates its Q-value for only the machine it chose, using an update rule that looks just like Rescorla-Wagner: Q[chosen] = Q[chosen] + alpha * (reward - Q[chosen])\
+\
+Key Insight (The Graph): Ask them to plot two things: 1) The Q-values over time (they should converge on the true probabilities) and 2) The percent of choices for each machine over time (they should see the agent "discover" the 70% machine and eventually exploit it).\
+\
+\
+\
+\
+\
+# Decision-making\
+The Model: A "Two-Alpha" Reinforcement Learning AgentInstead of one "association" ($\\Delta V$) like in R-W, this agent tracks an Expectancy ($E$) for each of the four decks (A, B, C, D), all starting at 0.The key insight is that healthy people and patients learn from gains and losses differently. We can model this with two separate learning rates:$\\alpha_\{gain\}$ (Alpha-Gain): How much the agent learns from a better-than-expected outcome.$\\alpha_\{loss\}$ (Alpha-Loss): How much the agent learns from a worse-than-expected outcome.The Update Rule (The "Delta Rule"):Choose a deck (e.g., Deck A).Get the outcome (e.g., Win $100, Lose $0).Calculate the Prediction Error (PE): PE = (Win - Loss) - E[Deck A]If PE > 0 (it's a gain), update using $\\alpha_\{gain\}$:E[Deck A] = E[Deck A] + alpha_gain * PEIf PE < 0 (it's a loss), update using $\\alpha_\{loss\}$:E[Deck A] = E[Deck A] + alpha_loss * PEThe "Cognitive Knob" (The Psychology):Healthy Agent: Symmetrical learning. alpha_gain = 0.1 and alpha_loss = 0.1. They learn from pain just as much as they learn from pleasure."Patient" Agent (Myopic): Asymmetrical learning. alpha_gain = 0.1 but alpha_loss = 0.01. They are excited by gains but functionally ignore or underweight the long-term punishments.The Assignment: Modeling the Iowa Gambling TaskObjective: Simulate a "Healthy" and a "Patient" agent to understand how a simple cognitive bias (ignoring losses) leads to self-defeating choices.Part 1: Build the "Casino" (The IGT Environment)First, students must write a function that simulates the IGT. Give them this payoff schedule:DeckRewardLoss FrequencyLoss AmountA+$10050%-$250B+$10010%-$1250C+$5050%-$50D+$5010%-$250Net (A/B): -$25 per 10 cards. Net (C/D): +$25 per 10 cards.Task: Write a function pull_card(deck) that, when called, returns a list(win, loss) for one of the four decks.Part 2: Build the "Agent" (The Cognitive Model)Task: Write a function update_expectancy(E_old, win, loss, alpha_gain, alpha_loss) that takes the old expectancy and the outcome, and returns the new expectancy using the two-alpha delta rule.Part 3: The Choice Rule (Softmax)How does the agent choose? It uses the Softmax (or Boltzmann) decision rule. This rule translates the expectancy values into choice probabilities.Task: Give them the Softmax equation and have them write a function choose_deck(E_vector, tau).E_vector is the list of expectancies (e.g., c(E_A, E_B, E_C, E_D)).tau (Temperature) is a "consistency" parameter.1 A low tau means the agent always picks the highest E (exploits). A high tau means it chooses randomly (explores).Part 4: The Simulation (Putting it all together)Task: Run a simulation for two agents (Healthy vs. Patient) over 100 trials.Healthy Agent Simulation:Set alpha_gain = 0.1, alpha_loss = 0.1.Loop 100 times. In each loop:Choose a deck using choose_deck().Get the (win, loss) from your pull_card() function.Update the expectancy for that deck only using update_expectancy().Record which deck was chosen.Patient Agent Simulation:Do the exact same thing, but with alpha_gain = 0.1 and alpha_loss = 0.01.Part 5: The "Aha!" Moment (The Graph)Task: Plot the results. The best way is to plot the percentage of choices from "Bad Decks" (A & B) over time.Create a plot showing "Trial Number" (1-100) on the x-axis.On the y-axis, show the cumulative percentage of choices made from Decks A & B.Plot two lines: one for the Healthy Agent, one for the Patient Agent.Expected Insight:The Healthy Agent's line will decrease over time. They will start by sampling all decks, but as they learn from the large punishments, they will "learn" to prefer the "Good" decks C & D.The Patient Agent's line will stay high or even increase. Because they ignore the losses (alpha_loss = 0.01), the big +$100 rewards from Decks A & B look amazing to them. They never learn that these decks are bankrupting them.This directly models the myopic, self-defeating behavior seen in the task and provides a clear cognitive mechanism (asymmetrical learning) for why it happens.\
+\
+\
+\
+\
+\'97\'97END OF CHAPTER\'97\
+FIX BELOW INCORRECT\
+they reflect two different, complementary psychological processes. The strength of the illusory correlation emerges from one, while the other describes how that learned bias is translated into action.\
+\
+Here\'92s a more detailed breakdown based on the model in your chapter:\
+\
+1. alpha_base: The Learning Parameter\
+What it represents: alpha_base is the baseline learning rate. It reflects how quickly a person updates their beliefs in general. In our specific attention-modulated model, the actual learning rate on any trial is alpha_base + abs(prediction_error).\
+\
+How it relates to the illusory correlation: The illusory correlation in this model is not caused by alpha_base itself, but by the dynamic updating of alpha. The bias emerges because the learning rate gets a huge boost specifically after the most surprising events (a rare planet with rare negative feedback).\
+\
+Interpretation: A participant with a higher best-fit alpha_base is someone who learns more quickly from feedback overall. While this speed might contribute to how fast the illusory correlation forms, the parameter itself is a measure of general learning speed, not the bias directly. The bias is an emergent property of the learning rule.\
+\
+2. tau (\uc0\u964 ): The Choice Parameter\
+What it represents: tau is the inverse temperature or choice consistency parameter. It has nothing to do with learning; it governs the decision-making process after learning has occurred. It describes how faithfully a person's choices reflect their internal learned values (V).\
+\
+How it relates to the illusory correlation:\
+\
+A high tau means the person's choices are very deterministic. If their internal V for Planet Xylos is even slightly higher than for Zorg, they will almost always predict "negative" for Xylos. They are consistently acting on their learned bias.\
+\
+A low tau means the person's choices are more random or exploratory. Even if they have a strong internal bias (a big difference in their V values), their button presses might not consistently reflect it.\
+\
+Interpretation: tau tells you how much the participant's behavior is driven by their learned associations versus other factors (like guessing or inattention). It reflects the expression of the illusory correlation in their choices, but not its internal strength.\
+\
+Analogy: A Biased Coin\
+Imagine two people are given a biased coin that lands on heads 70% of the time.\
+\
+Person A flips it 100 times and concludes it's a 70/30 coin.\
+\
+Person B only flips it 10 times and also concludes it's a 70/30 coin (this person has a very high alpha_base - they learn fast).\
+\
+Now, you ask them to bet on the next flip.\
+\
+Person A, confident in their knowledge, always bets on heads. They have a high tau.\
+\
+Person B, even though they believe it's 70/30, sometimes bets on tails just for fun. They have a low tau.\
+\
+In this analogy, the learned belief (70/30) is like the internal V values. alpha_base determines how many flips it took to reach that belief. tau determines how consistently they use that belief to place their bets.\
+\
+In summary: In your model, the illusory correlation is an emergent property of the attention-modulated learning rule. alpha_base tunes the overall speed of that process, while tau determines how consistently the resulting biased belief is expressed in the participant's actions.\
+\
+\
+\
+}

@@ -1,0 +1,343 @@
+---
+title: "Cluster Analysis Research Report"
+author: "Paul Kieffaber"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: true
+  html_document:
+    theme: flatly
+    highlight: tango
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    number_sections: false
+    df_print: paged
+    code_download: true
+subtitle: An Investigation into the StarWars Data
+---
+```{css, echo=FALSE}
+h1, h4 {
+  text-align: center;
+}
+```
+
+```{r setup, include=FALSE}
+# This global option ensures NO code appears in the final file
+knitr::opts_chunk$set(
+  echo = FALSE,       # Hide code
+  message = FALSE,    # Hide package loading messages
+  warning = FALSE,    # Hide warnings
+  fig.align = "center" # Center all graphs
+)
+```
+
+**Goal.** Pick a publicly available dataset, ask a concrete question about how observations might group together, then (1) determine a sensible number of clusters using the elbow and silhouette methods, (2) compare K‑means, Hierarchical (Ward.D2), and DBSCAN, (3) select and justify a final solution, and (4) compare clusters on at least one validation variable not used to form clusters.
+
+# The Star Wars Dataset
+
+The starwars dataset (included in the dplyr package) contains information on 87 characters from the Star Wars universe.
+
+- Some Key variables: 
+```{r}
+library(dplyr)
+glimpse(starwars)
+```
+  
+**Research Question**
+Are there unique groupings of Star Wars characters based on their physical characteristics?
+
+# Pre‑process & feature selection
+
+- There are three continuous variables that can be used for clustering:
+  - Height
+  - Mass
+  - Birth_year
+
+```{r}
+library(ggplot2)
+library(patchwork)
+# Plot
+p1<-ggplot(data=starwars, aes(x=1,y=height)) +
+    geom_violin(alpha=.6) +
+    geom_jitter(color="black", size=0.4, alpha=0.9) +
+    theme(
+      legend.position="none",
+      plot.title = element_text(size=12),
+      axis.text = element_text(size=12)
+    ) +
+    ggtitle("Character Height") +
+    xlab("")
+
+p2<-ggplot(data=starwars, aes(x=1,y=mass)) +
+    geom_violin(alpha=.6) +
+    geom_jitter(color="black", size=0.4, alpha=0.9) +
+    theme(
+      legend.position="none",
+      plot.title = element_text(size=12),
+      axis.text = element_text(size=12)
+    ) +
+    ggtitle("Character Mass") +
+    xlab("")
+
+p3<-ggplot(data=starwars, aes(x=1,y=birth_year)) +
+    geom_violin(alpha=.6) +
+    geom_jitter(color="black", size=0.4, alpha=0.9) +
+    theme(
+      legend.position="none",
+      plot.title = element_text(size=12),
+      axis.text = element_text(size=12)
+    ) +
+    ggtitle("Character Birth Year") +
+    xlab("")
+
+p1+p2+p3
+```
+
+Looking at these variables, it appears that Mass>500 and Birth_year>250 will remove outliers in those variables (see filtered data below).
+
+```{r}
+starwars_clean<-starwars%>%
+  filter(mass<500)%>%
+  filter(birth_year<250)
+
+p1<-ggplot(data=starwars_clean, aes(x=1,y=height)) +
+    geom_violin(alpha=.6) +
+    geom_jitter(color="black", size=0.4, alpha=0.9) +
+    theme(
+      legend.position="none",
+      plot.title = element_text(size=12),
+      axis.text = element_text(size=12)
+    ) +
+    ggtitle("Character Height") +
+    xlab("")
+
+p2<-ggplot(data=starwars_clean, aes(x=1,y=mass)) +
+    geom_violin(alpha=.6) +
+    geom_jitter(color="black", size=0.4, alpha=0.9) +
+    theme(
+      legend.position="none",
+      plot.title = element_text(size=12),
+      axis.text = element_text(size=12)
+    ) +
+    ggtitle("Character Mass") +
+    xlab("")
+
+p3<-ggplot(data=starwars_clean, aes(x=1,y=birth_year)) +
+    geom_violin(alpha=.6) +
+    geom_jitter(color="black", size=0.4, alpha=0.9) +
+    theme(
+      legend.position="none",
+      plot.title = element_text(size=12),
+      axis.text = element_text(size=12)
+    ) +
+    ggtitle("Character Birth Year") +
+    xlab("")
+
+p1+p2+p3
+```
+
+Data for clustering were then normalized (see below).
+
+```{r}
+clusterdata<-starwars_clean%>%
+  select(c(height,mass,birth_year))%>%
+  scale()
+
+head(clusterdata)
+```
+
+# Decide the number of clusters with elbow & silhouette
+```{r,message = FALSE, warning = FALSE}
+library(factoextra)
+# Find optimal K using the Elbow method
+fviz_nbclust(clusterdata, kmeans, method = "wss") +
+  labs(subtitle = "Elbow Method")
+```
+
+```{r,message = FALSE, warning = FALSE}
+# Find optimal K using the Silhouette method
+fviz_nbclust(clusterdata, kmeans, method = "silhouette") +
+  labs(subtitle = "Silhouette Method")
+```
+The elbow plot and silhouette method appear to be in agreement that four clusters may be the most appropriate (i.e., $k=4$).
+
+# Fit and visualize three methods
+
+## K-means Clustering (Hartigan-Wong method)
+
+The PCA plot shows good separation of the clusters with the two PCA dimensions accounting for more than 92% of the variabiltiy in the data.
+
+```{r,message = FALSE, warning = FALSE}
+# Set seed for reproducibility
+set.seed(123)
+
+# Run K-Means
+# nstart=25 will run the algorithm 25 times with different
+# random starting points and pick the best one.
+km.res <- kmeans(clusterdata, centers = 4, nstart = 25, algorithm = c("Hartigan-Wong"))
+
+# Visualize the clusters
+# fviz_cluster will perform PCA (Principle Component Analysis)
+# to show the 4-dimensional data in 2 dimensions.
+kmplot<-fviz_cluster(km.res, data = clusterdata,
+             ellipse.type = "convex",
+             geom = "point",
+             ggtheme = theme_bw())
+
+kmplot
+```
+CLUSTER SUMMARY:
+```{r, message = FALSE, warning = FALSE}
+# Add cluster assignments to the original data
+clusterdata <- as.data.frame(clusterdata) %>%
+  mutate(KMcluster = km.res$cluster)
+
+# Calculate the mean of each variable for each cluster
+cluster_profiles_km <- clusterdata %>%
+  group_by(KMcluster) %>%
+  summarise(
+    n = n(),
+    Height_mean = mean(height),
+    Mass_mean = mean(mass),
+    Age_mean = mean(birth_year)
+  )
+
+print(cluster_profiles_km)
+```
+
+It looks like most of my clusters are pretty small.
+***Interpretation:***
+
+* Cluster 1:  Short, light, and young.
+* Cluster 2:  Tall, heavy, average age
+* Cluster 3:  Tall, average mass, very old
+* Cluster 4:  Average height, average mass, average age
+
+## Heirarchical Clustering
+
+```{r, message = FALSE, warning = FALSE}
+# 1. Calculate the distance matrix
+# This calculates the distance between all 50 states
+d <- dist(clusterdata, method = "euclidean")
+
+# 2. Run hierarchical clustering
+# We feed the distance matrix 'd' into hclust
+# We specify the "ward.D2" linkage method, which minimizes
+# the increase in variance at each merge.
+hc.res <- hclust(d, method = "ward.D2")
+# 3. Plot the dendrogram
+fviz_dend(hc.res, cex = 0.7,  # cex = label size
+          k = 4, # "Cut" the tree into 4 clusters
+          rect = TRUE, # Add rectangles around the 4 clusters
+          k_colors = c("#2E9FDF", "#00AFBB", "#E7B800", "#FC4E07"),
+          main = "Hierarchical Clustering Dendrogram")
+```
+```{r, message = FALSE, warning = FALSE}
+# Cut the tree into 4 groups
+clusters_hc <- cutree(hc.res, k = 4)
+
+# Visualize the clusters on a scatter plot
+hplot<-fviz_cluster(list(data = clusterdata, cluster = clusters_hc),
+             ellipse.type = "convex",
+             geom = "point",
+             ggtheme = theme_bw())
+
+hplot
+```
+CLUSTER SUMMARY:
+```{r, message = FALSE, warning = FALSE}
+# Add cluster assignments to the original data
+clusterdata <- as.data.frame(clusterdata) %>%
+  mutate(KMcluster = clusters_hc)
+
+# Calculate the mean of each variable for each cluster
+cluster_profiles_km <- clusterdata %>%
+  group_by(KMcluster) %>%
+  summarise(
+    n = n(),
+    Height_mean = mean(height),
+    Mass_mean = mean(mass),
+    Age_mean = mean(birth_year)
+  )
+
+print(cluster_profiles_km)
+```
+The clusters identified using hierarchical clustering are very similar to those using K-means clustering.
+
+## Density Based Clustering (DBSCAN)
+```{r, message = FALSE, warning = FALSE}
+library(dbscan)
+# minPts = k+1. If we want k=4 neighbors, minPts = 5.
+# This plots the distance to the 4th nearest neighbor for all 50 states
+kNNdistplot(clusterdata, k = 4)
+abline(h = 1.25, lty = 2, col = "red") # lty=2 is a dashed line
+```
+- The nearest neighbor distance plot indicates an epsilon of about 1.25 with k=4, so I'll use epsilon=1.24 with minpnts=5 (k+1)
+
+```{r, message = FALSE, warning = FALSE}
+# Run DBSCAN
+db.res <- dbscan(clusterdata, eps = 1.25, minPts = 5)
+
+# Print the results
+print(db.res)
+```
+Ok, so the DBSCAN method suggests there are no natural clusters, that everyone should be in the same cluster with 9 outliers.
+
+```{r, message = FALSE, warning = FALSE}
+# Visualize, note how '0' (black points) are the outliers
+dbplot<-fviz_cluster(db.res, data = clusterdata,
+             ellipse = TRUE,
+             geom = "point",
+             ggtheme = theme_bw())
+
+dbplot
+```
+This solution seems strange.  When reduced to 2 dimensions, two of the outliers fall within the cluster.
+
+### Comparison
+```{r}
+library(patchwork)
+kmplot+hplot+dbplot
+```
+# Pick a final solution & justify
+Kmeans & Hierarchical were nearly identical.  So I'm going to pick the k-means for validation
+
+# Validate clusters on an external variable
+
+```{r}
+# 1. Add your cluster data to the main data frame
+# (I'll assume your clusterdata$KMcluster vector is correct)
+starwars_with_clusters <- starwars_clean %>%
+  mutate(KMcluster = factor(clusterdata$KMcluster)) # Using factor() is good practice
+
+# 2. Count the occurrences of each skin_color within each cluster
+plot_data <- starwars_with_clusters %>%
+  count(KMcluster, species) # This is the magic!
+
+# 3. Plot the result as a stacked bar chart
+library(ggplot2)
+ggplot(plot_data, aes(x = KMcluster, y = n, fill = species)) +
+  geom_col() + # geom_col is for bar charts where 'y' is a value
+  labs(
+    title = "Distribution of Species by Cluster",
+    x = "K-Means Cluster",
+    y = "Count of Characters"
+  )
+```
+In order to validate the clustering, I decided to test whether certain species were more or less likely to be in a cluster using a chi-squared test of association.
+
+```{r}
+# 1. Run the test and save the results
+final_data <- starwars_clean %>%
+  mutate(KMcluster = factor(clusterdata$KMcluster))
+
+# 2. Create the table
+contingency_table <- table(final_data$KMcluster, final_data$species)
+
+# 3. Run the Chi-Squared test
+chi_test_results <- chisq.test(contingency_table)
+print(chi_test_results)
+```
+The results indicate that the star wars characters are NOT clustered by physical characteristics into distinct species.  The Chi-squared test did not reach statistical significance, indicating that clustering on physical attributes did not relate to species.

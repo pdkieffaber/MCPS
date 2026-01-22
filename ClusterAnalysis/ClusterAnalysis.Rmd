@@ -1,5 +1,5 @@
 ---
-title: "From Data to Discovery: Data Science for the Psychological Sciences"
+title: "From Data to Discovery: Methods & Computing for the Psychological Sciences"
 subtitle: "Cluster Analysis"
 author: "Paul Kieffaber"
 date: "Fall 2025"
@@ -49,8 +49,6 @@ Cluster Analysis is like looking at 50 people who read the books and sorting the
 * Participants within a cluster should be highly similar to one another.
 * Participants between different clusters should be highly dissimilar from one another.
 
-Think of it as the computational equivalent of sorting a mixed bag of laundry. You don't have labels telling you what's a sock and what's a shirt, but by looking at features like size, shape, and material, you can intuitively group similar items together. In data analysis, these "features" are your variables, and the "groups" are the hidden patterns you want to uncover.
-
 Cluster analysis is incredibly powerful and widely used for:
 
 * **Customer Segmentation:** Finding distinct groups of customers based on purchasing behavior or demographics.
@@ -77,7 +75,7 @@ So how does an algorithm "find" subjects that are "similar"? It does this by tre
 
 Let's take a look at how cluster analysis "visualizes" people in your data.
 
-```{r, 2D Clusters, message = FALSE, warning = FALSE}
+```{r, 2D Clusters, message = FALSE, warning = FALSE, echo=FALSE}
 library(ggplot2)
 library(dplyr)
 
@@ -131,7 +129,7 @@ Cluster analysis is simply the mathematical process of finding the center of the
 
 * Our 2D plot becomes a 3D "point cloud." Each of the 100 patients is now a single point floating in this 3D space. For 3D plotting, interactive libraries like plotly are excellent because they let you click and drag to rotate the plot.
 
-```{r 3D Clusters, message = FALSE, warning = FALSE}
+```{r 3D Clusters, message = FALSE, warning = FALSE, echo=FALSE}
 library(plotly)
 
 # 1. Simulate the data for three "clumps" in 3D
@@ -215,7 +213,7 @@ Choosing a metric is an important decision, as different metrics can lead to dif
 
 **Euclidean Distance**: This is the most common and intuitive metric. It's the "as the bird flies" straight-line distance between two points. For two data points, $p = (p_1, p_2, \dots, p_n)$ and $q = (q_1, q_2, \dots, q_n)$, across $n$ features (dimensions), the formula is:
 
-$$d(p, q)=\sqrt{ \sum_{i=1}^{n} (p_i - q_i)^2}$$
+$$d(p, q)= \sqrt{\sum_{i=1}^{n} (p_i - q_i)^2}$$
 
 For example, if $n=2$, then $d(p,q)=\sqrt{(p_1 - q_1)^2 + (p_2 - q_2)^2}$
 
@@ -274,14 +272,14 @@ print(dist_manhattan)
 
 There are many clustering methods, but they generally fall into three main families.
 
-1. Partitioning Clustering (e.g., K-Means)
+**1. Partitioning Clustering (e.g., K-Means)**
   * This method aims to "partition" the data into a pre-specified number of clusters, K. The most popular example is K-Means.
   * How it works: You tell the algorithm how many clusters (K) you want to find. It then randomly assigns K points as "centroids" (cluster centers) and iteratively repeats two steps:
     1) Assignment Step: Assigns each data point to its nearest centroid.
     2) Update Step: Recalculates the centroid of each cluster based on the mean of the points assigned to it.
   * Best for: General-purpose clustering, fast on large datasets, and tends to create spherical, evenly-sized clusters.
 
-2. Hierarchical Clustering
+**2. Hierarchical Clustering**
   * This method builds a tree-like hierarchy of clusters, which is visualized as a "dendrogram". It doesn't require you to specify the number of clusters beforehand.
   * How it works (Agglomerative): This is the "bottom-up" approach.
     1) Start by treating every single data point as its own cluster.
@@ -289,7 +287,7 @@ There are many clustering methods, but they generally fall into three main famil
     3) Repeat #2 until all data points are in a single giant cluster. You then "cut" the dendrogram at a certain height to get your desired number of clusters.
   * Best for: Smaller datasets where you want to visualize the hierarchy and don't know the number of clusters in advance.
 
-3. Density-Based Clustering (DBSCAN)
+**3. Density-Based Clustering (DBSCAN)**
   * This method groups points that are closely packed together, marking points that lie alone in low-density regions as outliers. The most popular example is DBSCAN (Density-Based Spatial Clustering of Applications with Noise).
   * How it works: It defines clusters as continuous regions of high density. It's great at finding arbitrarily-shaped clusters (e.g., rings, curves) and is very robust to outliers.
   * Best for: Finding non-spherical clusters, handling noise and outliers effectively.
@@ -329,14 +327,15 @@ df <- scale(USArrests)
 # Notice the means are now 0 and SDs are 1
 head(df)
 ```
-Now df is our prepared, scaled data, ready for clustering.
+
+*Now df is our prepared, scaled data, ready for clustering.*
 
 ## Method 1: K-Means Clustering
 Goal: Partition the 50 states into $K$ groups.
 
 **The Basic Idea**
 
-The basic idea behind k-means clustering consists of defining clusters so that the total intra-cluster variation (known as total within-cluster variation) is minimized. There are several k-means algorithms available. The standard algorithm is the Hartigan-Wong algorithm (1979), which defines the total within-cluster variation as the sum of squared distances Euclidean distances between items and the corresponding centroid:
+The basic idea behind k-means clustering consists of defining clusters so that the total intra-cluster variation (known as total within-cluster variation) is minimized. There are several k-means algorithms available. The standard algorithm is the Hartigan-Wong algorithm (1979), which defines the total within-cluster variation as the sum of squared Euclidean distances between items and the corresponding centroid:
 $$
 W(C_k)=\sum_{x_i \in C_k}{(x_i - u_k)^2}
 $$
@@ -347,9 +346,9 @@ where:
 
 Each observation ($x_i$) is assigned to a given cluster such that the sum of squares (SS) distance of the observations to their assigned cluster centers ($\mu_k$) is minimized.
 
-We define the total within-cluster variation as follows:
+We define the total within-cluster sum of squares (WSS) as follows:
 $$
-total.withiness = \sum_{k=1}^{k}W(C_k) = \sum_{k=1}^{k}\sum_{x_i \in C_k}{(x_i - u_k)^2}
+WSS = \sum_{k=1}^{k}W(C_k) = \sum_{k=1}^{k}\sum_{x_i \in C_k}{(x_i - u_k)^2}
 $$
 The total within-cluster sum of square measures the compactness (i.e goodness) of the clustering and we want it to be as small as possible.
 
@@ -359,7 +358,7 @@ The total within-cluster sum of square measures the compactness (i.e goodness) o
 
 For methods like K-Means, how do you pick the "right" number for K? There is no single, correct answer. Instead, we use heuristics to find an "optimal" number.
 
-1) The Elbow Method: This method plots the Within-Cluster Sum of Squares (WCSS) against different values of K. The WCSS measures the compactness of the clusters. As K increases, WCSS will always decrease. You look for the "elbow" in the plot—the point where adding another cluster doesn't "significantly" reduce the WCSS.
+1) The Elbow Method: This method plots the within-cluster sum of squares (WSS) against different values of K. The WCSS measures the compactness of the clusters. As K increases, WSS will always decrease. You look for the "elbow" in the plot—the point where adding another cluster doesn't "significantly" reduce the WCSS.
 
 The `factoextra` package makes this simple.
 
@@ -368,7 +367,7 @@ The `factoextra` package makes this simple.
 fviz_nbclust(df, kmeans, method = "wss") +
   labs(subtitle = "Elbow Method")
 ```
-Interpretation: The plot shows a very clear "elbow" at K=4. After this point, adding more clusters doesn't significantly reduce the within-cluster sum of squares (WCSS).
+Interpretation: The plot shows a very clear "elbow" at K=4. After this point, adding more clusters doesn't significantly reduce the within-cluster sum of squares (WSS).
 
 2)  The Silhouette Score: This method provides a more robust measure. For each data point, it calculates a score based on two things:
   * Cohesion: How close is it to other points in its own cluster?
@@ -412,7 +411,7 @@ set.seed(123)
 # Run K-Means
 # nstart=25 will run the algorithm 25 times with different
 # random starting points and pick the best one.
-km.res <- kmeans(df, centers = 4, nstart = 25)
+km.res <- kmeans(df, centers = 4, nstart = 25, algorithm = c("Hartigan-Wong"))
 
 # Visualize the clusters
 # fviz_cluster will perform PCA (Principle Component Analysis)
@@ -503,7 +502,7 @@ print(cluster_profiles_km)
 * This is the perfect time for a chorograph!
   * remember that our "people" are states in the US.  We can create a chorograph showing how states were assigned to each of the four clusters.
 
-```{r, message = FALSE, warning = FALSE}
+```{r, message = FALSE, warning = FALSE, echo=FALSE}
 library(mapproj)
 # --- 3. Prepare Cluster Data for Merging ---
 # Create a data frame with state names and their cluster
@@ -563,7 +562,7 @@ Hierarchical clustering is a "bottom-up" or agglomerative method. It's fundament
   
   - Average Linkage: Measures the average distance between all possible pairs of points in the two clusters.
   
-  - Ward's Method (ward.D2): This is the most popular and generally most robust method. It's different from the others. It doesn't just use a simple distance. Instead, it asks: "If I merge these two clusters, what will be the new total within-cluster variance (WCSS)?" The algorithm merges the two clusters that result in the minimum increase in the total WCSS. By doing this at every step, it tends to produce very compact, spherical, and evenly-sized clusters. It's conceptually very similar to K-Means (which also tries to minimize WCSS), making it a powerful default choice.
+  - Ward's Method (ward.D2): This is the most popular and generally most robust method. It's different from the others. It doesn't just use a simple distance. Instead, it asks: "If I merge these two clusters, what will be the new total within-cluster variance (WSS)?" The algorithm merges the two clusters that result in the minimum increase in the total WCSS. By doing this at every step, it tends to produce very compact, spherical, and evenly-sized clusters. It's conceptually very similar to K-Means (which also tries to minimize WCSS), making it a powerful default choice.
   
 ### Now let's see how this algorithm looks in R. 
 
@@ -705,7 +704,7 @@ fviz_cluster(db.res, data = df,
 
 Final Interpretation: This might be the most "honest" result. K-Means and Hierarchical forced every state into a group. DBSCAN tells us that states like Florida, Alaska, California, and Nevada (which are often in the "noise" cluster) might be too unique to be grouped, and we are left with two more homogenous, tightly-packed clusters.
 
-***NOTE:*** You may have noticed that the individual points in the PCA plot produced by `fviz_cluster()` function are the same for K Means and Heirarchical clustering methods, but different when using the DBSCAN method. This is because both K Means and Heirarchical methods are based on all 50 states but the DBSCAN method, because it identifies and removes outliers, represents the 2D cluster space based on a PCA of only 42 states!
+***NOTE:*** You may have noticed that the individual points in the PCA plot produced by `fviz_cluster()` function are the same for K Means and Heirarchical clustering methods, but different when using the DBSCAN method. This is because both K Means and Heirarchical methods are based on all 50 states but the DBSCAN method, because it identifies and removes outliers, represents the 2D cluster space based on a PCA of only 44 states!
 
 # References
 Hartigan, JA, and MA Wong. 1979. “Algorithm AS 136: A K-means clustering algorithm.” Applied Statistics. Royal Statistical Society, 100–108.

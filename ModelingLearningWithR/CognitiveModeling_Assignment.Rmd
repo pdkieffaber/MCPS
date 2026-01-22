@@ -1,0 +1,92 @@
+---
+title: "Cognitive Models Research Report"
+author: "[YOUR NAME]"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    theme: flatly
+    highlight: tango
+    toc: false
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    number_sections: false
+    df_print: paged
+    code_download: true
+  pdf_document:
+    toc: true
+subtitle: An Investigation of Explanatory Models in Psychology
+---
+
+```{r setup, include=FALSE}
+# This global option ensures NO code appears in the final file
+knitr::opts_chunk$set(
+  echo = FALSE,       # Hide code
+  message = FALSE,    # Hide package loading messages
+  warning = FALSE,    # Hide warnings
+  fig.align = "center" # Center all graphs
+)
+```
+
+**What to submit:** An R Markdown (.Rmd) and a knitted HTML that reads like a research report (Use this document or another with the same YAML header and setup chunk).
+
+Include figure captions and refer to figures/tables in the text.
+
+# Assignment
+For this assignment, you will be asked to think about the assumptions that are built into the examples covered in the textbook (and class) and to modify one of the models to address that assumption.  Your task is to create a new R-markdown file, using a combination of markdown and code blocks to address each of the items below.
+
+1) We examined how biased priors could be used to model social biases in the Bayesian learning model.  How would you implement pre-existing biases in the rational Rescorla-Wagner model?
+  - Describe the change you would make
+  - Implement your proposed change and run the model. 
+  - Show a plot of the model's behavior and explain how the R-W and Bayesian differ in their response to the addition of pre-existing biases.
+
+2) There is one **major** assumption that was built into both the R-W and Bayesian models of illusory correlation (not including the model with biased priors). This assumption has to do with prior "knowledge" that we programmed into the models.  Analyze the code and describe the "hidden" assumption and how it is implemented in the model.
+  - Describe (in words) how you could remove the identified assumption to make the models behavior even more plausible. (*For example: I would change the $\alpha$ parameter so that...)*
+  - Copy the code for either the R-W or Bayesian model and implement the change(s) you described above.  
+    - Be sure to add comments to each line of code that you write or change, explaining what your addition/change does.
+  - Run both the original code and your new code, producing a graph of the trial-by-trial learning for each.  Write a few sentences explaining how the two models differ (if at all) in terms of their predicted learning patterns.
+
+3) [Hyperbolic Temporal Discounting](https://en.wikipedia.org/wiki/Hyperbolic_discounting) is the quintessential model of impulsivity, self-control, and addiction. It's used to explain why people (or animals) often choose a small, immediate reward (e.g., drinking, procrastination) over a large, delayed reward (e.g., health, a finished project). It bridges the gap between learning (R-W) and decision-making.
+  - Write a few sentences describing the model and its implications.
+  - Implement the Model: Write a function for the hyperbolic discounting equation: 
+$$V = A / (1 + kD)$$
+where $V$ is subjective value, $A$ is the reward amount, $D$ is the delay, and $k$ is the individual's discount rate (impulsivity).
+  - Simulate a "Preference Reversal": Model a choice between a Small-Immediate Reward (e.g., $A=10, D=0$) and a Large-Delayed Reward (e.g., $A=20, D=10$).
+  - Run the Simulation: Plot the subjective value ($V$) of both options as the delay to the Small-Immediate reward counts down (e.g., from $D=20$ to $D=0$). The plot should show a "crossover." When far away, the large reward is always more valuable. But as the small reward becomes immediately available, its value spikes, causing the "preference reversal" that models a lapse in self-control.
+  - Plot two lines: one for a "low $k$" individual (patient) and one for a "high $k$" individual (impulsive) and explain the predictions the model makes with respect to these two groups of people.
+ 
+4) [Schelling's Segregation Model](https://en.wikipedia.org/wiki/Schelling%27s_model_of_segregation) is a classic agent-based model (ABM) from social psychology/sociology. It's a powerful demonstration of how complex, large-scale social patterns (like segregated neighborhoods) can emerge from very simple, seemingly harmless individual "rules" or preferences.
+  - Create the "City": Create an N x N matrix (e.g., 20x20) to represent the city.
+  - Populate the City: Randomly sprinkle two "types" of agents (e.g., A and B) into the city, leaving some empty spots. Create a snapshot image of your city using one of the two options below.
+  - Define the "Happiness" Rule (The Cognitive Part): Each agent has a simple preference: "I will be 'happy' as long as at least X% of my 8 neighbors are like me." The key is to set X to a low, non-racist value, like 30% (i.e., "I don't want to be the only one").
+  - Write a loop that runs for 50 "rounds." In each round, the code finds all "unhappy" agents and moves each unhappy agent to a random empty spot in the city.
+  - Run the simulation of 50 "rounds" three times and plot the state of the city (the matrix) at Round 1 (random locations) and at Round 50.
+  - What kind of social behavior do you observe based on this simple "happiness" rule?
+
+*Use either of the code blocks below to create a nice looking image of the residents in your "city":*
+
+- GGplot:
+
+      library(ggplot2)
+      df <- as.data.frame(mat)
+      df$row <- factor(1:nrow(df), levels = nrow(df):1)  # put row 1 at top
+      df_long <- pivot_longer(df, -row, names_to = "col", values_to = "val")
+      ggplot(df_long, aes(x = col, y = row, fill = factor(val))) +
+        geom_tile(color = "grey90") +
+        scale_fill_manual(values = c("0" = "white", "1" = "red", "2" = "blue"), name = "Value") +
+        coord_fixed() +
+        labs(x = "Column", y = "Row", title = "Discrete Heatmap (0/1/2)") +
+        theme_minimal(base_size = 13) +
+        theme(legend.position = "right")
+
+- Preheatmap:
+
+      library(pheatmap)
+      pheatmap(mat,
+        cluster_rows = FALSE, cluster_cols = FALSE,
+        color  = c("white","red","blue"),
+        breaks = c(-0.5, 0.5, 1.5, 2.5),
+        legend_breaks = c(0,1,2),
+        legend_labels = c("0","1","2"),
+        border_color = "grey90",
+        main = "Discrete Heatmap (0/1/2)")

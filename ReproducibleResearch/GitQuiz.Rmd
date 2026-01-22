@@ -1,0 +1,142 @@
+---
+title: "Data Science for the Psychological Sciences"
+subtitle: "Reproducible Science with Git/GitHub Quiz"
+output:
+  pdf_document:
+    toc: false
+    number_sections: false
+  html_document:
+    toc: false
+    number_sections: false
+---
+
+# Answer Key
+
+1. **B** — By using the command `git add .`.
+2. **A** — To manage changes and track modifications to files over time.
+3. **D** — To prevent certain files from being tracked by Git, such as temporary files or large datasets.
+4. **A** — They enhance public trust and enable independent verification of results.
+5. **C** — When contributing to a public repository that you do not own.
+6. **B** — It uploads local commits to the main branch of the remote repository on GitHub.
+7. **A** — It facilitates collaboration and allows for auditing and replication of studies.
+8. **A** — To write clear, descriptive commit messages.
+9. **C** — It enables others to verify findings and replicate analyses.
+10. **A** — `git status`
+
+\newpage
+
+# Quiz
+
+**NAME:**__________________________________________
+
+**Instructions:** Circle or select the best answer for each question.
+
+---
+
+## Question 1 (1 point)
+
+How can you stage all modified files in Git for the next commit?
+
+A. By using `git stage`.  
+B. By using the command `git add .`.  
+C. By using `git commit all`.  
+D. By using `git push all`.
+
+---
+
+## Question 2 (1 point)
+
+What is the primary purpose of version control systems like Git?
+
+A. To manage changes and track modifications to files over time.  
+B. To simplify collaboration by merging files.  
+C. To create documents in Markdown format.  
+D. To optimize data storage efficiency.
+
+---
+
+## Question 3 (1 point)
+
+Why is using a `.gitignore` file important?
+
+A. To store the history of changes in the repository.  
+B. To optimize the speed of Git commands.  
+C. To label changes for future reference.  
+D. To prevent certain files from being tracked by Git, such as temporary files or large datasets.
+
+---
+
+## Question 4 (1 point)
+
+Which statement best describes the importance of transparent research practices?
+
+A. They enhance public trust and enable independent verification of results.  
+B. They limit access to sensitive data.  
+C. They ensure faster publication of research findings.  
+D. They require fewer resources for data analysis.
+
+---
+
+## Question 5 (1 point)
+
+In what scenario would you typically use forking instead of branching?
+
+A. When you have write access to a shared repository.  
+B. When you are merging changes into the main branch.  
+C. When contributing to a public repository that you do not own.  
+D. When you want to track personal changes only.
+
+---
+
+## Question 6 (1 point)
+
+What does the command `git push origin main` do?
+
+A. It creates a new branch called `origin`.  
+B. It uploads local commits to the main branch of the remote repository on GitHub.  
+C. It merges changes from the main branch into the local repository.  
+D. It deletes the main branch from the remote repository.
+
+---
+
+## Question 7 (1 point)
+
+Why is it crucial to keep a detailed record of changes in research projects?
+
+A. It facilitates collaboration and allows for auditing and replication of studies.  
+B. It guarantees publication in top-tier journals.  
+C. It simplifies the writing of research papers.  
+D. It reduces the amount of data collected.
+
+---
+
+## Question 8 (1 point)
+
+What is a recommended Git practice when committing changes?
+
+A. To write clear, descriptive commit messages.  
+B. To commit changes only once a month.  
+C. To ignore documenting any changes.  
+D. To use abbreviations in commit messages.
+
+---
+
+## Question 9 (1 point)
+
+What is a key benefit of reproducible research according to David Donoho?
+
+A. It simplifies the publication process.  
+B. It reduces the need for collaboration.  
+C. It enables others to verify findings and replicate analyses.  
+D. It allows researchers to control data accessibility.
+
+---
+
+## Question 10 (1 point)
+
+Which Git command is used to check the current status of your working directory?
+
+A. `git status`  
+B. `git add`  
+C. `git log`  
+D. `git commit`

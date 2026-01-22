@@ -1,16 +1,45 @@
 ---
-title: "Data Wrangling with the Tidyverse"
-author: "Paul Kieffaber"
-date: "09/02/2025"
-output:
-  pdf_document: default
-  html_document: default
-  word_document: default
-editor_options: 
-  markdown: 
-    wrap: 72
+output: 
+  pdf_document:
+    citation_package: natbib
+    keep_tex: TRUE
+    fig_caption: TRUE
+    latex_engine: pdflatex
+bibliography: Introduction2R.bib
+header-includes:
+  - \usepackage{hyperref}
+  - \usepackage{array}   
+  - \usepackage{caption}
+  - \usepackage{graphicx}
+  - \usepackage{siunitx}
+  - \usepackage[table]{xcolor}
+  - \usepackage{multirow}
+  - \usepackage{hhline}
+  - \usepackage{calc}
+  - \usepackage{tabularx}
+  - \usepackage{fontawesome}
+  - \usepackage[para,online,flushleft]{threeparttable}
+  - \usepackage{wrapfig}
+  - \captionsetup[wrapfigure]{justification=raggedright,singlelinecheck=false}
+biblio-style: apsr
+title: "Data Wrangling with Tidyverse"
+#thanks: "Data Science for the Psychological Sciences. **Current version**: `r format(Sys.time(), '%B %d, %Y')`"
+author: "Data Science for the Psychological Sciences"
+#abstract: ""
+keywords: "r, r markdown"
+#date: "`r format(Sys.time(), '%B %d, %Y')`"
+geometry: margin=1in
+fontfamily: libertine
+fontsize: 11pt
+# spacing: double
+endnote: no
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE,
+                      message=FALSE, warning=FALSE)
+options(htmltools.dir.version = FALSE)
+```
 
 # Introduction: What is Data Wrangling?
 
@@ -33,19 +62,20 @@ Raw data comes with a wide array of potential problems, including:
 
 Mastering the tools to efficiently tackle these issues is what turns the frustrating 80% of your time into a powerful and controlled part of your workflow, paving the way for the insightful 20% that follows.
 
-## Chapter Goals and Dataset
+## Chapter Goals
 
 In this chapter, you will learn a complete data wrangling workflow using the core packages of the Tidyverse. By the end, you will be able to:
 
-* Import data cleanly using `readr`.
+* Import data using `readr`.
+* Wrangle missingness and messiness
 * Select, filter, and create variables using `dplyr`.
 * Reshape your data into a tidy format using `tidyr`.
 * Summarize your data by groups.
-* Create an insightful plot from your wrangled data using `ggplot2`.
+* Create an insightful plot from your wrangled data.
 
-Throughout this chapter, we will be working with a dataset containing historical weather and demographic data for our own location of Williamsburg, Virginia, exploring patterns and preparing the data for a hypothetical analysis.
+Throughout this chapter, we will be working with a variety of datasets that are natively available in base R, exploring patterns and preparing the data for a hypothetical analysis.
 
-# The Tidyverse
+# Introduction to The Tidyverse
 
 While base R has many powerful tools for data manipulation, the **Tidyverse** offers an ecosystem of packages designed specifically for the daily tasks of a data scientist. The packages share an underlying design philosophy and grammar, making the code you write more consistent, readable, and effective.
 
@@ -117,11 +147,13 @@ library(tidyverse)
 
 > **A Note on the Native R Pipe:** Since R version 4.1.0, a native pipe, `|>`, has been built into R. It functions very similarly for simple cases. Throughout this chapter, we will primarily use the Tidyverse pipe, `%>%`, as it is the historical standard for these packages and offers some additional features we may see later.
 
-## Importing Your Data with `readr`
+# Importing Your Data with `readr`
 
-The `readr` package, part of the core Tidyverse, provides a fast and friendly way to read rectangular data from delimited files, like comma-separated value (.csv) files.
+Getting data into R is not a single function call; it is a short workflow: (1) identify the file type and structure, (2) read it with the right parser, (3) verify that the result matches expectations, and (4) make small, deliberate corrections (types, missing-value codes, column names) before doing analysis. This section emphasizes reliable defaults using the tidyverse, while showing where base R is sufficient.
 
-For our examples to be self-contained and reproducible, we will first create our own sample CSV file directly from our R script using the `writeLines()` function. In a real-world scenario, this file would already exist on your computer.
+The `readr` package, part of the core Tidyverse, provides a fast and friendly way to read rectangular data from delimited files.
+
+For our examples to be self-contained and reproducible, we will first create our own sample comma-separated (CSV) file using the `writeLines()` function. In a real-world scenario, this file would already exist on your computer.
 
 ```{r create_csv_with_writelines}
 # Define the content for our example CSV file in a multi-line string
@@ -134,7 +166,7 @@ csv_content <- "year,visitors_millions,revenue_millions
 writeLines(csv_content, "williamsburg_visitors.csv")
 ```
 
-Now that we have simulated the existence of `williamsburg_visitors.csv`, we can read it with a single function, `read_csv()`:
+Now that we have created the `williamsburg_visitors.csv` file, we can read it with a single function, `read_csv()`:
 
 ```{r read_csv_example}
 visitors <- read_csv("williamsburg_visitors.csv")
@@ -142,49 +174,86 @@ print(visitors)
 ```
 When we run `read_csv()`, it prints a helpful message listing the column specifications. It intelligently "guessed" that `year` is a double (a type of number), `visitors_millions` is a double, and `revenue_millions` is a double.
 
-### Understanding the Output: Tibbles
+Note that `read_csv()` uses a number of named arguments with sensible defaults, such as `header=TRUE` and `sep=","`, which is why the function automatically parsed the first row of the file as column names and understood that each column was separated by a comma (`sep=","`), but the values of these arguments can be adjusted to meet the specific format of a particular data set. Other commonly used arguments include:
+
+* `skip`: Skips a specified number of lines at the start of the file.
+* `comment`: Specifies a character that indicates a line is a comment and should be ignored.
+
+Later in this chapter, we will discuss issues related to missing data, sometimes called "missingness".  At this point, it is simply important to recognize that many datasets encode missingness as strings like "NA", "", "N/A", "NULL", ".", or "-99". You should convert these to NA at import and this is easily accomplished using the `na=` argument.
+
+```{r na_convert, eval=FALSE}
+df <- read_csv(
+  "data/survey.csv",
+  na = c("", "NA", "N/A", "NULL", ".", "-99")
+)
+```
+
+In fact, the `read_csv()` function is flexible enough to meet the needs of most data formats, however, other functions are available.  For example...
+
+- Tab-separated values (tsv) = `read_tsv()`
+- Excel files = `read_excel("data/budget.xlsx", sheet = "FY2026", range = "A3:H250")`
+
+## Common Import Problems and Fixes
+
+1. IDs and leading zeros
+
+Sometimes researchers will use leading zeros in their ID column like `00123`. Because most import functions will interpret this column as "numeric", those values will automatically become `123`.  If you need to keep the leading zeros, you can force character at import:
+
+```{r force_character, eval=FALSE}
+df <- read_csv("data/customers.csv", col_types = cols(customer_id = col_character()))
+```
+
+2. Numbers with commas or currency symbols
+
+Another common issue is data formatting that includes special characters like commas or currency symbols etc. These also can be dealt with by reading the data as character, then cleaning and converting them after import.
+
+```{r currency, eval=FALSE}
+library(dplyr)
+library(stringr)
+library(readr)
+
+df <- read_csv("data/sales.csv", col_types = cols(revenue = col_character())) %>%
+  mutate(revenue = parse_number(revenue))
+```
+
+`parse_number()` extracts the numeric portion of a character string and returns it as a numeric value. It is designed for messy “numbers in text,” so it will correctly handle common formatting like currency symbols and thousands separators (e.g., "$1,234.50" becomes 1234.5), making it a reliable step when numeric columns were imported as character because of inconsistent formatting.
+
+3. Dates in inconsistent formats
+
+Date format inconsistencies can similarly be dealt with by importing as character first, then parsing deliberately.
+
+```{r date_inconsistencies, eval=FALSE}
+df <- read_csv("data/orders.csv", col_types = cols(order_date = col_character())) %>%
+  mutate(order_date = as.Date(order_date, format = "%m/%d/%Y"))
+```
+
+Here `as.Date()` converts a value into an R Date object, which stores calendar dates (year–month–day) without any time-of-day component. It is commonly used after import to turn character strings into real dates, and it is most reliable when you supply the format argument (e.g., format = "%m/%d/%Y") so R interprets the incoming text consistently rather than guessing.
+
+## Understanding the Output: Tibbles
 The `readr` functions don't return a standard `data.frame`; they return a **tibble**. Tibbles are the Tidyverse's modern take on data frames. They work like data frames but are tweaked to be more user-friendly:
 
 * **Printing:** They only print the first 10 rows and as many columns as fit on screen, preventing you from accidentally printing thousands of rows in your console. They also display the data type under each column name.
 * **Consistency:** They are more consistent with subsetting. For example, using `[` to select columns will always return another tibble, whereas a data frame might sometimes return a vector.
 
-### Inspecting Your Import with `glimpse()`
+## Inspecting Your Import with `glimpse()`
 A great way to get a quick overview of your newly imported data is with the `glimpse()` function from `dplyr`. It provides a transposed view of your data, making it easy to see every column, its data type, and the first few values.
 
 ```{r glimpse_example}
 glimpse(visitors)
 ```
 
-### Troubleshooting Common Import Problems
-Real-world data is rarely perfect. Let's create another, messier file to demonstrate how to handle common issues.
+# Cleaning the Column Names
+One of the first issues that one notices when importing data is the column names. The "janitor" package provides small, high-impact utilities for cleaning common “messy data” issues. One of the most useful is `clean_names()`, which standardizes column names into a consistent, analysis-friendly format, typically lowercase snake_case, by removing punctuation, replacing spaces with underscores, and making names unique when duplicates exist. This is especially helpful when importing spreadsheets or CSVs with headers like "Order Date", "Total ($)", or "Customer ID", because consistent names reduce quoting/backticks and make pipelines easier to read and less error-prone.
 
-```{r create_messy_csv_with_writelines}
-# Define the content for our messy example file
-messy_csv_content <- "# Data collected on: 2025-10-03
-# Source: Colonial Williamsburg Archives
-#
-Jamestown,1607,104
-Williamsburg,1699,500
-Richmond,1737,250"
+```{r janitor, eval=FALSE}
+library(janitor)
+library(dplyr)
 
-# Write the content to a file named 'messy_data.csv'
-writeLines(messy_csv_content, "messy_data.csv")
+df <- df_raw %>%
+  clean_names()  # e.g., "Order Date" -> "order_date", "Total ($)" -> "total"
 ```
-If we try to read this directly, it will fail. However, we can use arguments within `read_csv()` to fix it:
-* `skip`: Skips a specified number of lines at the start of the file.
-* `comment`: Specifies a character that indicates a line is a comment and should be ignored.
-* `col_names`: Allows you to provide a character vector of column names.
 
-```{r read_messy_csv}
-historic_sites <- read_csv(
-  "messy_data.csv",
-  skip = 3,
-  col_names = c("settlement", "year_founded", "initial_population")
-)
-
-print(historic_sites)
-```
-With just a few arguments, we have successfully tamed a messy file and imported it into a clean, tidy tibble, ready for the next steps in our analysis.
+Practical note: clean_names() changes the column names, so any downstream code should refer to the cleaned names (e.g., order_date rather than Order Date).
 
 # The Core Verbs of `dplyr`: Transforming Your Data
 
@@ -276,7 +345,7 @@ starwars %>%
   distinct(species)
 ```
 
-## Creating New Information: `mutate()`
+## Computing/Recoding New Columns: `mutate()`
 
 Perhaps the most powerful verb is `mutate()`, which allows you to add new columns or modify existing ones.
 
@@ -300,13 +369,13 @@ starwars %>%
   )
 ```
 
-## Managing Columns: `rename()`, `relocate()`, and `transmute()`
+## Other Column Management: `rename()`, `relocate()`, and `transmute()`
 
 These are helpful "housekeeping" verbs for cleaning up your final dataset.
 
 * `rename()`: Renames columns. The syntax is `rename(new_name = old_name)`.
 * `relocate()`: Changes the order of columns.
-* `transmute()`: A special version of `mutate()` that *only* keeps the columns you create.
+* `transmute()`: A special version of `mutate()` that keeps *only* the columns you create.
 
 ```{r rename_relocate_example}
 starwars %>%
@@ -426,6 +495,497 @@ species_summary_safe %>%
   arrange(rank)
 ```
 By adding `ungroup()` to the end of your aggregation pipelines, you ensure that your summary tables are clean, simple, and ready for the next steps of analysis or plotting without any surprising group-wise behavior.
+
+# Joins
+
+Most real-world wrangling involves more than just a single table, it involves many tables. Joins are operations that combine two tables by matching their "keys". Join keys are one or more column names that identify the same entity in both datasets (for example, customer_id, date, or year). In a table, each row represents an observation (such as one customer, one transaction, or one day), and each column represents a variable or attribute (such as region, revenue, or temperature). A join works by taking the rows in one table and looking up corresponding rows in the other table where the key values match, then appending the other table’s columns onto the result. The choice of join determines which rows are kept (e.g., all rows from the left table vs. only matched rows), while the quality of the result depends heavily on choosing keys that are consistent and appropriately unique for the level of detail in each table.
+
+## Overview of the Three Joins to Master
+
+1. `left_join(x, y, by = ...)` = keep all rows from x
+
+Use `left_join()` when x is your “main” table and y is supplemental. You keep every row in x; if a key is missing in y, new columns from y become NA.
+
+- Best for: adding attributes (demographics, metadata, lookup tables)
+- Risk: silently introduces missing values if keys don’t match
+
+2. `inner_join(x, y, by = ...)`: keep only matching rows
+
+Use `inner_join()` when you want the intersection: rows that have keys present in both tables.
+
+- Best for: restricting analysis to fully matched records
+- Risk: silently drops records that don’t match (can bias results if non-matching is systematic)
+
+3. `anti_join(x, y, by = ...)`: find what does not match
+
+`anti_join()` returns rows in x whose keys are not found in y. It is a diagnostic join: you use it to identify key mismatches, missing reference records, or unexpected values.
+
+- Best for: validation and debugging
+- Makes join problems visible immediately
+
+## Join keys: choosing by correctly
+
+A join key is the variable (or set of variables) that identifies what “the same entity” means across tables: customer_id, date, station_id, year, etc.
+
+- If the key has the same name, e.g., "date", in both tables, you can do:
+  - `left_join(x, y, by = "date")`
+
+- If the names differ between the two tables, map them explicitly using:
+  - `left_join(x, y, by = c("date" = "obs_date"))`
+  - where "date" is the join key in table x and "obs_date" is the join key in table y.
+
+
+Composite keys are also common. A composite key means you need more than one column together to uniquely identify what a row represents. In many datasets, date alone is not unique. For example, you may have multiple rows per date (one per station, store, customer, product, etc.). Adding a second identifier (e.g., station_id) makes the key specific enough to match the correct records.
+
+- If a composite key is required, use:
+  - `left_join(x, y, by = c("date", "station_id"))`
+
+## Duplicates, many-to-many joins, and “join explosions”
+
+The most common join failures are due to wrong cardinality. Cardinality describes the numeric relationship between two tables, namely, how many records in one side can be associated with a single record on the other side.
+
+
+**One-to-one**: each key appears once in x and once in y
+
+- Definition: each key appears once in x and once in y.
+
+```{r one-to-one, eval=TRUE}
+library(tidyverse)
+x <- tribble(
+  ~id, ~x_val,
+   1,  "A",
+   2,  "B",
+   3,  "C"
+)
+
+y <- tribble(
+  ~id, ~y_val,
+   1,  10,
+   2,  20,
+   3,  30
+)
+
+dplyr::left_join(x, y, by = "id")
+```
+
+**One-to-many** Cardinality: a key appears once in x, multiple times in y
+
+```{r one-to-many, echo=TRUE, eval=TRUE}
+x <- tribble(
+  ~id, ~customer_name,
+   1,  "Ivy",
+   2,  "Max"
+)
+
+y <- tribble(
+  ~id, ~order_id,
+   1,  "o-100",
+   1,  "o-101",
+   2,  "o-200"
+)
+
+left_join(x, y, by = "id")
+```
+
+Notice:
+
+- id = 1 appears once in x but twice in y.
+- Joining “replicates” the matching x row for each matching row in y.
+- Row count can increase: 2 in → 3 out (because y has more matches per key).
+
+This is not inherently wrong; it’s correct if you intend to “attach events to entities.” It becomes wrong when you expected one row per key after the join.
+
+**Many-to-one** Cardinality: multiple in x, once in y
+
+```{r many-to-one}
+x <- tribble(
+  ~id, ~order_id,
+   1,  "o-100",
+   1,  "o-101",
+   2,  "o-200"
+)
+
+y <- tribble(
+  ~id, ~customer_name,
+   1,  "Ivy",
+   2,  "Max"
+)
+
+left_join(x, y, by = "id")
+```
+
+Notice:
+- x has multiple rows per customer; y has one row per customer.
+- Row count typically stays the same for a left join: 3 in → 3 out.
+- This is a “safe enrichment” pattern: you add attributes to many records.
+
+**Many-to-many** Cardinality: multiple in both x and y (often accidental)
+
+```{r many-to-many, echo=TRUE, eval=TRUE}
+x <- tribble(
+  ~id, ~x_event,
+   1,  "x1",
+   1,  "x2",
+   2,  "x3"
+)
+
+y <- tribble(
+  ~id, ~y_event,
+   1,  "y1",
+   1,  "y2",
+   2,  "y3"
+)
+
+left_join(x, y, by = "id")
+```
+Notice:
+
+- For id = 1, there are 2 rows in x and 2 rows in y.
+- The join produces 2 × 2 = 4 rows for id = 1 (Cartesian pairing).
+- Total row count increases unexpectedly: 3 in - 5 out here.
+
+This is the easiest way to demonstrate the phrase “join explosion.” 
+
+### What is a join explosion?
+
+If both tables have duplicates for the same key, joining produces a Cartesian product for that key. Example: if x has 3 rows for date = 2025-07-01 and y has 4 rows for the same date, the join produces 12 rows for that date. This can inflate totals, distort averages, and create subtle downstream errors.
+
+### Detect duplicates in keys before joining
+
+One simple way to check for duplicates before joining is to count the unique values. For example, a simple pre-join check is:
+
+```{r , eval=TRUE}
+x %>% count(id) %>% filter(n > 1)
+y %>% count(id) %>% filter(n > 1)
+```
+If you expect a “one row per date” table, any n > 1 is a red flag.
+
+## Validating joins: row counts and “what didn’t match”
+
+A good join is one you can defend. A minimal validation checklist:
+
+1. Row counts before/after
+```{r joinvalidation1, eval=FALSE}
+nrow(x)
+nrow(y)
+
+xy <- left_join(x, y, by = "date")
+nrow(xy)
+```
+
+For a left join, nrow(xy) should be:
+
+- equal to nrow(x) if keys in y are unique
+- greater than nrow(x) if y has duplicates on the join key (possible join explosion)
+
+2. Unmatched keys using `anti_join()`
+```{r joinvalidation2, eval=FALSE}
+x %>% anti_join(y, by = "date")   # dates present in x but missing in y
+y %>% anti_join(x, by = "date")   # dates present in y but missing in x
+```
+
+## Concise Join Example: Williamsburg visits + weather by date + demographics by year
+
+This example mirrors a realistic “neighborhood story” dataset integration:
+
+- visits_daily: daily counts of visits in Williamsburg (one row per day)
+- weather_daily: daily weather (one row per day)
+- demo_yearly: demographics by year (one row per year)
+
+```{r}
+library(dplyr)
+library(lubridate)
+
+# visits_daily: date, visits, avg_spend
+# weather_daily: date, temp_max, precip_mm
+# demo_yearly: year, population, median_income
+visits_daily <- tribble(
+  ~date,        ~visits, ~avg_spend,
+  as.Date("2025-07-01"), 1200,   18.5,
+  as.Date("2025-07-02"), 1350,   19.1,
+  as.Date("2025-07-03"),  980,   17.8
+)
+
+weather_daily <- tribble(
+  ~date,        ~temp_max, ~precip_mm,
+  as.Date("2025-07-01"),  86,       0.0,
+  as.Date("2025-07-02"),  88,       2.5,
+  as.Date("2025-07-03"),  83,       0.0
+)
+
+demo_yearly <- tribble(
+  ~year, ~population, ~median_income,
+   2025,     152000,         84500
+)
+
+# 1) Join daily visits to daily weather (date-level integration)
+visits_weather <- visits_daily %>%
+  left_join(
+    weather_daily,
+    by = "date",
+    relationship = "many-to-one"  # visits may have multiple rows per date; weather should not
+  )
+
+# Validate: what dates in visits have no weather?
+missing_weather_dates <- visits_daily %>%
+  anti_join(weather_daily, by = "date")
+
+# 2) Add demographics by year (derive year from date, then join)
+visits_weather_demo <- visits_weather %>%
+  mutate(year = year(date)) %>% #Make new "year" column for join
+  left_join(demo_yearly, by = "year")
+
+visits_weather_demo
+```
+
+This example is meant to illustrate that joins often happen at different “grains” (daily vs yearly) and you sometimes have to derive a join key (year = year(date)) to align them.
+
+## Quick rules of thumb for learners
+
+- Start with `left_join()`, validate with `anti_join()`, and use `inner_join()` only when you explicitly want to restrict to matched records.
+- Always know the grain of each table (one row per what?) and ensure join keys reflect that grain.
+- Treat unexpected row-count increases as a likely duplicate key problem until proven otherwise.
+- Make join validation a habit: row counts, missingness in joined columns, and anti-joins are fast and revealing.
+
+# Dealing with Missing data
+
+Earlier, we used the `na.rm = TRUE` argument inside `summarise()`, which is a useful tactical move in that it prevents missing values from breaking aggregations inside the `summarise()` function. But it does not solve the broader, more consequential questions:
+
+1. Where is data missing, and how much?
+2. Is missingness concentrated in certain variables, groups, or time periods?
+3. Should we filter, impute, or explicitly model missingness?
+4. What bias might we introduce by dropping rows or imputing?
+
+This section introduces a practical “missing data toolkit” in tidyr (and complementary dplyr patterns) so learners can diagnose, decide, and act.
+
+## Core tidyr tools
+There are two tidyr functions that are essential to effectively dealing with missingness:
+
+1. `drop_na()`: filter rows with missing values
+  - drop_na() removes rows if any column contains a missing value.
+  - drop_na(customer_id, order_date) removes rows ONLY if customer_id and/or order_date columns contain a missing value.
+
+The ability to focus on "key" variables is important because most analyses focus only on a subset of the critical variables (IDs, outcome variables, timestamps). Dropping rows based on all columns is often too aggressive.
+
+2. `replace_na()`: fills missing values using fixed replacements (not model-based imputation). It is most appropriate when the replacement is meaningful (e.g., missing counts imply 0, missing categorical implies “Unknown”). For example:
+
+```{r imputation, eval=FALSE}
+df_filled <- df %>%
+  replace_na(list(
+    n_orders = 0,
+    revenue  = 0,
+    segment  = "Unknown"
+  ))
+```
+
+It is important to note that `replace_na()` is a rule-based fill, not statistical imputation. If “0” is not a truthful value, this can distort results.
+
+## Missingness diagnostics
+
+Before you start dropping or filling anything, it is good practice to quantify missingness. The goal is to produce a compact table showing:
+
+- missing count (n_missing)
+- missing percent (pct_missing)
+- optionally: non-missing count
+
+One way to achieve this simple missingness summary by column is illustrated below:
+
+```{r missingness_summary, eval=FALSE}
+missing_by_col <- df %>%                                #Assigns the final result to a new object named missing_by_col
+  summarise(across(everything(), ~ sum(is.na(.x)))) %>%
+  pivot_longer(
+    cols = everything(),
+    names_to = "column",
+    values_to = "n_missing"
+  ) %>%
+  mutate(
+    pct_missing = n_missing / nrow(df)
+  ) %>%
+  arrange(desc(pct_missing))
+
+missing_by_col
+```
+
+Let's break that down in order to understand each separate pipe.
+
+1. `missing_by_col <- df %>%` = Assigns the name "missing_by_col" to our final output and starts by sending the data frame "df" into the first pipe.
+2. `summarise(across(everything(), ~ sum(is.na(.x)))) %>%` = summarize all columns of df by summing the number of NAs.
+  - `across(everything(),function)` = applies a function across columns and `everything()` means all columns.
+  - `~ sum(is.na(.x)) = is the anonymous function applied to each column 
+    - `.x` is the current column vector.
+    - `is.na(.x)` returns a logical vector: TRUE where values are missing and FALSE otherwise.
+    - `sum(is.na(.x))` works because in R, TRUE is treated as 1 and FALSE as 0 in numeric contexts, so the sum is the count of missing values in that column.
+    
+  - Note that `summarise()` returns one row per group, but because df is not grouped here, it returns exactly one row total. After this line, you have a one-row tibble with the same column names as df, but each value is the missing count for that column
+3. `pivot_longer(cols = everything(), names_to = "column", values_to = "n_missing") %>%` = This converts the one-row “wide” summary into a “long” two-column key/value structure (plus values).
+  - `pivot_longer(...)`: A tidyr function that takes multiple columns and turns them into rows.
+  - `cols = everything()`: Pivot all columns (which, at this stage, are the missing-count columns from the previous step).
+  - `names_to = "column"`: Put the original column names (e.g., colA, colB) into a new column called "column".
+  - `values_to = "n_missing"`: Put the numeric counts into a new column called "n_missing".
+4. `mutate(pct_missing = n_missing / nrow(df)) %>%` = mutate(...): Adds new columns (or transforms existing ones) without changing the number of rows.
+  - `pct_missing = n_missing / nrow(df)`:
+    - `n_missing` is the count of missing values per column (from the previous step).
+    - `nrow(df)` is the number of rows in the original dataset.
+    - Dividing gives the proportion of rows that are missing for each column.
+5. `arrange(desc(pct_missing))`
+  - `arrange(...)`: Sorts rows.
+  - `desc(pct_missing)`: Sort in descending order, so columns with the highest percent missing appear at the top.
+
+To add non-missing counts, just add something like, n_nonmissing = nrow(df) - n_missing to the mutate pipe.
+
+## Missingness by subgroup (a fast way to detect non-random patterns)
+Overall missingness can hide important structure. Missingness that differs by region, time, cohort, or treatment group is often a warning sign for bias.
+
+Example: percent missing by column within a grouping variable:
+
+```{r missing_by_group, eval=FALSE}
+missing_by_group <- df %>%
+  group_by(region) %>%
+  summarise(across(everything(), ~ mean(is.na(.x)))) %>%  # mean of TRUE/FALSE = proportion missing
+  pivot_longer(-region, names_to = "column", values_to = "pct_missing") %>%
+  arrange(desc(pct_missing))
+
+missing_by_group
+```
+
+Notice the only difference is that we used `group_by` in the second pipe, and used all columns EXCEPT "region" (`-region`) in the `pivot_longer` pipe.
+
+
+## Row-wise diagnostics: “How incomplete are my records?”
+
+Sometimes the question is not “which columns are missing data?” but “which rows are unreliable?” A simple per-row missing count helps learners decide whether to drop highly incomplete records (i.e., "participants").
+
+Below is an example of a row-wise missingness table:
+
+```{r rowwise_missingness, eval=FALSE}
+df_row_missing <- df %>%
+  mutate(
+    n_missing_row = rowSums(is.na(across(everything()))),
+    pct_missing_row = n_missing_row / ncol(df)
+  )
+
+df_row_missing %>%
+  count(n_missing_row) %>%
+  arrange(desc(n_missing_row))
+
+#Then apply a rule (example: drop rows missing more than 40% of fields):
+df_filtered <- df_row_missing %>%
+  filter(pct_missing_row <= 0.4) %>%
+  select(-n_missing_row, -pct_missing_row)
+```
+
+Using these column-based and row-based diagnostics is important because missingness has the potential to introduce **bias**. For example, if missingness differs by subgroup (region, cohort, outcome class), then filtering can disproportionately remove specific populations and produce biased estimates.
+
+# String cleaning and categorical standardization
+
+Real-world categorical fields are rarely analysis-ready. Variants like "NY", "New York ", "new-york", and "N.Y." may represent the same concept but appear as distinct values, creating duplicated categories, misleading counts, and noisy plots. A robust wrangling workflow standardizes strings first (format and whitespace), then normalizes known variants into a canonical set of categories, and finally converts the result to factors for stable ordering and cleaner summaries.
+
+A practical pattern: normalize $\rightarrow$ recode $\rightarrow$ validate
+
+Of course, the first step is to inspect the problem. Start by identifying what’s actually in the field.
+
+```{r tabulate_values, eval=FALSE}
+df %>%
+  count(raw_category, sort = TRUE)
+```
+
+This quickly reveals the typos and near-duplicates you will want to address.  The next step is to normalize the string data and (usually remove punctuation too)
+
+## Normalizing String Data
+
+Use functions from the `stringr` package to apply consistent casing, trim whitespace, and remove or standardize punctuation.
+
+```{r string_normalization, eval=FALSE}
+library(stringr)
+library(dplyr)
+
+df_clean <- df %>%
+  mutate(
+    category_norm = raw_category %>%
+      str_to_lower() %>%                  # normalize case
+      str_trim() %>%                      # remove leading/trailing whitespace
+      str_replace_all("\\s+", " ") %>%    # collapse repeated internal spaces
+      str_replace_all("[[:punct:]]+", " ")# replace punctuation with spaces
+  )
+```
+
+What each function contributes
+
+- `str_to_lower()`: prevents "Retail" and "retail" from being separate categories.
+- `str_trim()`: handles trailing spaces that create invisible duplicates ("ny " vs "ny").
+- `str_replace_all("\\s+", " ")`: collapses “double spaces” that survive imports or copy/paste.
+- `str_replace_all("[[:punct:]]+", " ")`: converts punctuation into a uniform delimiter; helpful when variants include hyphens, periods, slashes, etc.
+
+*If punctuation replacement creates extra spaces, add another str_trim() at the end.*
+
+Now use `case_when()` to complete the normalization by mapping messy variants to canonical labels. This step is where domain knowledge enters.
+
+```{r string_mapping, eval=FALSE}
+df_std <- df_clean %>%
+  mutate(
+    category_std = case_when(
+      category_norm %in% c("ny", "new york", "n y", "n y c", "nyc") ~ "New York",
+      category_norm %in% c("ca", "california")                     ~ "California",
+      category_norm %in% c("uk", "u k", "united kingdom", "britain") ~ "United Kingdom",
+      is.na(category_norm) | category_norm == ""                   ~ NA_character_,
+      TRUE                                                         ~ str_to_title(category_norm)
+    )
+  )
+```
+
+What it does:
+
+- `case_when()` is a readable “rulebook.” It encourages documentation of decisions directly in code.
+- Use `NA_character_` explicitly to keep case_when() type-stable (important in teaching and debugging).
+- The final TRUE ~ ... catch-all prevents accidental conversion to missing values and ensures unmatched categories remain visible for review.
+
+## Validate that standardization worked
+
+Validation is not optional in practice. You want to confirm you reduced duplicates without silently creating new ones.
+
+```{r validation, eval=FALSE}
+df_std %>%
+  count(category_std, sort = TRUE)
+```
+
+You might also consider counting the distinct elements before/after
+
+```{r validation2, eval=FALSE}
+df %>% summarise(n_distinct_raw = n_distinct(raw_category))
+df_std %>% summarise(n_distinct_std = n_distinct(category_std))
+```
+
+A useful diagnostic is to find categories that still look suspiciously similar (e.g., leftover variants). At a basic level, sorting by frequency highlights remaining “rare” categories that may be typos.
+
+## Factor handling for stable plots and summaries
+
+Once categories are standardized, converting them to factors supports consistent ordering in plots and tables. This is particularly important when you want “Top categories first” or when you need a specific semantic order.
+
+```{r factorize_and_reorder, eval=FALSE}
+library(forcats)
+library(dplyr)
+
+df_fact <- df_std %>%
+  mutate(
+    category_f = factor(category_std),
+    category_f = fct_relevel(category_f, "New York", "California", "United Kingdom")
+  )
+```
+
+By default, factor levels will be printed in ascending alphabetic order. `fct_relevel()` is used here for explicit ordering which is useful when you want a consistent plot order across all analyses.
+
+What if you have a large number of categories/levels in a categorical variable?  This is referred to as "high-cardinality".  In order to improve the interpretability of some analysees and/or plots, it can be useful to lump the least frequent categories into an "other" category. 
+
+```{r lumping_tails, eval=FALSE}
+df_lumped <- df_std %>%
+  mutate(
+    category_f = factor(category_std),
+    category_f = fct_lump(category_f, n = 10)  # keep top 10 categories, lump rest into "Other"
+  )
+```
+
+This is often preferable to manually filtering out rare categories because it keeps the full dataset while improving interpretability.
+
 
 # Reshaping Your Data with `tidyr`
 
@@ -951,17 +1511,6 @@ Write a pipeline that:
 
 *(Tip: This exercises the advanced `.value` pattern and a round‑trip pivot.)*
 
-```{r ex8_solution}
-# Your code here
-```
-
-### Problem 8: Create Your Own Pipeline
-**Dataset:** Import your own dataset, or choose from one of the built-in datasets  
-
-**Scenario:** Examine the variables and formulate a research question about the data
-
-**Task:** Create a data wrangling pipeline appropriate to your research question, then summarize and plot the results.
-
-```{r ex9_solution}
+```{r ex7_solution}
 # Your code here
 ```

@@ -1,0 +1,206 @@
+---
+title: "Cluster Analysis — Lecture Summary"
+subtitle: "From Data to Discovery: Data Science for the Psychological Sciences"
+author: "Your Name"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  slidy_presentation:
+    incremental: true
+    self_contained: true
+bibliography: []
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, echo = TRUE, eval = FALSE, fig.width = 7, fig.height = 4.5)
+```
+
+# Learning Goals
+
+- Distinguish **cluster analysis** from **PCA/Factor Analysis**.
+- Understand why **scaling** matters and how **distance metrics** work.
+- Compare three families of algorithms: **K-means**, **Hierarchical**, **DBSCAN**.
+- Practice choosing **K** (elbow & silhouette) and reading **dendrograms**.
+- Recognize common pitfalls and when to use each method.
+
+# What Is Cluster Analysis?
+
+- **Goal:** group *rows/subjects/cases* into unlabeled clusters based on similarity.
+- **Outputs:** a categorical label (cluster ID) and optionally profiles/centroids.
+- **Contrast with PCA/FA:** reduces **columns/variables** rather than rows.
+
+## PCA/FA vs. Clustering (Big Picture)
+
+- PCA/FA answers: *“Which variables hang together?”* → produces **components/factors** (new variables).
+- Clustering answers: *“Which cases hang together?”* → produces **groups of cases** (new labels).
+- Unit of analysis: PCA/FA → variables; Clustering → observations.
+
+# Data as Coordinates
+
+- Each case is a point in *p*-dimensional space.
+- Similarity is operationalized via a **distance** in that space.
+- Visual intuition: “clumps” of nearby points represent potential clusters.
+
+```{r two-clumps-2d}
+# Simulate two 2D clumps + a few specific cases
+set.seed(123)
+n <- 100
+A <- cbind(rnorm(n,  0, 1), rnorm(n,  0, 1))
+B <- cbind(rnorm(n,  4, 1), rnorm(n,  4, 1))
+pts <- rbind(A, B)
+plot(pts, pch = 19, main = "Two Clumps in 2D", xlab = "X1", ylab = "X2")
+```
+
+# Data Preparation
+
+## Feature Scaling
+
+- Always **scale** continuous features (mean 0, SD 1) before computing distances.
+- Prevents a single large-scale variable from dominating.
+
+```{r scale}
+df <- scale(USArrests)  # built-in dataset: states × (Murder, Assault, UrbanPop, Rape)
+head(df)
+apply(df, 2, mean); apply(df, 2, sd)
+```
+
+## Distance Metrics
+
+- **Euclidean** (L2): straight-line distance. Sensitive to **outliers**.
+- **Manhattan** (L1): city-block distance. More **robust** to outliers; can yield square-ish clusters.
+- Others: cosine, correlation distance, Gower (for mixed types).
+
+```{r distances}
+patient_demo <- data.frame(
+  anxiety    = c(1, 4, 1, 3),
+  depression = c(2, 6, 3, 5)
+)
+row.names(patient_demo) <- c("A","B","C","D")
+patient_demo_scaled <- scale(patient_demo)
+
+dist_euclid   <- dist(patient_demo_scaled, method = "euclidean")
+dist_manhattan<- dist(patient_demo_scaled, method = "manhattan")
+dist_euclid; dist_manhattan
+```
+
+# Method 1: K-Means Clustering
+
+- Assumes roughly **spherical**, similarly sized clusters in scaled space.
+- Minimizes within-cluster variance; initialization matters (use `nstart`).
+- Pros: fast, simple; Cons: need **K** in advance; sensitive to outliers.
+
+```{r kmeans-kselect, eval=FALSE}
+library(factoextra)
+set.seed(1)
+df <- scale(USArrests)
+
+# Elbow method
+fviz_nbclust(df, kmeans, method = "wss") + ggplot2::labs(subtitle = "Elbow Method")
+
+# Silhouette method
+fviz_nbclust(df, kmeans, method = "silhouette") + ggplot2::labs(subtitle = "Silhouette Method")
+```
+
+```{r kmeans-run, eval=FALSE}
+set.seed(123)
+km <- kmeans(df, centers = 4, nstart = 25)
+km$size; km$centers
+factoextra::fviz_cluster(km, data = df) + ggplot2::labs(title = "K-means (K = 4)")
+```
+
+# Visualizing Cluster Profiles (Example)
+
+```{r kmeans-profiles, eval=FALSE}
+library(dplyr); library(tidyr); library(ggplot2)
+USArrests_kmeans <- as.data.frame(df)
+USArrests_kmeans$state   <- row.names(USArrests)
+USArrests_kmeans$cluster <- factor(km$cluster)
+
+cluster_profiles <- USArrests_kmeans |>
+  dplyr::group_by(cluster) |>
+  dplyr::summarise(across(Murder:Rape, mean)) |>
+  tidyr::pivot_longer(Murder:Rape, names_to="Variable", values_to="Z") 
+
+ggplot(cluster_profiles, aes(Variable, Z, group = cluster)) +
+  stat_summary(fun = mean, geom = "line") +
+  ggplot2::facet_wrap(~cluster) +
+  ggplot2::labs(title = "Cluster Profiles (Z-scores)")
+```
+
+# Mapping Clusters (States Example)
+
+```{r map, eval=FALSE}
+library(ggplot2); library(dplyr); library(maps); library(mapproj)
+cluster_data <- data.frame(
+  region  = tolower(row.names(USArrests)),
+  cluster = factor(km$cluster)
+)
+us_map <- map_data("state")
+map_with_clusters <- left_join(us_map, cluster_data, by = "region")
+
+ggplot(map_with_clusters, aes(x = long, y = lat, group = group, fill = cluster)) +
+  geom_polygon(color = "white", linewidth = 0.2) +
+  coord_map("albers", lat0 = 39, lat1 = 45) +
+  ggplot2::labs(title = "K-Means Clustering of US States (K = 4)", fill = "Cluster")
+```
+
+# Method 2: Hierarchical Clustering
+
+- Build a tree of merges; no need to pick **K** up front.
+- Key choices: **linkage** (e.g., Ward.D2, complete, average) and **distance**.
+- Pros: dendrogram insight; Cons: greedy, harder to scale to very large *n*.
+
+```{r hclust, eval=FALSE}
+d  <- dist(df, method = "euclidean")
+hc <- hclust(d, method = "ward.D2")
+plot(hc, cex = 0.6, hang = -1, main = "Hierarchical Clustering — Ward.D2")
+rect.hclust(hc, k = 4, border = 2:5)
+clusters_hc <- cutree(hc, k = 4)
+```
+
+## Reading Dendrograms
+
+- **Height** reflects dissimilarity at merge.
+- **Long vertical jumps** suggest natural cut points.
+- **Cut** to choose a desired number of clusters (e.g., `cutree(hc, k = 4)`).
+
+# Method 3: DBSCAN (Density-Based)
+
+- Defines clusters as dense regions separated by sparse regions.
+- Parameters:
+  - `eps`: neighborhood radius,
+  - `minPts`: minimum points to form a dense core (often ≈ *p*+1 or 2*p*).
+- Pros: finds **arbitrary shapes**, flags **outliers**; Cons: parameter tuning.
+
+```{r dbscan, eval=FALSE}
+library(dbscan)
+
+# Heuristic: use k-NN distance plot to choose eps
+k <- 4
+kNNdistplot(df, k = k) + abline(h = 1.2, lty = 2)  # set a tentative eps
+
+set.seed(1)
+db <- dbscan::dbscan(df, eps = 1.2, minPts = k + 1)
+table(db$cluster)   # 0 denotes noise
+factoextra::fviz_cluster(list(data = df, cluster = db$cluster),
+                         stand = FALSE, geom = "point",
+                         ellipse = FALSE) + ggplot2::labs(title = "DBSCAN")
+```
+
+# Choosing Among Methods
+
+- **K-means:** compact, spherical clusters; large *n*; need K.
+- **Hierarchical:** exploratory structure; small–medium *n*; dendrogram needed.
+- **DBSCAN:** varying density, noise/outliers, non-spherical shapes.
+
+# Common Pitfalls & Tips
+
+- Forgetting to **scale** features → distorted distances.
+- Using Euclidean with heavy **outliers** → prefer Manhattan/robust methods.
+- Blindly trusting elbow plots; corroborate with **silhouette** and domain sense.
+- Evaluating clusters: **cohesion/separation**, profile interpretability, stability.
+- Keep a **reproducible** pipeline: set seeds, record preprocessing choices.
+
+# References / Further Reading
+
+- Built-in example adapted from `USArrests` dataset and standard clustering workflows in R.
+- See `?kmeans`, `?hclust`, `dbscan` package docs, and `factoextra` for visualization.

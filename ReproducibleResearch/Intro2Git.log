@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2025.1.5)  29 AUG 2025 16:15
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2025.1.5)  31 DEC 2025 08:40
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -4340,28 +4340,13 @@ Missing character: There is no i in font nullfont!
 Missing character: There is no t in font nullfont!
 ! Undefined control sequence.
 l.30 \subsubsection
-                   {Installing Git on Windows}
+                   {Windows}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-Missing character: There is no I in font nullfont!
-Missing character: There is no n in font nullfont!
-Missing character: There is no s in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no a in font nullfont!
-Missing character: There is no l in font nullfont!
-Missing character: There is no l in font nullfont!
-Missing character: There is no i in font nullfont!
-Missing character: There is no n in font nullfont!
-Missing character: There is no g in font nullfont!
-Missing character: There is no G in font nullfont!
-Missing character: There is no i in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no n in font nullfont!
 Missing character: There is no W in font nullfont!
 Missing character: There is no i in font nullfont!
 Missing character: There is no n in font nullfont!
@@ -5146,19 +5131,14 @@ Overfull \hbox (10.00002pt too wide) in paragraph at lines 52--53
 
 ! Undefined control sequence.
 l.56 \subsubsection
-                   {Git on macOS Option 1: Using Xcode Command Line Tools (R...
+                   {MacOS Option 1: Command Line Tools (Recommended)}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-Missing character: There is no G in font nullfont!
-Missing character: There is no i in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no n in font nullfont!
-Missing character: There is no m in font nullfont!
+Missing character: There is no M in font nullfont!
 Missing character: There is no a in font nullfont!
 Missing character: There is no c in font nullfont!
 Missing character: There is no O in font nullfont!
@@ -5171,16 +5151,6 @@ Missing character: There is no o in font nullfont!
 Missing character: There is no n in font nullfont!
 Missing character: There is no 1 in font nullfont!
 Missing character: There is no : in font nullfont!
-Missing character: There is no U in font nullfont!
-Missing character: There is no s in font nullfont!
-Missing character: There is no i in font nullfont!
-Missing character: There is no n in font nullfont!
-Missing character: There is no g in font nullfont!
-Missing character: There is no X in font nullfont!
-Missing character: There is no c in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no d in font nullfont!
-Missing character: There is no e in font nullfont!
 Missing character: There is no C in font nullfont!
 Missing character: There is no o in font nullfont!
 Missing character: There is no m in font nullfont!
@@ -5307,7 +5277,7 @@ or  <return>  to continue without it.
 
 ! Undefined control sequence.
 l.61 \terminalinput
-                   {git - -version}
+                   {git -\texttt{-}version}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -5317,7 +5287,6 @@ and I'll forget about whatever was undefined.
 Missing character: There is no g in font nullfont!
 Missing character: There is no i in font nullfont!
 Missing character: There is no t in font nullfont!
-Missing character: There is no - in font nullfont!
 Missing character: There is no - in font nullfont!
 Missing character: There is no v in font nullfont!
 Missing character: There is no e in font nullfont!
@@ -5338,6 +5307,11 @@ l.62 \end{terminal}
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
+
+
+Overfull \hbox (5.24995pt too wide) in paragraph at lines 59--63
+\OT1/cmtt/m/n/10 -
+ []
 
 Missing character: There is no I in font nullfont!
 Missing character: There is no f in font nullfont!
@@ -5621,19 +5595,14 @@ Missing character: There is no ) in font nullfont!
 Missing character: There is no . in font nullfont!
 ! Undefined control sequence.
 l.70 \subsubsection
-                   {Git on macOS Option 2: Install via Homebrew}
+                   {MacOS Option 2: Homebrew}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-Missing character: There is no G in font nullfont!
-Missing character: There is no i in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no n in font nullfont!
-Missing character: There is no m in font nullfont!
+Missing character: There is no M in font nullfont!
 Missing character: There is no a in font nullfont!
 Missing character: There is no c in font nullfont!
 Missing character: There is no O in font nullfont!
@@ -5646,16 +5615,6 @@ Missing character: There is no o in font nullfont!
 Missing character: There is no n in font nullfont!
 Missing character: There is no 2 in font nullfont!
 Missing character: There is no : in font nullfont!
-Missing character: There is no I in font nullfont!
-Missing character: There is no n in font nullfont!
-Missing character: There is no s in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no a in font nullfont!
-Missing character: There is no l in font nullfont!
-Missing character: There is no l in font nullfont!
-Missing character: There is no v in font nullfont!
-Missing character: There is no i in font nullfont!
-Missing character: There is no a in font nullfont!
 Missing character: There is no H in font nullfont!
 Missing character: There is no o in font nullfont!
 Missing character: There is no m in font nullfont!
@@ -5794,7 +5753,7 @@ or  <return>  to continue without it.
 
 ! Undefined control sequence.
 l.81 \terminalinput
-                   {git --version}\\
+                   {git -\texttt{-}version}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -5804,7 +5763,6 @@ and I'll forget about whatever was undefined.
 Missing character: There is no g in font nullfont!
 Missing character: There is no i in font nullfont!
 Missing character: There is no t in font nullfont!
-Missing character: There is no - in font nullfont!
 Missing character: There is no - in font nullfont!
 Missing character: There is no v in font nullfont!
 Missing character: There is no e in font nullfont!
@@ -5852,6 +5810,11 @@ l.83 \end{terminal}
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
+
+
+Overfull \hbox (5.24995pt too wide) in paragraph at lines 79--84
+\OT1/cmtt/m/n/10 - 
+ []
 
 ! Undefined control sequence.
 l.86 \subsection
@@ -6002,6 +5965,21 @@ Missing character: There is no B in font nullfont!
 Missing character: There is no a in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no h in font nullfont!
+Missing character: There is no , in font nullfont!
+Missing character: There is no C in font nullfont!
+Missing character: There is no o in font nullfont!
+Missing character: There is no m in font nullfont!
+Missing character: There is no m in font nullfont!
+Missing character: There is no a in font nullfont!
+Missing character: There is no n in font nullfont!
+Missing character: There is no d in font nullfont!
+Missing character: There is no P in font nullfont!
+Missing character: There is no r in font nullfont!
+Missing character: There is no o in font nullfont!
+Missing character: There is no m in font nullfont!
+Missing character: There is no p in font nullfont!
+Missing character: There is no t in font nullfont!
+Missing character: There is no , in font nullfont!
 Missing character: There is no o in font nullfont!
 Missing character: There is no r in font nullfont!
 Missing character: There is no m in font nullfont!
@@ -6038,7 +6016,7 @@ or  <return>  to continue without it.
 
 ! Undefined control sequence.
 l.91 \terminalinput
-                   {git config --global user.name ``Your Name''}|\\
+                   {git config \texttt{-}-global user.name ``Your Name''}|\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -6054,7 +6032,6 @@ Missing character: There is no n in font nullfont!
 Missing character: There is no f in font nullfont!
 Missing character: There is no i in font nullfont!
 Missing character: There is no g in font nullfont!
-Missing character: There is no - in font nullfont!
 Missing character: There is no - in font nullfont!
 Missing character: There is no g in font nullfont!
 Missing character: There is no l in font nullfont!
@@ -6088,7 +6065,7 @@ Missing character: There is no | in font nullfont!
 <recently read> \terminalinput 
                                
 l.92 \terminalinput
-                   {git config --global user.email ``your.email@example.com''}
+                   {git config \texttt{-}-global user.email ``your.email@exa...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -6104,7 +6081,6 @@ Missing character: There is no n in font nullfont!
 Missing character: There is no f in font nullfont!
 Missing character: There is no i in font nullfont!
 Missing character: There is no g in font nullfont!
-Missing character: There is no - in font nullfont!
 Missing character: There is no - in font nullfont!
 Missing character: There is no g in font nullfont!
 Missing character: There is no l in font nullfont!
@@ -6166,6 +6142,16 @@ Overfull \hbox (20.0pt too wide) in paragraph at lines 89--94
 []
  []
 
+
+Overfull \hbox (5.24995pt too wide) in paragraph at lines 89--94
+\OT1/cmtt/m/n/10 -
+ []
+
+
+Overfull \hbox (5.24995pt too wide) in paragraph at lines 89--94
+\OT1/cmtt/m/n/10 -
+ []
+
 Missing character: There is no Y in font nullfont!
 Missing character: There is no o in font nullfont!
 Missing character: There is no u in font nullfont!
@@ -6211,7 +6197,7 @@ or  <return>  to continue without it.
 
 ! Undefined control sequence.
 l.97 \terminalinput
-                   {git config --list}\\
+                   {git config \texttt{-}-list}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -6227,7 +6213,6 @@ Missing character: There is no n in font nullfont!
 Missing character: There is no f in font nullfont!
 Missing character: There is no i in font nullfont!
 Missing character: There is no g in font nullfont!
-Missing character: There is no - in font nullfont!
 Missing character: There is no - in font nullfont!
 Missing character: There is no l in font nullfont!
 Missing character: There is no i in font nullfont!
@@ -6380,6 +6365,11 @@ Missing character: There is no . in font nullfont!
 
 Overfull \hbox (20.0pt too wide) in paragraph at lines 95--102
 []
+ []
+
+
+Overfull \hbox (5.24995pt too wide) in paragraph at lines 95--102
+\OT1/cmtt/m/n/10 - 
  []
 
 ! Undefined control sequence.
@@ -8704,7 +8694,7 @@ or  <return>  to continue without it.
 
 ! Undefined control sequence.
 l.146 		\terminalinput
-                      {cd Documents/Projects}
+                      {cd ~/Documents/Projects}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -8713,6 +8703,7 @@ and I'll forget about whatever was undefined.
 
 Missing character: There is no c in font nullfont!
 Missing character: There is no d in font nullfont!
+Missing character: There is no / in font nullfont!
 Missing character: There is no D in font nullfont!
 Missing character: There is no o in font nullfont!
 Missing character: There is no c in font nullfont!
@@ -8852,82 +8843,6 @@ Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
-Missing character: There is no T in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no g in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no d in font nullfont!
-Missing character: There is no i in font nullfont!
-Missing character: There is no r in font nullfont!
-Missing character: There is no e in font nullfont!
-Missing character: There is no c in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no l in font nullfont!
-Missing character: There is no y in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no y in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no u in font nullfont!
-Missing character: There is no r in font nullfont!
-Missing character: There is no D in font nullfont!
-Missing character: There is no e in font nullfont!
-Missing character: There is no s in font nullfont!
-Missing character: There is no k in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no p in font nullfont!
-Missing character: There is no , in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no y in font nullfont!
-Missing character: There is no p in font nullfont!
-Missing character: There is no e in font nullfont!
-Missing character: There is no : in font nullfont!
-
-! LaTeX Error: Environment terminal undefined.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.157 		\begin{terminal}
-                        
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-! Undefined control sequence.
-l.158 		\terminalinput
-                      {cd ~/Desktop}
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-Missing character: There is no c in font nullfont!
-Missing character: There is no d in font nullfont!
-Missing character: There is no / in font nullfont!
-Missing character: There is no D in font nullfont!
-Missing character: There is no e in font nullfont!
-Missing character: There is no s in font nullfont!
-Missing character: There is no k in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no p in font nullfont!
-
-! LaTeX Error: \begin{itemize} on input line 125 ended by \end{terminal}.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.159 		\end{terminal}
-                      
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
 Missing character: There is no A in font nullfont!
 Missing character: There is no g in font nullfont!
 Missing character: There is no a in font nullfont!
@@ -9052,17 +8967,17 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no r in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (15.74986pt too wide) in paragraph at lines 168--169
+Overfull \hbox (15.74986pt too wide) in paragraph at lines 163--164
 \OT1/cmtt/m/n/10 git
  []
 
 
-Overfull \hbox (20.99982pt too wide) in paragraph at lines 168--169
+Overfull \hbox (20.99982pt too wide) in paragraph at lines 163--164
 \OT1/cmtt/m/n/10 Bash
  []
 
 
-Overfull \hbox (15.74986pt too wide) in paragraph at lines 168--169
+Overfull \hbox (15.74986pt too wide) in paragraph at lines 163--164
 \OT1/cmtt/m/n/10 cmd
  []
 
@@ -9201,14 +9116,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.173 	\begin{terminal}
+l.168 	\begin{terminal}
                        
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.174 	\terminalinput
+l.169 	\terminalinput
                      {cd}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -9219,13 +9134,13 @@ and I'll forget about whatever was undefined.
 Missing character: There is no c in font nullfont!
 Missing character: There is no d in font nullfont!
 
-! LaTeX Error: \begin{itemize} on input line 165 ended by \end{terminal}.
+! LaTeX Error: \begin{itemize} on input line 160 ended by \end{terminal}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.175 	\end{terminal}
+l.170 	\end{terminal}
                      
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -9305,14 +9220,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.178 	\begin{terminal}
+l.173 	\begin{terminal}
                        
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.179 	\terminalinput
+l.174 	\terminalinput
                      {dir}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -9324,13 +9239,13 @@ Missing character: There is no d in font nullfont!
 Missing character: There is no i in font nullfont!
 Missing character: There is no r in font nullfont!
 
-! LaTeX Error: \begin{itemize} on input line 165 ended by \end{terminal}.
+! LaTeX Error: \begin{itemize} on input line 160 ended by \end{terminal}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.180 	\end{terminal}
+l.175 	\end{terminal}
                      
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -9408,15 +9323,15 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.183 	\begin{terminal}
+l.178 	\begin{terminal}
                        
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.184 	\terminalinput
-                     {cd C:\\Users\\YourUsername\\Documents\\Projects}
+l.179 	\terminalinput
+                     {cd C:\textbackslash{}Users\textbackslash{}YourUsername...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -9427,6 +9342,14 @@ Missing character: There is no c in font nullfont!
 Missing character: There is no d in font nullfont!
 Missing character: There is no C in font nullfont!
 Missing character: There is no : in font nullfont!
+LaTeX Font Info:    Trying to load font information for OMS+cmr on input line 1
+79.
+(/usr/local/texlive/2024/texmf-dist/tex/latex/base/omscmr.fd
+File: omscmr.fd 2023/04/13 v2.5m Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 179.
+
 Missing character: There is no U in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no e in font nullfont!
@@ -9462,13 +9385,13 @@ Missing character: There is no c in font nullfont!
 Missing character: There is no t in font nullfont!
 Missing character: There is no s in font nullfont!
 
-! LaTeX Error: \begin{itemize} on input line 165 ended by \end{terminal}.
+! LaTeX Error: \begin{itemize} on input line 160 ended by \end{terminal}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.185 	\end{terminal}
+l.180 	\end{terminal}
                      
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -9519,6 +9442,11 @@ Missing character: There is no m in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no . in font nullfont!
 Missing character: There is no ) in font nullfont!
+
+Overfull \hbox (20.00006pt too wide) in paragraph at lines 177--182
+\OMS/cmsy/m/n/10 nnnn
+ []
+
 Missing character: There is no T in font nullfont!
 Missing character: There is no h in font nullfont!
 Missing character: There is no i in font nullfont!
@@ -9595,14 +9523,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.191 	\begin{terminal}
+l.186 	\begin{terminal}
                        
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.192 	\terminalinput
+l.187 	\terminalinput
                      {cd ..}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -9615,104 +9543,20 @@ Missing character: There is no d in font nullfont!
 Missing character: There is no . in font nullfont!
 Missing character: There is no . in font nullfont!
 
-! LaTeX Error: \begin{itemize} on input line 165 ended by \end{terminal}.
+! LaTeX Error: \begin{itemize} on input line 160 ended by \end{terminal}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.193 	\end{terminal}
-                     
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-Missing character: There is no T in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no g in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no a in font nullfont!
-Missing character: There is no s in font nullfont!
-Missing character: There is no p in font nullfont!
-Missing character: There is no e in font nullfont!
-Missing character: There is no c in font nullfont!
-Missing character: There is no i in font nullfont!
-Missing character: There is no f in font nullfont!
-Missing character: There is no i in font nullfont!
-Missing character: There is no c in font nullfont!
-Missing character: There is no l in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no c in font nullfont!
-Missing character: There is no a in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no i in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no n in font nullfont!
-Missing character: There is no , in font nullfont!
-Missing character: There is no l in font nullfont!
-Missing character: There is no i in font nullfont!
-Missing character: There is no k in font nullfont!
-Missing character: There is no e in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no h in font nullfont!
-Missing character: There is no e in font nullfont!
-Missing character: There is no D in font nullfont!
-Missing character: There is no e in font nullfont!
-Missing character: There is no s in font nullfont!
-Missing character: There is no k in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no p in font nullfont!
-Missing character: There is no : in font nullfont!
-
-! LaTeX Error: Environment terminal undefined.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.196 	\begin{terminal}
-                       
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-! Undefined control sequence.
-l.197 	\terminalinput
-                     {cd ~/Desktop}
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-Missing character: There is no c in font nullfont!
-Missing character: There is no d in font nullfont!
-Missing character: There is no / in font nullfont!
-Missing character: There is no D in font nullfont!
-Missing character: There is no e in font nullfont!
-Missing character: There is no s in font nullfont!
-Missing character: There is no k in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no p in font nullfont!
-
-! LaTeX Error: \begin{itemize} on input line 165 ended by \end{terminal}.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.198 	\end{terminal}
+l.188 	\end{terminal}
                      
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.203 \subsubsection
+l.193 \subsubsection
                     {Creating a Repository}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -9740,7 +9584,7 @@ Missing character: There is no o in font nullfont!
 Missing character: There is no r in font nullfont!
 Missing character: There is no y in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 203--204
+Overfull \hbox (20.0pt too wide) in paragraph at lines 193--194
 []
  []
 
@@ -9948,14 +9792,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.207 \begin{terminal}
+l.197 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.208 \terminalinput
+l.198 \terminalinput
                     {mkdir my-first-repo}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -9984,7 +9828,7 @@ Missing character: There is no o in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminalinput 
                                
-l.209 \terminalinput
+l.199 \terminalinput
                     {cd my-first-repo}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -10008,13 +9852,13 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no p in font nullfont!
 Missing character: There is no o in font nullfont!
 
-! LaTeX Error: \begin{enumerate} on input line 204 ended by \end{terminal}.
+! LaTeX Error: \begin{enumerate} on input line 194 ended by \end{terminal}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.210 \end{terminal}
+l.200 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -10105,14 +9949,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.212 \begin{terminal}
+l.202 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.213 \terminalinput
+l.203 \terminalinput
                     {git init}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -10130,7 +9974,7 @@ Missing character: There is no t in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminaloutput 
                                 
-l.214 \terminaloutput
+l.204 \terminaloutput
                      {Initialized empty Git repository in /Users/paul/Docume...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -10205,13 +10049,13 @@ Missing character: There is no i in font nullfont!
 Missing character: There is no t in font nullfont!
 Missing character: There is no / in font nullfont!
 
-! LaTeX Error: \begin{enumerate} on input line 204 ended by \end{terminal}.
+! LaTeX Error: \begin{enumerate} on input line 194 ended by \end{terminal}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.215 \end{terminal}
+l.205 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -10773,14 +10617,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.220 \begin{terminal}
+l.210 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.221 \terminalinput
+l.211 \terminalinput
                     {git add .}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -10796,13 +10640,13 @@ Missing character: There is no d in font nullfont!
 Missing character: There is no d in font nullfont!
 Missing character: There is no . in font nullfont!
 
-! LaTeX Error: \begin{enumerate} on input line 204 ended by \end{terminal}.
+! LaTeX Error: \begin{enumerate} on input line 194 ended by \end{terminal}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.222 \end{terminal}
+l.212 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -10837,32 +10681,32 @@ Missing character: There is no i in font nullfont!
 Missing character: There is no t in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 218--224
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 208--214
 \OT1/cmr/m/n/10 '
  []
 
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 218--224
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 208--214
 \OT1/cmr/m/n/10 '
  []
 
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 218--224
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 208--214
 \OT1/cmr/m/n/10 '
  []
 
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 218--224
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 208--214
 \OT1/cmr/m/n/10 '
  []
 
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 218--224
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 208--214
 \OT1/cmr/m/n/10 '
  []
 
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 218--224
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 208--214
 \OT1/cmr/m/n/10 '
  []
 
@@ -11092,12 +10936,12 @@ Missing character: There is no n in font nullfont!
 Missing character: There is no g in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (10.00002pt too wide) in paragraph at lines 225--226
+Overfull \hbox (10.00002pt too wide) in paragraph at lines 215--216
 \OT1/cmr/m/n/10 |
  []
 
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 225--226
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 215--216
 \OT1/cmr/m/n/10 '
  []
 
@@ -11127,14 +10971,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.228 \begin{terminal}
+l.218 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.229 \terminalinput
+l.219 \terminalinput
                     {git commit -m ``Initial commit''}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -11171,13 +11015,13 @@ Missing character: There is no t in font nullfont!
 Missing character: There is no ' in font nullfont!
 Missing character: There is no ' in font nullfont!
 
-! LaTeX Error: \begin{enumerate} on input line 204 ended by \end{terminal}.
+! LaTeX Error: \begin{enumerate} on input line 194 ended by \end{terminal}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.230 \end{terminal}
+l.220 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -11432,7 +11276,7 @@ Missing character: There is no . in font nullfont!
 Missing character: There is no ' in font nullfont!
 Missing character: There is no ' in font nullfont!
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 227--232
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 217--222
 \OT1/cmr/m/n/10 '
  []
 
@@ -11563,14 +11407,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.235 \begin{terminal}
+l.225 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.236 \terminalinput
+l.226 \terminalinput
                     {git log}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -11585,20 +11429,20 @@ Missing character: There is no l in font nullfont!
 Missing character: There is no o in font nullfont!
 Missing character: There is no g in font nullfont!
 
-! LaTeX Error: \begin{enumerate} on input line 204 ended by \end{terminal}.
+! LaTeX Error: \begin{enumerate} on input line 194 ended by \end{terminal}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.237 \end{terminal}
+l.227 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.241 \subsubsection
+l.231 \subsubsection
                     {Connect to a Remote Repository}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -11658,12 +11502,12 @@ Missing character: There is no u in font nullfont!
 Missing character: There is no b in font nullfont!
 Missing character: There is no : in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 241--243
+Overfull \hbox (20.0pt too wide) in paragraph at lines 231--233
 []
  []
 
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 241--243
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 231--233
 \OT1/cmr/m/n/10 '
  []
 
@@ -11688,7 +11532,7 @@ Missing character: There is no t in font nullfont!
 Missing character: There is no a in font nullfont!
 Missing character: There is no t in font nullfont!
 ! Undefined control sequence.
-l.244 \item Create a free account at \weblink
+l.234 \item Create a free account at \weblink
                                              {https://github.com}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -11904,7 +11748,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.247 	\newpage
+l.237 	\newpage
                
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -11938,7 +11782,7 @@ Missing character: There is no o in font nullfont!
 Missing character: There is no r in font nullfont!
 Missing character: There is no y in font nullfont!
 ! Undefined control sequence.
-l.251 	\myfigurecapbelow
+l.241 	\myfigurecapbelow
                         {Create a new repository in GitHub}{ReproducibleRese...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -12130,7 +11974,7 @@ Missing character: There is no 1 in font nullfont!
 ! Missing number, treated as zero.
 <to be read again> 
                    }
-l.251 ...``New'' button.}{fig:github1}{\linewidth}
+l.241 ...``New'' button.}{fig:github1}{\linewidth}
                                                   {\linewidth}{.1\linewidth}
 A number should have been here; I inserted `0'.
 (If you can't figure out why I needed to see a number,
@@ -12139,7 +11983,7 @@ look up `weird error' in the index to The TeXbook.)
 ! Illegal unit of measure (pt inserted).
 <to be read again> 
                    }
-l.251 ...``New'' button.}{fig:github1}{\linewidth}
+l.241 ...``New'' button.}{fig:github1}{\linewidth}
                                                   {\linewidth}{.1\linewidth}
 Dimensions can be in units of em, ex, in, pt, pc,
 cm, mm, dd, cc, nd, nc, bp, or sp; but yours is a new one!
@@ -12151,7 +11995,7 @@ two letters. (See Chapter 27 of The TeXbook.)
 ! Missing number, treated as zero.
 <to be read again> 
                    }
-l.251 ...on.}{fig:github1}{\linewidth}{\linewidth}
+l.241 ...on.}{fig:github1}{\linewidth}{\linewidth}
                                                   {.1\linewidth}
 A number should have been here; I inserted `0'.
 (If you can't figure out why I needed to see a number,
@@ -12160,7 +12004,7 @@ look up `weird error' in the index to The TeXbook.)
 ! Illegal unit of measure (pt inserted).
 <to be read again> 
                    }
-l.251 ...on.}{fig:github1}{\linewidth}{\linewidth}
+l.241 ...on.}{fig:github1}{\linewidth}{\linewidth}
                                                   {.1\linewidth}
 Dimensions can be in units of em, ex, in, pt, pc,
 cm, mm, dd, cc, nd, nc, bp, or sp; but yours is a new one!
@@ -12174,7 +12018,7 @@ Missing character: There is no 1 in font nullfont!
 ! Missing number, treated as zero.
 <to be read again> 
                    }
-l.251 ...b1}{\linewidth}{\linewidth}{.1\linewidth}
+l.241 ...b1}{\linewidth}{\linewidth}{.1\linewidth}
                                                   
 A number should have been here; I inserted `0'.
 (If you can't figure out why I needed to see a number,
@@ -12183,7 +12027,7 @@ look up `weird error' in the index to The TeXbook.)
 ! Illegal unit of measure (pt inserted).
 <to be read again> 
                    }
-l.251 ...b1}{\linewidth}{\linewidth}{.1\linewidth}
+l.241 ...b1}{\linewidth}{\linewidth}{.1\linewidth}
                                                   
 Dimensions can be in units of em, ex, in, pt, pc,
 cm, mm, dd, cc, nd, nc, bp, or sp; but yours is a new one!
@@ -12193,7 +12037,7 @@ delete the erroneous units; e.g., type `2' to delete
 two letters. (See Chapter 27 of The TeXbook.)
 
 ! Undefined control sequence.
-l.254 	\mywrapfigure
+l.244 	\mywrapfigure
                     {Initial Repo Parameters}{.5\linewidth}{ReproducibleRese...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -12227,7 +12071,7 @@ Missing character: There is no 5 in font nullfont!
 ! Missing number, treated as zero.
 <to be read again> 
                    }
-l.254 ...re{Initial Repo Parameters}{.5\linewidth}
+l.244 ...re{Initial Repo Parameters}{.5\linewidth}
                                                   {ReproducibleResearch/Imag...
 A number should have been here; I inserted `0'.
 (If you can't figure out why I needed to see a number,
@@ -12236,7 +12080,7 @@ look up `weird error' in the index to The TeXbook.)
 ! Illegal unit of measure (pt inserted).
 <to be read again> 
                    }
-l.254 ...re{Initial Repo Parameters}{.5\linewidth}
+l.244 ...re{Initial Repo Parameters}{.5\linewidth}
                                                   {ReproducibleResearch/Imag...
 Dimensions can be in units of em, ex, in, pt, pc,
 cm, mm, dd, cc, nd, nc, bp, or sp; but yours is a new one!
@@ -12354,7 +12198,7 @@ Missing character: There is no u in font nullfont!
 Missing character: There is no b in font nullfont!
 Missing character: There is no 2 in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 254--255
+Overfull \hbox (20.0pt too wide) in paragraph at lines 244--245
 []
  []
 
@@ -12416,7 +12260,7 @@ Missing character: There is no e in font nullfont!
 ! Undefined control sequence.
 <write> ...ference `fig:GitHub1' on page \thepage 
                                                   \space undefined\on@line .
-l.256 ...ories'' tab (See Figure \ref{fig:GitHub1}
+l.246 ...ories'' tab (See Figure \ref{fig:GitHub1}
                                                   ) to create a new reposito...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -12425,7 +12269,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 
-LaTeX Warning: Reference `fig:GitHub1' on page  undefined on input line 256.
+LaTeX Warning: Reference `fig:GitHub1' on page  undefined on input line 246.
 
 Missing character: There is no ) in font nullfont!
 Missing character: There is no t in font nullfont!
@@ -12593,7 +12437,7 @@ Missing character: There is no e in font nullfont!
 ! Undefined control sequence.
 <write> ...ference `fig:GitHub2' on page \thepage 
                                                   \space undefined\on@line .
-l.256 ...ion options (See Figure \ref{fig:GitHub2}
+l.246 ...ion options (See Figure \ref{fig:GitHub2}
                                                   .  These include adding a ...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -12602,7 +12446,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 
-LaTeX Warning: Reference `fig:GitHub2' on page  undefined on input line 256.
+LaTeX Warning: Reference `fig:GitHub2' on page  undefined on input line 246.
 
 Missing character: There is no . in font nullfont!
 Missing character: There is no T in font nullfont!
@@ -12944,22 +12788,22 @@ Missing character: There is no c in font nullfont!
 Missing character: There is no t in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 256--257
+Overfull \hbox (20.0pt too wide) in paragraph at lines 246--247
 []
  []
 
 
-Overfull \hbox (10.86105pt too wide) in paragraph at lines 256--257
+Overfull \hbox (10.86105pt too wide) in paragraph at lines 246--247
 []
  []
 
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 256--257
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 246--247
 \OT1/cmr/m/n/10 '
  []
 
 
-Overfull \hbox (10.86105pt too wide) in paragraph at lines 256--257
+Overfull \hbox (10.86105pt too wide) in paragraph at lines 246--247
 []
  []
 
@@ -13941,7 +13785,7 @@ Missing character: There is no l in font nullfont!
 Missing character: There is no y in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 258--259
+Overfull \hbox (20.0pt too wide) in paragraph at lines 248--249
 []
  []
 
@@ -13953,14 +13797,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.262 \newpage
+l.252 \newpage
               
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 [3]
-Overfull \hbox (20.0pt too wide) in paragraph at lines 263--263
+Overfull \hbox (20.0pt too wide) in paragraph at lines 253--253
 [] 
  []
 
@@ -13980,7 +13824,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.264 	\item G
+l.254 	\item G
               enerate a personal access token.
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -13992,7 +13836,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.264 	\item G
+l.254 	\item G
               enerate a personal access token.
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -14004,7 +13848,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.264 	\item G
+l.254 	\item G
               enerate a personal access token.
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -14045,7 +13889,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.266 			\item V
+l.256 			\item V
                 erify your email address if it hasn't been verified yet.
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -14501,122 +14345,122 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no n in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (11.63881pt too wide) in paragraph at lines 276--277
+Overfull \hbox (11.63881pt too wide) in paragraph at lines 266--267
 []\OT1/cmr/m/it/10 Be
  []
 
 
-Overfull \hbox (17.76097pt too wide) in paragraph at lines 276--277
+Overfull \hbox (17.76097pt too wide) in paragraph at lines 266--267
 \OT1/cmr/m/it/10 sure
  []
 
 
-Overfull \hbox (8.43327pt too wide) in paragraph at lines 276--277
+Overfull \hbox (8.43327pt too wide) in paragraph at lines 266--267
 \OT1/cmr/m/it/10 to
  []
 
 
-Overfull \hbox (18.39987pt too wide) in paragraph at lines 276--277
+Overfull \hbox (18.39987pt too wide) in paragraph at lines 266--267
 \OT1/cmr/m/it/10 save
  []
 
 
-Overfull \hbox (13.03323pt too wide) in paragraph at lines 276--277
+Overfull \hbox (13.03323pt too wide) in paragraph at lines 266--267
 \OT1/cmr/m/it/10 the
  []
 
 
-Overfull \hbox (12.01102pt too wide) in paragraph at lines 276--277
+Overfull \hbox (12.01102pt too wide) in paragraph at lines 266--267
 \OT1/cmr/m/it/10 to-
  []
 
 
-Overfull \hbox (14.82211pt too wide) in paragraph at lines 276--277
+Overfull \hbox (14.82211pt too wide) in paragraph at lines 266--267
 \OT1/cmr/m/it/10 ken
  []
 
 
-Overfull \hbox (25.55539pt too wide) in paragraph at lines 276--277
+Overfull \hbox (25.55539pt too wide) in paragraph at lines 266--267
 \OT1/cmr/m/it/10 some-
  []
 
 
-Overfull \hbox (24.66092pt too wide) in paragraph at lines 276--277
+Overfull \hbox (24.66092pt too wide) in paragraph at lines 266--267
 \OT1/cmr/m/it/10 where
  []
 
 
-Overfull \hbox (15.84435pt too wide) in paragraph at lines 276--277
+Overfull \hbox (15.84435pt too wide) in paragraph at lines 266--267
 \OT1/cmr/m/it/10 dis-
  []
 
 
-Overfull \hbox (23.89423pt too wide) in paragraph at lines 276--277
+Overfull \hbox (23.89423pt too wide) in paragraph at lines 266--267
 \OT1/cmr/m/it/10 crete.
  []
 
 
-Overfull \hbox (14.96098pt too wide) in paragraph at lines 276--277
+Overfull \hbox (14.96098pt too wide) in paragraph at lines 266--267
 \OT1/cmr/m/it/10 Re-
  []
 
 
-Overfull \hbox (24.53317pt too wide) in paragraph at lines 276--277
+Overfull \hbox (24.53317pt too wide) in paragraph at lines 266--267
 \OT1/cmr/m/it/10 mem-
  []
 
 
-Overfull \hbox (15.97208pt too wide) in paragraph at lines 276--277
+Overfull \hbox (15.97208pt too wide) in paragraph at lines 266--267
 \OT1/cmr/m/it/10 ber,
  []
 
 
-Overfull \hbox (6.38884pt too wide) in paragraph at lines 276--277
+Overfull \hbox (6.38884pt too wide) in paragraph at lines 266--267
 \OT1/cmr/m/it/10 it
  []
 
 
-Overfull \hbox (7.15552pt too wide) in paragraph at lines 276--277
+Overfull \hbox (7.15552pt too wide) in paragraph at lines 266--267
 \OT1/cmr/m/it/10 is
  []
 
 
-Overfull \hbox (14.82211pt too wide) in paragraph at lines 276--277
+Overfull \hbox (14.82211pt too wide) in paragraph at lines 266--267
 \OT1/cmr/m/it/10 like
  []
 
 
-Overfull \hbox (19.54987pt too wide) in paragraph at lines 276--277
+Overfull \hbox (19.54987pt too wide) in paragraph at lines 266--267
 \OT1/cmr/m/it/10 your
  []
 
 
-Overfull \hbox (15.9721pt too wide) in paragraph at lines 276--277
+Overfull \hbox (15.9721pt too wide) in paragraph at lines 266--267
 \OT1/cmr/m/it/10 pri-
  []
 
 
-Overfull \hbox (17.6332pt too wide) in paragraph at lines 276--277
+Overfull \hbox (17.6332pt too wide) in paragraph at lines 266--267
 \OT1/cmr/m/it/10 vate
  []
 
 
-Overfull \hbox (14.12491pt too wide) in paragraph at lines 276--277
+Overfull \hbox (14.12491pt too wide) in paragraph at lines 266--267
 \OT1/cmr/m/it/10 Git
  []
 
 
-Overfull \hbox (21.46652pt too wide) in paragraph at lines 276--277
+Overfull \hbox (21.46652pt too wide) in paragraph at lines 266--267
 \OT1/cmr/m/it/10 pass-
  []
 
 
-Overfull \hbox (23.63873pt too wide) in paragraph at lines 276--277
+Overfull \hbox (23.63873pt too wide) in paragraph at lines 266--267
 \OT1/cmr/m/it/10 word. 
  []
 
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 281--281
+Overfull \hbox (20.0pt too wide) in paragraph at lines 271--271
 [] 
  []
 
@@ -14636,7 +14480,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.282 \item S
+l.272 \item S
              ync Local and Remote Repositories
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -14648,7 +14492,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.282 \item S
+l.272 \item S
              ync Local and Remote Repositories
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -14660,7 +14504,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.282 \item S
+l.272 \item S
              ync Local and Remote Repositories
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -15362,7 +15206,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.286 	\item C
+l.276 	\item C
               opy the GitHub repo URL (e.g., https://github.com/username/my-...
 
 Try typing  <return>  to proceed.
@@ -15483,14 +15327,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.288 		\begin{terminal}
+l.278 		\begin{terminal}
                         
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.289 		\terminalinput
+l.279 		\terminalinput
                       {git branch -M main}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -15514,13 +15358,13 @@ Missing character: There is no a in font nullfont!
 Missing character: There is no i in font nullfont!
 Missing character: There is no n in font nullfont!
 
-! LaTeX Error: \begin{itemize} on input line 285 ended by \end{terminal}.
+! LaTeX Error: \begin{itemize} on input line 275 ended by \end{terminal}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.290 		\end{terminal}
+l.280 		\end{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -15576,14 +15420,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.293 		\begin{terminal}
+l.283 		\begin{terminal}
                         
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.294 		\terminalinput
+l.284 		\terminalinput
                       {git remote add origin https://github.com/username/my-...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -15657,7 +15501,7 @@ Missing character: There is no t in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminalinput 
                                
-l.295 		\terminalinput
+l.285 		\terminalinput
                       {git push -u origin main}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -15685,13 +15529,13 @@ Missing character: There is no a in font nullfont!
 Missing character: There is no i in font nullfont!
 Missing character: There is no n in font nullfont!
 
-! LaTeX Error: \begin{itemize} on input line 285 ended by \end{terminal}.
+! LaTeX Error: \begin{itemize} on input line 275 ended by \end{terminal}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.296 		\end{terminal}
+l.286 		\end{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -16206,7 +16050,7 @@ Missing character: There is no d in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no . in font nullfont!
 ! Undefined control sequence.
-l.303 \subsubsection
+l.293 \subsubsection
                     {Cloning a Repository}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -16593,14 +16437,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.305 \begin{terminal}
+l.295 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.306 \terminalinput
+l.296 \terminalinput
                     {git clone https://github.com/yourrepo.git}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -16654,7 +16498,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.307 \end{terminal}
+l.297 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -17012,12 +16856,12 @@ Missing character: There is no n in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 303--309
+Overfull \hbox (20.0pt too wide) in paragraph at lines 293--299
 []
  []
 
 ! Undefined control sequence.
-l.310 \subsection
+l.300 \subsection
                  *{The Basic Git Workflow}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -17046,7 +16890,7 @@ Missing character: There is no l in font nullfont!
 Missing character: There is no o in font nullfont!
 Missing character: There is no w in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 310--311
+Overfull \hbox (20.0pt too wide) in paragraph at lines 300--301
 []
  []
 
@@ -17057,7 +16901,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.312 \begin{figure}
+l.302 \begin{figure}
                     [h]
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -17067,7 +16911,7 @@ Missing character: There is no [ in font nullfont!
 Missing character: There is no h in font nullfont!
 Missing character: There is no ] in font nullfont!
 ! Undefined control sequence.
-l.314 \scalebox
+l.304 \scalebox
                {0.85}{
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -17086,7 +16930,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.315 \begin{tikzpicture}
+l.305 \begin{tikzpicture}
                          [
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -17460,12 +17304,12 @@ Missing character: There is no t in font nullfont!
 Missing character: There is no h in font nullfont!
 Missing character: There is no ] in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 312--323
+Overfull \hbox (20.0pt too wide) in paragraph at lines 302--313
  [] 
  []
 
 ! Undefined control sequence.
-l.325 \node
+l.315 \node
             (remote)     [terminator] {GitHub Repo};
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -17505,7 +17349,7 @@ Missing character: There is no p in font nullfont!
 Missing character: There is no o in font nullfont!
 Missing character: There is no ; in font nullfont!
 ! Undefined control sequence.
-l.326 \node
+l.316 \node
             (pull)       [process, right=of remote] {git pull};
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -17552,7 +17396,7 @@ Missing character: There is no l in font nullfont!
 Missing character: There is no l in font nullfont!
 Missing character: There is no ; in font nullfont!
 ! Undefined control sequence.
-l.327 \node
+l.317 \node
             (edit)       [io, right=of pull] {Edit Files};
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -17594,7 +17438,7 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no ; in font nullfont!
 ! Undefined control sequence.
-l.328 \node
+l.318 \node
             (status)     [process, right=of edit] {git status};
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -17643,7 +17487,7 @@ Missing character: There is no u in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no ; in font nullfont!
 ! Undefined control sequence.
-l.329 \node
+l.319 \node
             (add)        [process, below=of status] {git add};
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -17688,7 +17532,7 @@ Missing character: There is no d in font nullfont!
 Missing character: There is no d in font nullfont!
 Missing character: There is no ; in font nullfont!
 ! Undefined control sequence.
-l.330 \node
+l.320 \node
             (commit)     [process, left=of add] {git commit};
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -17735,7 +17579,7 @@ Missing character: There is no i in font nullfont!
 Missing character: There is no t in font nullfont!
 Missing character: There is no ; in font nullfont!
 ! Undefined control sequence.
-l.331 \node
+l.321 \node
             (push)       [process, left=of commit] {git push};
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -17781,7 +17625,7 @@ Missing character: There is no s in font nullfont!
 Missing character: There is no h in font nullfont!
 Missing character: There is no ; in font nullfont!
 ! Undefined control sequence.
-l.334 \draw
+l.324 \draw
             [arrow] (remote) -- (pull);
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -17814,7 +17658,7 @@ Missing character: There is no l in font nullfont!
 Missing character: There is no ) in font nullfont!
 Missing character: There is no ; in font nullfont!
 ! Undefined control sequence.
-l.335 \draw
+l.325 \draw
             [arrow] (pull) -- (edit);
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -17845,7 +17689,7 @@ Missing character: There is no t in font nullfont!
 Missing character: There is no ) in font nullfont!
 Missing character: There is no ; in font nullfont!
 ! Undefined control sequence.
-l.336 \draw
+l.326 \draw
             [arrow] (edit) -- (status);
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -17878,7 +17722,7 @@ Missing character: There is no s in font nullfont!
 Missing character: There is no ) in font nullfont!
 Missing character: There is no ; in font nullfont!
 ! Undefined control sequence.
-l.337 \draw
+l.327 \draw
             [arrow] (status) -- (add);
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -17910,7 +17754,7 @@ Missing character: There is no d in font nullfont!
 Missing character: There is no ) in font nullfont!
 Missing character: There is no ; in font nullfont!
 ! Undefined control sequence.
-l.338 \draw
+l.328 \draw
             [arrow] (add) -- (commit);
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -17942,7 +17786,7 @@ Missing character: There is no t in font nullfont!
 Missing character: There is no ) in font nullfont!
 Missing character: There is no ; in font nullfont!
 ! Undefined control sequence.
-l.339 \draw
+l.329 \draw
             [arrow] (commit) -- (push);
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -17975,7 +17819,7 @@ Missing character: There is no h in font nullfont!
 Missing character: There is no ) in font nullfont!
 Missing character: There is no ; in font nullfont!
 ! Undefined control sequence.
-l.340 \draw
+l.330 \draw
             [arrow] (push) -- (remote);
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -18014,7 +17858,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.341 \end{tikzpicture}
+l.331 \end{tikzpicture}
                        }
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -18027,7 +17871,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.342 \caption
+l.332 \caption
               {Recommended Git Workflow: Pull → Edit → Status → Add �...
 
 You're in trouble here.  Try typing  <return>  to proceed.
@@ -18090,34 +17934,34 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.343 \end{figure}
+l.333 \end{figure}
                   
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 
-Overfull \hbox (9.99756pt too wide) in paragraph at lines 334--344
+Overfull \hbox (9.99756pt too wide) in paragraph at lines 324--334
 \TS1/cmr/m/n/10 ^^Y
  []
 
 
-Overfull \hbox (9.99756pt too wide) in paragraph at lines 334--344
+Overfull \hbox (9.99756pt too wide) in paragraph at lines 324--334
 \TS1/cmr/m/n/10 ^^Y
  []
 
 
-Overfull \hbox (9.99756pt too wide) in paragraph at lines 334--344
+Overfull \hbox (9.99756pt too wide) in paragraph at lines 324--334
 \TS1/cmr/m/n/10 ^^Y
  []
 
 
-Overfull \hbox (9.99756pt too wide) in paragraph at lines 334--344
+Overfull \hbox (9.99756pt too wide) in paragraph at lines 324--334
 \TS1/cmr/m/n/10 ^^Y
  []
 
 
-Overfull \hbox (9.99756pt too wide) in paragraph at lines 334--344
+Overfull \hbox (9.99756pt too wide) in paragraph at lines 324--334
 \TS1/cmr/m/n/10 ^^Y
  []
 
@@ -18645,7 +18489,7 @@ Missing character: There is no t in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no ! in font nullfont!
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 347--348
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 337--338
 \OT1/cmr/m/n/10 '
  []
 
@@ -18702,14 +18546,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.350 \begin{terminal}
+l.340 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.351 \terminalinput
+l.341 \terminalinput
                     {git pull origin main}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -18737,7 +18581,7 @@ Missing character: There is no n in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminaloutput 
                                 
-l.352 \terminaloutput
+l.342 \terminaloutput
                      {From https://github.com/pdkieffaber/PSYC672}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -18790,7 +18634,7 @@ Missing character: There is no 2 in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminaloutput 
                                 
-l.353 \terminaloutput
+l.343 \terminaloutput
                      { * branch            main       -> FETCH\_HEAD}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -18823,7 +18667,7 @@ Missing character: There is no D in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminaloutput 
                                 
-l.354 \terminaloutput
+l.344 \terminaloutput
                      { Already up to date.}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -18848,13 +18692,13 @@ Missing character: There is no t in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no . in font nullfont!
 
-! LaTeX Error: \begin{enumerate} on input line 344 ended by \end{terminal}.
+! LaTeX Error: \begin{enumerate} on input line 334 ended by \end{terminal}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.355 \end{terminal}
+l.345 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -19666,14 +19510,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.364 \begin{terminal}
+l.354 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.365 \terminalinput
+l.355 \terminalinput
                     {git status}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -19691,25 +19535,25 @@ Missing character: There is no t in font nullfont!
 Missing character: There is no u in font nullfont!
 Missing character: There is no s in font nullfont!
 
-! LaTeX Error: \begin{enumerate} on input line 344 ended by \end{terminal}.
+! LaTeX Error: \begin{enumerate} on input line 334 ended by \end{terminal}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.366 \end{terminal}
+l.356 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 363--367
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 353--357
 \OT1/cmr/m/n/10 '
  []
 
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 363--367
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 353--357
 \OT1/cmr/m/n/10 '
  []
 
@@ -20024,14 +19868,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.371 \begin{terminal}
+l.361 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.372 \terminalinput
+l.362 \terminalinput
                     {git add .}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -20047,75 +19891,75 @@ Missing character: There is no d in font nullfont!
 Missing character: There is no d in font nullfont!
 Missing character: There is no . in font nullfont!
 
-! LaTeX Error: \begin{enumerate} on input line 344 ended by \end{terminal}.
+! LaTeX Error: \begin{enumerate} on input line 334 ended by \end{terminal}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.373 \end{terminal}
+l.363 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 
-Overfull \hbox (20.69987pt too wide) in paragraph at lines 370--374
+Overfull \hbox (20.69987pt too wide) in paragraph at lines 360--364
 \OT1/cmr/m/it/10 Only
  []
 
 
-Overfull \hbox (26.32202pt too wide) in paragraph at lines 370--374
+Overfull \hbox (26.32202pt too wide) in paragraph at lines 360--364
 \OT1/cmr/m/it/10 staged
  []
 
 
-Overfull \hbox (33.73311pt too wide) in paragraph at lines 370--374
+Overfull \hbox (33.73311pt too wide) in paragraph at lines 360--364
 \OT1/cmr/m/it/10 changes
  []
 
 
-Overfull \hbox (15.33325pt too wide) in paragraph at lines 370--374
+Overfull \hbox (15.33325pt too wide) in paragraph at lines 360--364
 \OT1/cmr/m/it/10 will
  []
 
 
-Overfull \hbox (8.6888pt too wide) in paragraph at lines 370--374
+Overfull \hbox (8.6888pt too wide) in paragraph at lines 360--364
 \OT1/cmr/m/it/10 be
  []
 
 
-Overfull \hbox (12.26659pt too wide) in paragraph at lines 370--374
+Overfull \hbox (12.26659pt too wide) in paragraph at lines 360--364
 \OT1/cmr/m/it/10 in-
  []
 
 
-Overfull \hbox (26.83315pt too wide) in paragraph at lines 370--374
+Overfull \hbox (26.83315pt too wide) in paragraph at lines 360--364
 \OT1/cmr/m/it/10 cluded
  []
 
 
-Overfull \hbox (8.68884pt too wide) in paragraph at lines 370--374
+Overfull \hbox (8.68884pt too wide) in paragraph at lines 360--364
 \OT1/cmr/m/it/10 in
  []
 
 
-Overfull \hbox (13.03323pt too wide) in paragraph at lines 370--374
+Overfull \hbox (13.03323pt too wide) in paragraph at lines 360--364
 \OT1/cmr/m/it/10 the
  []
 
 
-Overfull \hbox (18.18321pt too wide) in paragraph at lines 370--374
+Overfull \hbox (18.18321pt too wide) in paragraph at lines 360--364
 \OT1/cmr/m/it/10 next
  []
 
 
-Overfull \hbox (20.9554pt too wide) in paragraph at lines 370--374
+Overfull \hbox (20.9554pt too wide) in paragraph at lines 360--364
 \OT1/cmr/m/it/10 com-
  []
 
 
-Overfull \hbox (17.63322pt too wide) in paragraph at lines 370--374
+Overfull \hbox (17.63322pt too wide) in paragraph at lines 360--364
 \OT1/cmr/m/it/10 mit.
  []
 
@@ -20337,14 +20181,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.378 \begin{terminal}
+l.368 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.379 \terminalinput
+l.369 \terminalinput
                     {git commit -m ``Fix typo in introduction and add conclu...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -20413,13 +20257,13 @@ Missing character: There is no . in font nullfont!
 Missing character: There is no ' in font nullfont!
 Missing character: There is no ' in font nullfont!
 
-! LaTeX Error: \begin{enumerate} on input line 344 ended by \end{terminal}.
+! LaTeX Error: \begin{enumerate} on input line 334 ended by \end{terminal}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.380 \end{terminal}
+l.370 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -20584,12 +20428,12 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no d in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 377--382
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 367--372
 \OT1/cmr/m/n/10 '
  []
 
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 377--382
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 367--372
 \OT1/cmr/m/n/10 '
  []
 
@@ -20803,14 +20647,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.386 \begin{terminal}
+l.376 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.387 \terminalinput
+l.377 \terminalinput
                     {git push origin main}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -20836,13 +20680,13 @@ Missing character: There is no a in font nullfont!
 Missing character: There is no i in font nullfont!
 Missing character: There is no n in font nullfont!
 
-! LaTeX Error: \begin{enumerate} on input line 344 ended by \end{terminal}.
+! LaTeX Error: \begin{enumerate} on input line 334 ended by \end{terminal}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.388 \end{terminal}
+l.378 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -21005,17 +20849,17 @@ Missing character: There is no s in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 385--390
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 375--380
 \OT1/cmr/m/n/10 '
  []
 
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 385--390
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 375--380
 \OT1/cmr/m/n/10 '
  []
 
 ! Undefined control sequence.
-l.393 \subsection
+l.383 \subsection
                  *{Branching}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -21403,12 +21247,12 @@ Missing character: There is no c in font nullfont!
 Missing character: There is no t in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 393--395
+Overfull \hbox (20.0pt too wide) in paragraph at lines 383--385
 []
  []
 
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 393--395
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 383--385
 \OT1/cmr/m/n/10 '
  []
 
@@ -21766,7 +21610,7 @@ Missing character: There is no c in font nullfont!
 Missing character: There is no t in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 396--397
+Overfull \hbox (20.0pt too wide) in paragraph at lines 386--387
 []
  []
 
@@ -22067,7 +21911,7 @@ Missing character: There is no c in font nullfont!
 Missing character: There is no h in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 398--399
+Overfull \hbox (20.0pt too wide) in paragraph at lines 388--389
 []
  []
 
@@ -22433,7 +22277,7 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 400--401
+Overfull \hbox (20.0pt too wide) in paragraph at lines 390--391
 []
  []
 
@@ -23192,12 +23036,12 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 402--403
+Overfull \hbox (20.0pt too wide) in paragraph at lines 392--393
 []
  []
 
 ! Undefined control sequence.
-l.404 \subsubsection
+l.394 \subsubsection
                     {Example Workflow}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -23405,14 +23249,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.406 \begin{terminal}
+l.396 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.407 \terminalinput
+l.397 \terminalinput
                     {git checkout main}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -23438,7 +23282,7 @@ Missing character: There is no n in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminaloutput 
                                 
-l.408 \terminaloutput
+l.398 \terminaloutput
                      {Already on `main'}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -23464,7 +23308,7 @@ Missing character: There is no ' in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminaloutput 
                                 
-l.409 \terminaloutput
+l.399 \terminaloutput
                      {Your branch is up to date with `origin/main'.}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -23513,7 +23357,7 @@ Missing character: There is no . in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminalinput 
                                
-l.410 \terminalinput
+l.400 \terminalinput
                     {git pull origin main}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -23541,7 +23385,7 @@ Missing character: There is no n in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminaloutput 
                                 
-l.411 \terminaloutput
+l.401 \terminaloutput
                      {From https://github.com/pdkieffaber/PSYC672}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -23594,7 +23438,7 @@ Missing character: There is no 2 in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminaloutput 
                                 
-l.412 \terminaloutput
+l.402 \terminaloutput
                      { * branch            main       -> FETCH\_HEAD}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -23627,7 +23471,7 @@ Missing character: There is no D in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminaloutput 
                                 
-l.413 \terminaloutput
+l.403 \terminaloutput
                      { Already up to date.}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -23658,7 +23502,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.414 \end{terminal}
+l.404 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -23815,14 +23659,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.416 \begin{terminal}
+l.406 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.417 \terminalinput
+l.407 \terminalinput
                     {git checkout -b bootstrap-procedure}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -23865,7 +23709,7 @@ Missing character: There is no e in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminaloutput 
                                 
-l.418 \terminaloutput
+l.408 \terminaloutput
                      {Switched to a new branch `bootstrap-procedure'}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -23921,7 +23765,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.419 \end{terminal}
+l.409 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -24041,12 +23885,12 @@ Missing character: There is no g in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 404--421
+Overfull \hbox (20.0pt too wide) in paragraph at lines 394--411
 []
  []
 
 
-Overfull \hbox (10.00002pt too wide) in paragraph at lines 404--421
+Overfull \hbox (10.00002pt too wide) in paragraph at lines 394--411
 \OT1/cmr/m/n/10 |
  []
 
@@ -24250,14 +24094,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.423 \begin{terminal}
+l.413 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.424 \terminalinput
+l.414 \terminalinput
                     {git add bootstrap\_code.R}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -24293,7 +24137,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.425 \end{terminal}
+l.415 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -24360,7 +24204,7 @@ Missing character: There is no t in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 422--427
+Overfull \hbox (20.0pt too wide) in paragraph at lines 412--417
 []
  []
 
@@ -24428,14 +24272,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.429 \begin{terminal}
+l.419 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.430 \terminalinput
+l.420 \terminalinput
                     {git commit -m ``Add initial version of bootstrapping pr...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -24500,7 +24344,7 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no ' in font nullfont!
 Missing character: There is no ' in font nullfont!
 ! Undefined control sequence.
-l.431 \terminaloutput
+l.421 \terminaloutput
                      {\texttt{[}bootstrap-procedure 03f6df2\texttt{]} Add in...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -24578,7 +24422,7 @@ Missing character: There is no e in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminaloutput 
                                 
-l.432  \terminaloutput
+l.422  \terminaloutput
                       {1 file changed, 1 insertion(+)}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -24615,7 +24459,7 @@ Missing character: There is no ) in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminaloutput 
                                 
-l.433  \terminaloutput
+l.423  \terminaloutput
                       {create mode 100644 bootstrap\_code.R}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -24661,7 +24505,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.434 \end{terminal}
+l.424 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -24741,17 +24585,17 @@ Missing character: There is no d in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 428--436
+Overfull \hbox (20.0pt too wide) in paragraph at lines 418--426
 []
  []
 
 
-Overfull \hbox (5.24995pt too wide) in paragraph at lines 428--436
+Overfull \hbox (5.24995pt too wide) in paragraph at lines 418--426
 \OT1/cmtt/m/n/10 [
  []
 
 
-Overfull \hbox (5.24995pt too wide) in paragraph at lines 428--436
+Overfull \hbox (5.24995pt too wide) in paragraph at lines 418--426
 \OT1/cmtt/m/n/10 ]
  []
 
@@ -24763,7 +24607,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.437 \newpage
+l.427 \newpage
               
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -24856,14 +24700,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.439 \begin{terminal}
+l.429 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.440 \terminalinput
+l.430 \terminalinput
                     {git push -u origin bootstrap-procedure}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -24908,7 +24752,7 @@ Missing character: There is no e in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminaloutput 
                                 
-l.441 \terminaloutput
+l.431 \terminaloutput
                      {Enumerating objects: 4, done.}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -24945,7 +24789,7 @@ Missing character: There is no . in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminaloutput 
                                 
-l.442 \terminaloutput
+l.432 \terminaloutput
                      {Counting objects: 100\% (4/4), done.}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -24987,7 +24831,7 @@ Missing character: There is no . in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminaloutput 
                                 
-l.443 \terminaloutput
+l.433 \terminaloutput
                      {Delta compression using up to 12 threads}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -25032,7 +24876,7 @@ Missing character: There is no s in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminaloutput 
                                 
-l.444 \terminaloutput
+l.434 \terminaloutput
                      {Compressing objects: 100\% (2/2), done.}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -25077,7 +24921,7 @@ Missing character: There is no . in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminaloutput 
                                 
-l.445 \terminaloutput
+l.435 \terminaloutput
                      {Writing objects: 100\% (3/3), 315 bytes | 315.00 KiB/s...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -25139,7 +24983,7 @@ Missing character: There is no . in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminaloutput 
                                 
-l.446 \terminaloutput
+l.436 \terminaloutput
                      {Total 3 (delta 0), reused 0 (delta 0), pack-reused 0}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -25193,7 +25037,7 @@ Missing character: There is no 0 in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminaloutput 
                                 
-l.447 \terminaloutput
+l.437 \terminaloutput
                      {remote: Create a pull request for 'bootstrap-procedure...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -25272,7 +25116,7 @@ Missing character: There is no : in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminaloutput 
                                 
-l.448 \terminaloutput
+l.438 \terminaloutput
                      {remote: https://github.com/pdkieffaber/PSYC672/pull/ne...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -25357,7 +25201,7 @@ Missing character: There is no e in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminaloutput 
                                 
-l.449 \terminaloutput
+l.439 \terminaloutput
                      {remote: To https://github.com/pdkieffaber/PSYC672}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -25415,7 +25259,7 @@ Missing character: There is no 2 in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminaloutput 
                                 
-l.450 \terminaloutput
+l.440 \terminaloutput
                      { * \texttt{[}new branch\texttt{]}      bootstrap-proce...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -25476,7 +25320,7 @@ Missing character: There is no e in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminaloutput 
                                 
-l.451 \terminaloutput
+l.441 \terminaloutput
                      {branch `bootstrap-procedure' set up to track `origin/b...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -25559,7 +25403,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.452 \end{terminal}
+l.442 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -25681,12 +25525,12 @@ Missing character: There is no n in font nullfont!
 Missing character: There is no t in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (5.24995pt too wide) in paragraph at lines 438--454
+Overfull \hbox (5.24995pt too wide) in paragraph at lines 428--444
 \OT1/cmtt/m/n/10 [
  []
 
 
-Overfull \hbox (5.24995pt too wide) in paragraph at lines 438--454
+Overfull \hbox (5.24995pt too wide) in paragraph at lines 428--444
 \OT1/cmtt/m/n/10 ]
  []
 
@@ -25899,7 +25743,7 @@ Missing character: There is no n in font nullfont!
 Missing character: There is no g in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 455--456
+Overfull \hbox (20.0pt too wide) in paragraph at lines 445--446
 []
  []
 
@@ -25989,14 +25833,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.458 \begin{terminal}
+l.448 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.459 \terminalinput
+l.449 \terminalinput
                     {git checkout main}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -26020,7 +25864,7 @@ Missing character: There is no a in font nullfont!
 Missing character: There is no i in font nullfont!
 Missing character: There is no n in font nullfont!
 ! Undefined control sequence.
-l.460 \terminalinput
+l.450 \terminalinput
                     {git pull origin main}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -26052,14 +25896,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.461 \end{terminal}
+l.451 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 457--462
+Overfull \hbox (20.0pt too wide) in paragraph at lines 447--452
 []
  []
 
@@ -26118,14 +25962,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.464 \begin{terminal}
+l.454 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.465 \terminalinput
+l.455 \terminalinput
                     {git merge bootstrap-procedure}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -26167,7 +26011,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.466 \end{terminal}
+l.456 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -26232,7 +26076,7 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 463--468
+Overfull \hbox (20.0pt too wide) in paragraph at lines 453--458
 []
  []
 
@@ -26284,14 +26128,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.470 \begin{terminal}
+l.460 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.471 \terminalinput
+l.461 \terminalinput
                     {git push origin main}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -26323,14 +26167,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.472 \end{terminal}
+l.462 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 469--473
+Overfull \hbox (20.0pt too wide) in paragraph at lines 459--463
 []
  []
 
@@ -26404,14 +26248,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.475 \begin{terminal}
+l.465 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.476 \terminalinput
+l.466 \terminalinput
                     {git branch -d bootstrap-procedure}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -26456,14 +26300,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.477 \end{terminal}
+l.467 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 474--478
+Overfull \hbox (20.0pt too wide) in paragraph at lines 464--468
 []
  []
 
@@ -26489,14 +26333,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.480 \begin{terminal}
+l.470 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.481 \terminalinput
+l.471 \terminalinput
                     {git push origin --delete bootstrap-procedure}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -26551,19 +26395,19 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.482 \end{terminal}
+l.472 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 479--483
+Overfull \hbox (20.0pt too wide) in paragraph at lines 469--473
 []
  []
 
 ! Undefined control sequence.
-l.484 \section
+l.474 \section
               {Collaboration with Git}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -26592,7 +26436,7 @@ Missing character: There is no G in font nullfont!
 Missing character: There is no i in font nullfont!
 Missing character: There is no t in font nullfont!
 ! Undefined control sequence.
-l.485 \subsection
+l.475 \subsection
                  *{Forking Vs. Branching}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -27087,7 +26931,7 @@ Missing character: There is no s in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 484--487
+Overfull \hbox (20.0pt too wide) in paragraph at lines 474--477
 []
  []
 
@@ -27543,12 +27387,12 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no t in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 488--489
+Overfull \hbox (20.0pt too wide) in paragraph at lines 478--479
 []
  []
 
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 488--489
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 478--479
 \OT1/cmr/m/n/10 '
  []
 
@@ -27856,17 +27700,17 @@ Missing character: There is no o in font nullfont!
 Missing character: There is no n in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 490--491
+Overfull \hbox (20.0pt too wide) in paragraph at lines 480--481
 []
  []
 
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 490--491
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 480--481
 \OT1/cmr/m/n/10 '
  []
 
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 490--491
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 480--481
 \OT1/cmr/m/n/10 '
  []
 
@@ -28012,7 +27856,7 @@ Missing character: There is no l in font nullfont!
 Missing character: There is no f in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 492--493
+Overfull \hbox (20.0pt too wide) in paragraph at lines 482--483
 []
  []
 
@@ -28253,14 +28097,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.502 \begin{terminal}
+l.492 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.503 \terminalinput
+l.493 \terminalinput
                     {git clone https://github.com/your-username/forked-repo-...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -28332,7 +28176,7 @@ Missing character: There is no t in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminalinput 
                                
-l.504 \terminalinput
+l.494 \terminalinput
                     {cd forked-repo-name}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -28365,14 +28209,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.505 \end{terminal}
+l.495 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.507 \subsection
+l.497 \subsection
                  *{Pull Requests}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -28670,7 +28514,7 @@ Missing character: There is no a in font nullfont!
 Missing character: There is no y in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 507--509
+Overfull \hbox (20.0pt too wide) in paragraph at lines 497--499
 []
  []
 
@@ -28829,14 +28673,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.511 \begin{terminal}
+l.501 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.512 \terminalinput
+l.502 \terminalinput
                     {git checkout -b feature/bootstrap-analysis}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -28911,7 +28755,7 @@ Missing character: There is no . in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminalinput 
                                
-l.514 \terminalinput
+l.504 \terminalinput
                     {git add .}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -28929,7 +28773,7 @@ Missing character: There is no . in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminalinput 
                                
-l.515 \terminalinput
+l.505 \terminalinput
                     {git commit -m ``Add bootstrap analysis to R script''}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -28984,7 +28828,7 @@ Missing character: There is no ' in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminalinput 
                                
-l.516 \terminalinput
+l.506 \terminalinput
                     {git push origin feature/bootstrap-analysis}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -29038,14 +28882,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.517 \end{terminal}
+l.507 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 510--518
+Overfull \hbox (20.0pt too wide) in paragraph at lines 500--508
 []
  []
 
@@ -29423,7 +29267,7 @@ Missing character: There is no s in font nullfont!
 Missing character: There is no ) in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 519--520
+Overfull \hbox (20.0pt too wide) in paragraph at lines 509--510
 []
  []
 
@@ -29581,192 +29425,192 @@ Missing character: There is no l in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no : in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 521--522
+Overfull \hbox (20.0pt too wide) in paragraph at lines 511--512
 []
  []
 
 
-Overfull \hbox (51.49973pt too wide) in paragraph at lines 523--527
+Overfull \hbox (51.49973pt too wide) in paragraph at lines 513--517
 []\OT1/cmtt/m/n/10 Title:
  []
 
 
-Overfull \hbox (15.74986pt too wide) in paragraph at lines 523--527
+Overfull \hbox (15.74986pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 Add
  []
 
 
-Overfull \hbox (68.2494pt too wide) in paragraph at lines 523--527
+Overfull \hbox (68.2494pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 bootstrapping
  []
 
 
-Overfull \hbox (68.2494pt too wide) in paragraph at lines 523--527
+Overfull \hbox (68.2494pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 functionality
  []
 
 
-Overfull \hbox (10.49991pt too wide) in paragraph at lines 523--527
+Overfull \hbox (10.49991pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 to
  []
 
 
-Overfull \hbox (41.99963pt too wide) in paragraph at lines 523--527
+Overfull \hbox (41.99963pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 analysis
  []
 
 
-Overfull \hbox (41.99963pt too wide) in paragraph at lines 523--527
+Overfull \hbox (41.99963pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 pipeline 
  []
 
 
-Overfull \hbox (83.99927pt too wide) in paragraph at lines 523--527
+Overfull \hbox (83.99927pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 Description:This
  []
 
 
-Overfull \hbox (10.49991pt too wide) in paragraph at lines 523--527
+Overfull \hbox (10.49991pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 PR
  []
 
 
-Overfull \hbox (20.99982pt too wide) in paragraph at lines 523--527
+Overfull \hbox (20.99982pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 adds
  []
 
 
-Overfull \hbox (5.24995pt too wide) in paragraph at lines 523--527
+Overfull \hbox (5.24995pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 a
  []
 
 
-Overfull \hbox (68.2494pt too wide) in paragraph at lines 523--527
+Overfull \hbox (68.2494pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 bootstrapping
  []
 
 
-Overfull \hbox (47.24959pt too wide) in paragraph at lines 523--527
+Overfull \hbox (47.24959pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 procedure
  []
 
 
-Overfull \hbox (10.49991pt too wide) in paragraph at lines 523--527
+Overfull \hbox (10.49991pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 to
  []
 
 
-Overfull \hbox (15.74986pt too wide) in paragraph at lines 523--527
+Overfull \hbox (15.74986pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 the
  []
 
 
-Overfull \hbox (52.49954pt too wide) in paragraph at lines 523--527
+Overfull \hbox (52.49954pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 analysis.R
  []
 
 
-Overfull \hbox (20.99982pt too wide) in paragraph at lines 523--527
+Overfull \hbox (20.99982pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 file
  []
 
 
-Overfull \hbox (15.74986pt too wide) in paragraph at lines 523--527
+Overfull \hbox (15.74986pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 for 
  []
 
 
-Overfull \hbox (52.49954pt too wide) in paragraph at lines 523--527
+Overfull \hbox (52.49954pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 resampling
  []
 
 
-Overfull \hbox (41.99963pt too wide) in paragraph at lines 523--527
+Overfull \hbox (41.99963pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 reaction
  []
 
 
-Overfull \hbox (31.49973pt too wide) in paragraph at lines 523--527
+Overfull \hbox (31.49973pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 times.
  []
 
 
-Overfull \hbox (10.49991pt too wide) in paragraph at lines 523--527
+Overfull \hbox (10.49991pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 It
  []
 
 
-Overfull \hbox (20.99982pt too wide) in paragraph at lines 523--527
+Overfull \hbox (20.99982pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 uses
  []
 
 
-Overfull \hbox (31.49973pt too wide) in paragraph at lines 523--527
+Overfull \hbox (31.49973pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 10,000
  []
 
 
-Overfull \hbox (47.24959pt too wide) in paragraph at lines 523--527
+Overfull \hbox (47.24959pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 resamples
  []
 
 
-Overfull \hbox (15.74986pt too wide) in paragraph at lines 523--527
+Overfull \hbox (15.74986pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 and
  []
 
 
-Overfull \hbox (36.74968pt too wide) in paragraph at lines 523--527
+Overfull \hbox (36.74968pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 returns
  []
 
 
-Overfull \hbox (15.74986pt too wide) in paragraph at lines 523--527
+Overfull \hbox (15.74986pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 95%
  []
 
 
-Overfull \hbox (52.49954pt too wide) in paragraph at lines 523--527
+Overfull \hbox (52.49954pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 confidence 
  []
 
 
-Overfull \hbox (52.49954pt too wide) in paragraph at lines 523--527
+Overfull \hbox (52.49954pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 intervals.
  []
 
 
-Overfull \hbox (20.99982pt too wide) in paragraph at lines 523--527
+Overfull \hbox (20.99982pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 Also
  []
 
 
-Overfull \hbox (41.99963pt too wide) in paragraph at lines 523--527
+Overfull \hbox (41.99963pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 includes
  []
 
 
-Overfull \hbox (36.74968pt too wide) in paragraph at lines 523--527
+Overfull \hbox (36.74968pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 updated
  []
 
 
-Overfull \hbox (20.99982pt too wide) in paragraph at lines 523--527
+Overfull \hbox (20.99982pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 unit
  []
 
 
-Overfull \hbox (26.24977pt too wide) in paragraph at lines 523--527
+Overfull \hbox (26.24977pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 tests
  []
 
 
-Overfull \hbox (10.49991pt too wide) in paragraph at lines 523--527
+Overfull \hbox (10.49991pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 in
  []
 
 
-Overfull \hbox (82.52927pt too wide) in paragraph at lines 523--527
+Overfull \hbox (82.52927pt too wide) in paragraph at lines 513--517
 \OT1/cmtt/m/n/10 test[]analysis.R. 
  []
 
@@ -29874,12 +29718,12 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 528--529
+Overfull \hbox (20.0pt too wide) in paragraph at lines 518--519
 []
  []
 
 ! Undefined control sequence.
-l.530 \section
+l.520 \section
               {Version Control for Experiments and Data Analysis}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -30399,12 +30243,12 @@ Missing character: There is no c in font nullfont!
 Missing character: There is no h in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 530--532
+Overfull \hbox (20.0pt too wide) in paragraph at lines 520--522
 []
  []
 
 ! Undefined control sequence.
-l.533 \subsection
+l.523 \subsection
                  *{Tracking Analysis Scripts with Git}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -30746,7 +30590,7 @@ Missing character: There is no t in font nullfont!
 Missing character: There is no o in font nullfont!
 Missing character: There is no : in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 533--535
+Overfull \hbox (20.0pt too wide) in paragraph at lines 523--525
 []
  []
 
@@ -31026,14 +30870,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.544 \begin{terminal}
+l.534 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.545 \terminalinput
+l.535 \terminalinput
                     {git add analysis\_v1.R}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -31062,7 +30906,7 @@ Missing character: There is no R in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminalinput 
                                
-l.546 \terminalinput
+l.536 \terminalinput
                     {git commit -m ``Initial version of analysis script''}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -31122,24 +30966,24 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.547 \end{terminal}
+l.537 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 
-Overfull \hbox (36.97757pt too wide) in paragraph at lines 542--548
+Overfull \hbox (36.97757pt too wide) in paragraph at lines 532--538
 \OT1/cmr/m/it/10 Example
  []
 
 
-Overfull \hbox (27.49425pt too wide) in paragraph at lines 542--548
+Overfull \hbox (27.49425pt too wide) in paragraph at lines 532--538
 \OT1/cmr/m/it/10 Work-
  []
 
 
-Overfull \hbox (20.69987pt too wide) in paragraph at lines 542--548
+Overfull \hbox (20.69987pt too wide) in paragraph at lines 532--538
 \OT1/cmr/m/it/10 flow:
  []
 
@@ -31177,14 +31021,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.550 \begin{terminal}
+l.540 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.551 \terminalinput
+l.541 \terminalinput
                     {git add analysis\_v2.R}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -31213,7 +31057,7 @@ Missing character: There is no R in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminalinput 
                                
-l.552 \terminalinput
+l.542 \terminalinput
                     {git commit -m ``Refactored script to include new prepro...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -31288,7 +31132,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.553 \end{terminal}
+l.543 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -31322,14 +31166,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.556 \begin{terminal}
+l.546 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.557 \terminalinput
+l.547 \terminalinput
                     {git tag -a v1.0 -m ``Version used in preprint submissio...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -31393,14 +31237,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.558 \end{terminal}
+l.548 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.560 \subsection
+l.550 \subsection
                  *{Managing Experimental Designs and Stimuli}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -31890,7 +31734,7 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no d in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 560--562
+Overfull \hbox (20.0pt too wide) in paragraph at lines 550--552
 []
  []
 
@@ -32064,7 +31908,7 @@ Missing character: There is no t in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 563--564
+Overfull \hbox (20.0pt too wide) in paragraph at lines 553--554
 []
  []
 
@@ -32112,107 +31956,107 @@ Missing character: There is no t in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no : in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 567--567
+Overfull \hbox (20.0pt too wide) in paragraph at lines 557--557
 [] 
  []
 
 
-Overfull \hbox (99.74913pt too wide) in paragraph at lines 586--586
+Overfull \hbox (99.74913pt too wide) in paragraph at lines 576--576
 []\OT1/cmtt/m/n/10 experiment-project/ 
  []
 
 
-Overfull \hbox (5.24995pt too wide) in paragraph at lines 586--586
+Overfull \hbox (5.24995pt too wide) in paragraph at lines 576--576
 []\OT1/cmtt/m/n/10 |[] 
  []
 
 
-Overfull \hbox (62.99945pt too wide) in paragraph at lines 586--586
+Overfull \hbox (62.99945pt too wide) in paragraph at lines 576--576
 []\OT1/cmtt/m/n/10 |-- stimuli/[] 
  []
 
 
-Overfull \hbox (83.99927pt too wide) in paragraph at lines 586--586
+Overfull \hbox (83.99927pt too wide) in paragraph at lines 576--576
 []\OT1/cmtt/m/n/10 |    |-- images/[] 
  []
 
 
-Overfull \hbox (78.74931pt too wide) in paragraph at lines 586--586
+Overfull \hbox (78.74931pt too wide) in paragraph at lines 576--576
 []\OT1/cmtt/m/n/10 |    |-- audio/[] 
  []
 
 
-Overfull \hbox (73.49936pt too wide) in paragraph at lines 586--586
+Overfull \hbox (73.49936pt too wide) in paragraph at lines 576--576
 []\OT1/cmtt/m/n/10 |    |-- text/[] 
  []
 
 
-Overfull \hbox (5.24995pt too wide) in paragraph at lines 586--586
+Overfull \hbox (5.24995pt too wide) in paragraph at lines 576--576
 []\OT1/cmtt/m/n/10 |[] 
  []
 
 
-Overfull \hbox (47.24959pt too wide) in paragraph at lines 586--586
+Overfull \hbox (47.24959pt too wide) in paragraph at lines 576--576
 []\OT1/cmtt/m/n/10 |-- data/[] 
  []
 
 
-Overfull \hbox (194.2483pt too wide) in paragraph at lines 586--586
+Overfull \hbox (194.2483pt too wide) in paragraph at lines 576--576
 []\OT1/cmtt/m/n/10 |    |-- (add to .gitignore if large)[] 
  []
 
 
-Overfull \hbox (5.24995pt too wide) in paragraph at lines 586--586
+Overfull \hbox (5.24995pt too wide) in paragraph at lines 576--576
 []\OT1/cmtt/m/n/10 |[] 
  []
 
 
-Overfull \hbox (62.99945pt too wide) in paragraph at lines 586--586
+Overfull \hbox (62.99945pt too wide) in paragraph at lines 576--576
 []\OT1/cmtt/m/n/10 |-- scripts/[] 
  []
 
 
-Overfull \hbox (157.49863pt too wide) in paragraph at lines 586--586
+Overfull \hbox (157.49863pt too wide) in paragraph at lines 576--576
 []\OT1/cmtt/m/n/10 |    |-- present_experiment.py[] 
  []
 
 
-Overfull \hbox (162.74858pt too wide) in paragraph at lines 586--586
+Overfull \hbox (162.74858pt too wide) in paragraph at lines 576--576
 []\OT1/cmtt/m/n/10 |    |-- experiment_config.json[] 
  []
 
 
-Overfull \hbox (5.24995pt too wide) in paragraph at lines 586--586
+Overfull \hbox (5.24995pt too wide) in paragraph at lines 576--576
 []\OT1/cmtt/m/n/10 |[] 
  []
 
 
-Overfull \hbox (62.99945pt too wide) in paragraph at lines 586--586
+Overfull \hbox (62.99945pt too wide) in paragraph at lines 576--576
 []\OT1/cmtt/m/n/10 |-- results/[] 
  []
 
 
-Overfull \hbox (288.74748pt too wide) in paragraph at lines 586--586
+Overfull \hbox (288.74748pt too wide) in paragraph at lines 576--576
 []\OT1/cmtt/m/n/10 |    |-- (add to .gitignore if large or auto-generated)[] 
  []
 
 
-Overfull \hbox (5.24995pt too wide) in paragraph at lines 586--586
+Overfull \hbox (5.24995pt too wide) in paragraph at lines 576--576
 []\OT1/cmtt/m/n/10 |[] 
  []
 
 
-Overfull \hbox (68.2494pt too wide) in paragraph at lines 586--586
+Overfull \hbox (68.2494pt too wide) in paragraph at lines 576--576
 []\OT1/cmtt/m/n/10 |-- README.md[] 
  []
 
 
-Overfull \hbox (57.7495pt too wide) in paragraph at lines 586--586
+Overfull \hbox (57.7495pt too wide) in paragraph at lines 576--576
 []\OT1/cmtt/m/n/10 |-- LICENSE[] 
  []
 
 ! Undefined control sequence.
-l.588 \section
+l.578 \section
               {Using Markdown with Git/GitHub}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -32248,7 +32092,7 @@ Missing character: There is no H in font nullfont!
 Missing character: There is no u in font nullfont!
 Missing character: There is no b in font nullfont!
 ! Undefined control sequence.
-l.589 \subsection
+l.579 \subsection
                  *{What is Markdown?}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -32628,12 +32472,12 @@ Missing character: There is no m in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 588--591
+Overfull \hbox (20.0pt too wide) in paragraph at lines 578--581
 []
  []
 
 ! Undefined control sequence.
-l.592 \subsection
+l.582 \subsection
                  *{Why Use Markdown with Git?}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -32736,7 +32580,7 @@ Missing character: There is no o in font nullfont!
 Missing character: There is no n in font nullfont!
 Missing character: There is no : in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 592--594
+Overfull \hbox (20.0pt too wide) in paragraph at lines 582--584
 []
  []
 
@@ -33229,7 +33073,7 @@ Missing character: There is no n in font nullfont!
 Missing character: There is no g in font nullfont!
 Missing character: There is no s in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 605--607
+Overfull \hbox (20.0pt too wide) in paragraph at lines 595--597
 []
  []
 
@@ -33251,7 +33095,7 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no x in font nullfont!
 Missing character: There is no t in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 608--609
+Overfull \hbox (20.0pt too wide) in paragraph at lines 598--599
 []
  []
 
@@ -33282,7 +33126,7 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no d in font nullfont!
 Missing character: There is no ) in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 610--611
+Overfull \hbox (20.0pt too wide) in paragraph at lines 600--601
 []
  []
 
@@ -33292,7 +33136,7 @@ Missing character: There is no n in font nullfont!
 Missing character: There is no k in font nullfont!
 Missing character: There is no s in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 612--613
+Overfull \hbox (20.0pt too wide) in paragraph at lines 602--603
 [] 
  []
 
@@ -33303,7 +33147,7 @@ Missing character: There is no g in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no s in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 614--615
+Overfull \hbox (20.0pt too wide) in paragraph at lines 604--605
 [] 
  []
 
@@ -33318,7 +33162,7 @@ Missing character: There is no o in font nullfont!
 Missing character: There is no d in font nullfont!
 Missing character: There is no e in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 616--617
+Overfull \hbox (20.0pt too wide) in paragraph at lines 606--607
 []
  []
 
@@ -33333,7 +33177,7 @@ Missing character: There is no c in font nullfont!
 Missing character: There is no k in font nullfont!
 Missing character: There is no s in font nullfont!
 ! Undefined control sequence.
-l.619 \section
+l.609 \section
               {Tracking \& Reviewing Changes}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -33702,12 +33546,12 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 618--621
+Overfull \hbox (20.0pt too wide) in paragraph at lines 608--611
 []
  []
 
 ! Undefined control sequence.
-l.622 \subsection
+l.612 \subsection
                  *{Checking What Has Changed: \texttt{git status}}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -33821,14 +33665,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.624 \begin{terminal}
+l.614 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.625 \terminalinput
+l.615 \terminalinput
                     {git status}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -33852,7 +33696,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.626 \end{terminal}
+l.616 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -33879,22 +33723,22 @@ Missing character: There is no o in font nullfont!
 Missing character: There is no w in font nullfont!
 Missing character: There is no : in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 622--628
+Overfull \hbox (20.0pt too wide) in paragraph at lines 612--618
 []
  []
 
 
-Overfull \hbox (15.74986pt too wide) in paragraph at lines 622--628
+Overfull \hbox (15.74986pt too wide) in paragraph at lines 612--618
 \OT1/cmtt/m/n/10 git
  []
 
 
-Overfull \hbox (31.49973pt too wide) in paragraph at lines 622--628
+Overfull \hbox (31.49973pt too wide) in paragraph at lines 612--618
 \OT1/cmtt/m/n/10 status
  []
 
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 622--628
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 612--618
 \OT1/cmr/m/n/10 '
  []
 
@@ -34065,12 +33909,12 @@ Missing character: There is no A in font nullfont!
 Missing character: There is no I in font nullfont!
 Missing character: There is no N in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 634--635
+Overfull \hbox (20.0pt too wide) in paragraph at lines 624--625
 []
  []
 
 ! Undefined control sequence.
-l.636 \subsection
+l.626 \subsection
                  *{Seeing the Details of Your Changes: \texttt{git diff}}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -34179,14 +34023,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.638 \begin{terminal}
+l.628 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.639 \terminalinput
+l.629 \terminalinput
                     {git diff}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -34208,7 +34052,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.640 \end{terminal}
+l.630 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -34359,14 +34203,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.642 \begin{terminal}
+l.632 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.643 \terminalinput
+l.633 \terminalinput
                     {git diff --cached}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -34396,7 +34240,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.644 \end{terminal}
+l.634 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -34440,14 +34284,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.646 \begin{terminal}
+l.636 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.647 \terminalinput
+l.637 \terminalinput
                     {git diff analysis\_script.R}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -34485,7 +34329,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.648 \end{terminal}
+l.638 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -34534,14 +34378,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.650 \begin{terminal}
+l.640 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.651 \terminalinput
+l.641 \terminalinput
                     {git diff main experiment-branch}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -34584,24 +34428,24 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.652 \end{terminal}
+l.642 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 636--653
+Overfull \hbox (20.0pt too wide) in paragraph at lines 626--643
 []
  []
 
 
-Overfull \hbox (15.74986pt too wide) in paragraph at lines 636--653
+Overfull \hbox (15.74986pt too wide) in paragraph at lines 626--643
 \OT1/cmtt/m/n/10 git
  []
 
 
-Overfull \hbox (20.99982pt too wide) in paragraph at lines 636--653
+Overfull \hbox (20.99982pt too wide) in paragraph at lines 626--643
 \OT1/cmtt/m/n/10 diff
  []
 
@@ -34633,12 +34477,12 @@ Missing character: There is no A in font nullfont!
 Missing character: There is no I in font nullfont!
 Missing character: There is no N in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 654--655
+Overfull \hbox (20.0pt too wide) in paragraph at lines 644--645
 []
  []
 
 ! Undefined control sequence.
-l.656 \subsection
+l.646 \subsection
                  *{Reviewing Commit History: \texttt{git log}}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -34743,14 +34587,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.658 \begin{terminal}
+l.648 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.659 \terminalinput
+l.649 \terminalinput
                     {git log}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -34765,32 +34609,32 @@ Missing character: There is no l in font nullfont!
 Missing character: There is no o in font nullfont!
 Missing character: There is no g in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 656--660
+Overfull \hbox (20.0pt too wide) in paragraph at lines 646--650
 []
  []
 
 
-Overfull \hbox (15.74986pt too wide) in paragraph at lines 656--660
+Overfull \hbox (15.74986pt too wide) in paragraph at lines 646--650
 \OT1/cmtt/m/n/10 git
  []
 
 
-Overfull \hbox (15.74986pt too wide) in paragraph at lines 656--660
+Overfull \hbox (15.74986pt too wide) in paragraph at lines 646--650
 \OT1/cmtt/m/n/10 log
  []
 
 
-Overfull \hbox (15.74986pt too wide) in paragraph at lines 656--660
+Overfull \hbox (15.74986pt too wide) in paragraph at lines 646--650
 \OT1/cmtt/m/n/10 git
  []
 
 
-Overfull \hbox (15.74986pt too wide) in paragraph at lines 656--660
+Overfull \hbox (15.74986pt too wide) in paragraph at lines 646--650
 \OT1/cmtt/m/n/10 log
  []
 
 ! Undefined control sequence.
-l.661 \textcolor
+l.651 \textcolor
                 {white}{commit 3a81b2f3018d2cbbd540e8d1e0db457ca170c9c4 (HEA...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -35109,7 +34953,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.669 \end{terminal}
+l.659 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -35138,14 +34982,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.671 \begin{terminal}
+l.661 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.672 \terminalinput
+l.662 \terminalinput
                     {git log --oneline}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -35175,7 +35019,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.673 \end{terminal}
+l.663 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -35219,14 +35063,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.675 \begin{terminal}
+l.665 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.676 \terminalinput
+l.666 \terminalinput
                     {git log --oneline --graph --all}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -35268,19 +35112,19 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.677 \end{terminal}
+l.667 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 661--678
+Overfull \hbox (20.0pt too wide) in paragraph at lines 651--668
 []
  []
 
 ! Undefined control sequence.
-l.679 \subsection
+l.669 \subsection
                  *{Viewing Specific File History}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -35360,14 +35204,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.681 \begin{terminal}
+l.671 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.682 \terminalinput
+l.672 \terminalinput
                     {git log -- analysis\_script.R}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -35406,7 +35250,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.683 \end{terminal}
+l.673 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -35447,14 +35291,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.685 \begin{terminal}
+l.675 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.686 \terminalinput
+l.676 \terminalinput
                     {git diff HEAD\textasciicircum HEAD -- analysis\_script.R}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -35473,17 +35317,17 @@ Missing character: There is no H in font nullfont!
 Missing character: There is no E in font nullfont!
 Missing character: There is no A in font nullfont!
 Missing character: There is no D in font nullfont!
-LaTeX Font Info:    Trying to load font information for +cmr on input line 686.
+LaTeX Font Info:    Trying to load font information for +cmr on input line 676.
 
-LaTeX Font Info:    No file cmr.fd. on input line 686.
+LaTeX Font Info:    No file cmr.fd. on input line 676.
 
 LaTeX Font Warning: Font shape `/cmr/m/n' undefined
-(Font)              using `/cmr/m/n' instead on input line 686.
+(Font)              using `/cmr/m/n' instead on input line 676.
 
 ! Corrupted NFSS tables.
 wrong@fontshape ...message {Corrupted NFSS tables}
                                                   error@fontshape else let f...
-l.686 \terminalinput{git diff HEAD\textasciicircum
+l.676 \terminalinput{git diff HEAD\textasciicircum
                                                    HEAD -- analysis\_script.R}
 This error message was generated by an \errmessage
 command, so I can't give any explicit help.
@@ -35492,7 +35336,7 @@ and deduce the truth by order and method.
 
 
 LaTeX Font Warning: Font shape `/cmr/m/n' undefined
-(Font)              using `OT1/cmr/m/n' instead on input line 686.
+(Font)              using `OT1/cmr/m/n' instead on input line 676.
 
 Missing character: There is no H in font nullfont!
 Missing character: There is no E in font nullfont!
@@ -35523,7 +35367,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.687 \end{terminal}
+l.677 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -35570,14 +35414,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.689 \begin{terminal}
+l.679 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.690 \terminalinput
+l.680 \terminalinput
                     {git blame analysis\_script.R}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -35616,7 +35460,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.691 \end{terminal}
+l.681 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -35690,17 +35534,17 @@ Missing character: There is no n in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 679--693
+Overfull \hbox (20.0pt too wide) in paragraph at lines 669--683
 []
  []
 
 
-Overfull \hbox (5.00002pt too wide) in paragraph at lines 679--693
+Overfull \hbox (5.00002pt too wide) in paragraph at lines 669--683
 \/cmr/m/n/10 ^
  []
 
 ! Undefined control sequence.
-l.694 \section
+l.684 \section
               {Handy Tips and Best Practices for Using Git and GitHub}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -35974,27 +35818,27 @@ Missing character: There is no t in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 694--696
+Overfull \hbox (20.0pt too wide) in paragraph at lines 684--686
 []
  []
 
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 694--696
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 684--686
 \/cmr/m/n/10 '
  []
 
 
-Overfull \hbox (10.00002pt too wide) in paragraph at lines 694--696
+Overfull \hbox (10.00002pt too wide) in paragraph at lines 684--686
 \/cmr/m/n/10 |
  []
 
 
-Overfull \hbox (10.00002pt too wide) in paragraph at lines 694--696
+Overfull \hbox (10.00002pt too wide) in paragraph at lines 684--686
 \/cmr/m/n/10 |
  []
 
 ! Undefined control sequence.
-l.697 \subsection
+l.687 \subsection
                  *{Use \texttt{.gitignore} to Exclude Unwanted Files}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -36428,22 +36272,22 @@ Missing character: There is no t in font nullfont!
 Missing character: There is no a in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 697--699
+Overfull \hbox (20.0pt too wide) in paragraph at lines 687--689
 []
  []
 
 
-Overfull \hbox (52.49954pt too wide) in paragraph at lines 697--699
+Overfull \hbox (52.49954pt too wide) in paragraph at lines 687--689
 \OT1/cmtt/m/n/10 .gitignore
  []
 
 
-Overfull \hbox (10.00002pt too wide) in paragraph at lines 697--699
+Overfull \hbox (10.00002pt too wide) in paragraph at lines 687--689
 \/cmr/m/n/10 |
  []
 
 
-Overfull \hbox (52.49954pt too wide) in paragraph at lines 697--699
+Overfull \hbox (52.49954pt too wide) in paragraph at lines 687--689
 \OT1/cmtt/m/n/10 .gitignore
  []
 
@@ -36491,7 +36335,7 @@ Missing character: There is no c in font nullfont!
 Missing character: There is no t in font nullfont!
 Missing character: There is no : in font nullfont!
 ! Undefined control sequence.
-l.701 {\footnotesize
+l.691 {\footnotesize
                      NOTE: the hashtag symbol indicates a descriptive comment}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -36549,48 +36393,48 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no n in font nullfont!
 Missing character: There is no t in font nullfont!
 
-Overfull \hbox (52.49954pt too wide) in paragraph at lines 700--702
+Overfull \hbox (52.49954pt too wide) in paragraph at lines 690--692
       \OT1/cmtt/m/n/10 .gitignore
  []
 
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 703--703
+Overfull \hbox (20.0pt too wide) in paragraph at lines 693--693
 [] 
  []
 
 
-Overfull \hbox (314.99725pt too wide) in paragraph at lines 711--711
+Overfull \hbox (314.99725pt too wide) in paragraph at lines 701--701
 []\OT1/cmtt/m/n/10 # Ignore everything in the results folder and all .log files
 [] 
  []
 
 
-Overfull \hbox (47.24959pt too wide) in paragraph at lines 711--711
+Overfull \hbox (47.24959pt too wide) in paragraph at lines 701--701
 []\OT1/cmtt/m/n/10 /results/[] 
  []
 
 
-Overfull \hbox (31.49973pt too wide) in paragraph at lines 711--711
+Overfull \hbox (31.49973pt too wide) in paragraph at lines 701--701
 []\OT1/cmtt/m/n/10 /*.log[] 
  []
 
 
-Overfull \hbox (267.74767pt too wide) in paragraph at lines 711--711
+Overfull \hbox (267.74767pt too wide) in paragraph at lines 701--701
 []\OT1/cmtt/m/n/10 # Ignore all .csv and .tsv files in the data folder[] 
  []
 
 
-Overfull \hbox (57.7495pt too wide) in paragraph at lines 711--711
+Overfull \hbox (57.7495pt too wide) in paragraph at lines 701--701
 []\OT1/cmtt/m/n/10 /data/*.csv[] 
  []
 
 
-Overfull \hbox (57.7495pt too wide) in paragraph at lines 711--711
+Overfull \hbox (57.7495pt too wide) in paragraph at lines 701--701
 []\OT1/cmtt/m/n/10 /data/*.tsv[] 
  []
 
 ! Undefined control sequence.
-l.713 \subsection
+l.703 \subsection
                  *{Commit Often and Write Clear Messages}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -36788,7 +36632,7 @@ Missing character: There is no h in font nullfont!
 Missing character: There is no y in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 713--715
+Overfull \hbox (20.0pt too wide) in paragraph at lines 703--705
 []
  []
 
@@ -36811,14 +36655,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.717 \begin{terminal}
+l.707 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.718 \terminalinput
+l.708 \terminalinput
                     {git commit -m ``05/23/26 - updated file''}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -36868,7 +36712,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.719 \end{terminal}
+l.709 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -36895,14 +36739,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.721 \begin{terminal}
+l.711 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.722 \terminalinput
+l.712 \terminalinput
                     {git commit -m ``05/23/26 - Added log transformation to ...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -36997,14 +36841,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.723 \end{terminal}
+l.713 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.725 \subsection
+l.715 \subsection
                  *{Use \texttt{git tag} to Mark Significant Milestones}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -37208,22 +37052,22 @@ Missing character: There is no s in font nullfont!
 Missing character: There is no ) in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 725--727
+Overfull \hbox (20.0pt too wide) in paragraph at lines 715--717
 []
  []
 
 
-Overfull \hbox (15.74986pt too wide) in paragraph at lines 725--727
+Overfull \hbox (15.74986pt too wide) in paragraph at lines 715--717
 \OT1/cmtt/m/n/10 git
  []
 
 
-Overfull \hbox (15.74986pt too wide) in paragraph at lines 725--727
+Overfull \hbox (15.74986pt too wide) in paragraph at lines 715--717
 \OT1/cmtt/m/n/10 tag
  []
 
 
-Overfull \hbox (10.00002pt too wide) in paragraph at lines 725--727
+Overfull \hbox (10.00002pt too wide) in paragraph at lines 715--717
 \/cmr/m/n/10 |
  []
 
@@ -37423,7 +37267,7 @@ Missing character: There is no i in font nullfont!
 Missing character: There is no t in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (10.00002pt too wide) in paragraph at lines 731--732
+Overfull \hbox (10.00002pt too wide) in paragraph at lines 721--722
 \/cmr/m/n/10 |
  []
 
@@ -37681,14 +37525,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.737 \begin{terminal}
+l.727 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.738 \terminalinput
+l.728 \terminalinput
                     {git tag manuscript-submission}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -37730,14 +37574,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.739 \end{terminal}
+l.729 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 
-Overfull \hbox (10.00002pt too wide) in paragraph at lines 735--740
+Overfull \hbox (10.00002pt too wide) in paragraph at lines 725--730
 \OMS/cmsy/m/n/10 !$
  []
 
@@ -37829,14 +37673,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.742 \begin{terminal}
+l.732 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.743 \terminalinput
+l.733 \terminalinput
                     {git tag -a manuscript-submission -m ``Version for journ...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -37913,19 +37757,19 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.744 \end{terminal}
+l.734 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 
-Overfull \hbox (10.00002pt too wide) in paragraph at lines 741--745
+Overfull \hbox (10.00002pt too wide) in paragraph at lines 731--735
  $\OMS/cmsy/m/n/10 !$
  []
 
 
-Overfull \hbox (10.00002pt too wide) in paragraph at lines 741--745
+Overfull \hbox (10.00002pt too wide) in paragraph at lines 731--735
 \/cmr/m/n/10 |
  []
 
@@ -38002,14 +37846,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.747 \begin{terminal}
+l.737 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.748 \terminalinput
+l.738 \terminalinput
                     {git push origin manuscript-submission}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -38058,7 +37902,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.749 \end{terminal}
+l.739 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -38295,14 +38139,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.755 \begin{terminal}
+l.745 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.756 \terminalinput
+l.746 \terminalinput
                     {git checkout manuscript-submission}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -38349,7 +38193,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.757 \end{terminal}
+l.747 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -38915,22 +38759,22 @@ Missing character: There is no a in font nullfont!
 Missing character: There is no g in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (23.70262pt too wide) in paragraph at lines 753--759
+Overfull \hbox (23.70262pt too wide) in paragraph at lines 743--749
 \OT1/cmr/bx/n/10 Case
  []
 
 
-Overfull \hbox (8.9444pt too wide) in paragraph at lines 753--759
+Overfull \hbox (8.9444pt too wide) in paragraph at lines 743--749
 \OT1/cmr/bx/n/10 1:
  []
 
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 753--759
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 743--749
 \/cmr/m/n/10 '
  []
 
 
-Overfull \hbox (2.77779pt too wide) in paragraph at lines 753--759
+Overfull \hbox (2.77779pt too wide) in paragraph at lines 743--749
 \/cmr/m/n/10 '
  []
 
@@ -39025,14 +38869,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.762 \begin{terminal}
+l.752 \begin{terminal}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.763 \terminalinput
+l.753 \terminalinput
                     {git checkout -b manuscript-revision manuscript-submission}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -39100,7 +38944,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.764 \end{terminal}
+l.754 \end{terminal}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -39278,12 +39122,12 @@ Missing character: There is no c in font nullfont!
 Missing character: There is no h in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (23.70262pt too wide) in paragraph at lines 760--766
+Overfull \hbox (23.70262pt too wide) in paragraph at lines 750--756
 \OT1/cmr/bx/n/10 Case
  []
 
 
-Overfull \hbox (8.9444pt too wide) in paragraph at lines 760--766
+Overfull \hbox (8.9444pt too wide) in paragraph at lines 750--756
 \OT1/cmr/bx/n/10 2:
  []
 
@@ -39295,7 +39139,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.767 \newpage
+l.757 \newpage
               
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -39303,7 +39147,7 @@ or  <return>  to continue without it.
 
 [5]
 ! Undefined control sequence.
-l.768 \section
+l.758 \section
               {Assignment}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -39322,7 +39166,7 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no n in font nullfont!
 Missing character: There is no t in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 768--769
+Overfull \hbox (20.0pt too wide) in paragraph at lines 758--759
 [] 
  []
 
@@ -39641,7 +39485,7 @@ Missing character: There is no s in font nullfont!
 Missing character: There is no i in font nullfont!
 Missing character: There is no t in font nullfont!
 ! Undefined control sequence.
-l.793 		\item Visit \weblink
+l.783 		\item Visit \weblink
                             {https://github.com/pdkieffaber/PSYC672}.
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -39787,14 +39631,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.798 	\begin{terminal}
+l.788 	\begin{terminal}
                        
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.799 	\terminalinput
+l.789 	\terminalinput
                      {git clone https://github.com/STUDENT-USERNAME/PSYC672....
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -39860,7 +39704,7 @@ Missing character: There is no t in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminalinput 
                                
-l.800 	\terminalinput
+l.790 	\terminalinput
                      {cd PSYC672}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -39878,13 +39722,13 @@ Missing character: There is no 6 in font nullfont!
 Missing character: There is no 7 in font nullfont!
 Missing character: There is no 2 in font nullfont!
 
-! LaTeX Error: \begin{enumerate} on input line 790 ended by \end{terminal}.
+! LaTeX Error: \begin{enumerate} on input line 780 ended by \end{terminal}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.801 	\end{terminal}
+l.791 	\end{terminal}
                      
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -39986,22 +39830,22 @@ Missing character: There is no m in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no ) in font nullfont!
 
-Overfull \hbox (21.22206pt too wide) in paragraph at lines 802--803
+Overfull \hbox (21.22206pt too wide) in paragraph at lines 792--793
 \OT1/cmr/m/it/10 First
  []
 
 
-Overfull \hbox (18.28319pt too wide) in paragraph at lines 802--803
+Overfull \hbox (18.28319pt too wide) in paragraph at lines 792--793
 \OT1/cmr/m/it/10 Last
  []
 
 
-Overfull \hbox (21.22206pt too wide) in paragraph at lines 802--803
+Overfull \hbox (21.22206pt too wide) in paragraph at lines 792--793
 \OT1/cmr/m/it/10 First
  []
 
 
-Overfull \hbox (18.28319pt too wide) in paragraph at lines 802--803
+Overfull \hbox (18.28319pt too wide) in paragraph at lines 792--793
 \OT1/cmr/m/it/10 Last
  []
 
@@ -40033,14 +39877,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.804 	\begin{terminal}
+l.794 	\begin{terminal}
                        
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.805 	\terminalinput
+l.795 	\terminalinput
                      {git add .}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -40058,7 +39902,7 @@ Missing character: There is no . in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminalinput 
                                
-l.806 	\terminalinput
+l.796 	\terminalinput
                      {git commit -m ``Added my introduction section''}\\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -40110,7 +39954,7 @@ Missing character: There is no ' in font nullfont!
 ! Undefined control sequence.
 <recently read> \terminalinput 
                                
-l.807 	\terminalinput
+l.797 	\terminalinput
                      {git push origin main}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -40136,20 +39980,20 @@ Missing character: There is no a in font nullfont!
 Missing character: There is no i in font nullfont!
 Missing character: There is no n in font nullfont!
 
-! LaTeX Error: \begin{enumerate} on input line 790 ended by \end{terminal}.
+! LaTeX Error: \begin{enumerate} on input line 780 ended by \end{terminal}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.808 	\end{terminal}
+l.798 	\end{terminal}
                      
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 ! Undefined control sequence.
-l.812 \printglossary
+l.802 \printglossary
                     [type=datacollection,style=twocolumn]
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -40195,7 +40039,7 @@ Missing character: There is no m in font nullfont!
 Missing character: There is no n in font nullfont!
 Missing character: There is no ] in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 812--815
+Overfull \hbox (20.0pt too wide) in paragraph at lines 802--805
 [] 
  []
 
@@ -40207,7 +40051,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.815 \newpage
+l.805 \newpage
               
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -40221,7 +40065,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.817 \renewcommand{\bibname}
+l.807 \renewcommand{\bibname}
                              {References}
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -40236,10 +40080,10 @@ No file Intro2Git.bbl.
 
  
 Here is how much of TeX's memory you used:
- 81 strings out of 474116
- 1345 string characters out of 5743683
+ 101 strings out of 474116
+ 1699 string characters out of 5743683
  1949187 words of memory out of 5000000
- 22533 multiletter control sequences out of 15000+600000
+ 22550 multiletter control sequences out of 15000+600000
  559531 words of font info for 41 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  22i,5n,32p,1217b,240s stack positions out of 10000i,1000n,20000p,200000b,200000s
