@@ -1,21 +1,23 @@
 ---
 title: "Reproducible Research with Git & GitHub"
-subtitle: "Data Science for the Psychological Sciences"
 author: "Paul D Kieffaber, Ph.D."
-date: "December 31, 2025"
+date: "January 28, 2026"
 output:
   slidy_presentation:
-    incremental: true
+    incremental: false
     keep_md: true
+  beamer_presentation:
+    incremental: false
+subtitle: Data Science for the Psychological Sciences
 ---
 
 ## Today’s goals
 
-By the end of this session, you should be able to:
+Goals:
 
 - Explain what *reproducible research* means (and what it doesn’t)
 - Use Git for a basic research workflow: **pull → edit → status → add → commit → push**
-- Collaborate on GitHub using **branches**, **forks**, and **pull requests**
+- Understand collaboration on GitHub using **branches** and **forks**
 - Apply a few best practices that prevent common “Git disasters”
 
 ---
@@ -24,7 +26,8 @@ By the end of this session, you should be able to:
 
 **In computational science, the paper is not the scholarship; it advertises the scholarship. **
 
-> "An article ... in a scientific publication is not the scholarship itself, it is merely advertising of the scholarship, actual scholarship is the complete software environment and the complete set of instructions which generated the figures.”
+<span style="font-family: 'Times New Roman'; color: blue;">"An article ... in a scientific publication is not the scholarship itself, it is merely advertising of the scholarship, actual scholarship is the complete software environment and the complete set of instructions which generated the figures.” </span>
+
 >— David Donoho
 
 ---
@@ -48,6 +51,8 @@ Key idea: reproducibility is about *verifying the original workflow*.
 
 A study can be reproducible but not generalizable (and vice versa).
 
+A failure to "replicate" often means that research is not generalizable.
+
 ---
 
 ## Why it matters
@@ -60,22 +65,32 @@ When workflows are not reproducible, we risk:
 
 ---
 
-## A motivating case (high level)
+## A motivating case 
 
-A widely cited economics result (debt vs growth) weakened after others found:
+*The Reinhart and Rogoff Case Study*
 
-- spreadsheet/coding errors
-- selective exclusion of data
+- The Claim: A highly influential study claimed a strong link
+between high national debt and low economic growth, shaping
+global debates.
+
+- The Problem: When graduate students attempted to replicate
+the findings, they couldn't. The original authors shared their
+Excel spreadsheet.
+
+- The Discovery: The replication attempt uncovered major errors:
+  - Basic coding mistakes in the Excel spreadsheet.
+  - Selective exclusion of data.
+  - Unconventional weighting of statistics.
 
 Main takeaway: **transparent workflows prevent silent failure.**
 
 ---
 
-## What you should share (typical minimum)
+## What you should share
 
 A reproducible analysis usually includes:
 
-- raw or processed **data** (or a clear access path)
+- raw or minimally processed **data** (or a clear access path)
 - **analysis scripts** (R/Python/etc.)
 - **documentation** (README + instructions)
 - environment details (package versions, OS notes, session info)
@@ -90,6 +105,11 @@ Git is a **version control system** that:
 - lets you compare versions and roll back safely
 - supports parallel work (branches) and collaboration
 
+Git is a “time machine” for your project:
+
+- commits are snapshots you can return to
+- history is auditable (who changed what, when, and why)
+
 ---
 
 ## Git vocabulary (minimum set)
@@ -102,24 +122,9 @@ Git is a **version control system** that:
 
 ---
 
-## Mental model
-
-Git is a “time machine” for your project:
-
-- commits are snapshots you can return to
-- history is auditable (who changed what, when, and why)
-
----
-
 ## Install + verify Git (quick check)
 
-In a terminal, run:
-
-```bash
-git --version
-```
-
-You should see a version number (e.g., `git version 2.x`).
+<img src="images/settingupgit.png" width="100%" style="display: block; margin: auto;" />
 
 ---
 
@@ -144,18 +149,25 @@ git config --global user.email
 - **Local repo**: lives on your computer
 - **Remote repo** (GitHub): your backup + collaboration hub
 
+<div style="overflow: auto;">
+  <img src="images/github.png" alt="Description" style="float: right; margin-left: 20px; width: 50%;" />
+  
 Best beginner workflow:
 
 1. Create repo on GitHub  
 2. Clone it locally  
 3. Work locally  
 4. Push changes
+</div>
+
 
 ---
 
 ## The basic workflow (the one to memorize)
 
 **Pull → Edit → Status → Add → Commit → Push**
+
+<img src="images/gitworkflow.png" width="70%" style="display: block; margin: auto;" />
 
 ```bash
 git pull

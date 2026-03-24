@@ -1,6 +1,6 @@
 ---
 title: "Linear Models in R"
-author: "Computer Applications for the Psychological Sciences"
+author: "Data Science for the Psychological Sciences"
 date: "Paul D. Kieffaber, Ph.D."
 output:
   slidy_presentation: default

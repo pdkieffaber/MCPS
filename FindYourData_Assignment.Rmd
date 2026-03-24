@@ -1,38 +1,36 @@
 ---
-output: 
+title: "Finding Your Dataset"
+author: "Data Science for the Psychological Sciences"
+header-includes:
+- \usepackage{array}
+- \usepackage{caption}
+- \usepackage{graphicx}
+- \usepackage{siunitx}
+- \usepackage[table]{xcolor}
+- \usepackage{multirow}
+- \usepackage{hhline}
+- \usepackage{calc}
+- \usepackage{tabularx}
+- \usepackage{fontawesome}
+- \usepackage[para,online,flushleft]{threeparttable}
+- \usepackage{wrapfig}
+- \captionsetup[wrapfigure]{justification=raggedright,singlelinecheck=false}
+- \usepackage{hyperref}
+- \hypersetup{colorlinks=true, urlcolor=blue}
+output:
   pdf_document:
     citation_package: natbib
-    keep_tex: TRUE
-    fig_caption: TRUE
+    keep_tex: true
+    fig_caption: true
     latex_engine: pdflatex
-bibliography: Introduction2R.bib
-header-includes:
-  - \usepackage{hyperref}
-  - \usepackage{array}   
-  - \usepackage{caption}
-  - \usepackage{graphicx}
-  - \usepackage{siunitx}
-  - \usepackage[table]{xcolor}
-  - \usepackage{multirow}
-  - \usepackage{hhline}
-  - \usepackage{calc}
-  - \usepackage{tabularx}
-  - \usepackage{fontawesome}
-  - \usepackage[para,online,flushleft]{threeparttable}
-  - \usepackage{wrapfig}
-  - \captionsetup[wrapfigure]{justification=raggedright,singlelinecheck=false}
+  html_document:
+    df_print: paged
 biblio-style: apsr
-title: "Finding Your Dataset"
-#thanks: "Data Science for the Psychological Sciences. **Current version**: `r format(Sys.time(), '%B %d, %Y')`"
-author: "Data Science for the Psychological Sciences"
-#abstract: ""
-#keywords: "r, r markdown"
-#date: "`r format(Sys.time(), '%B %d, %Y')`"
+bibliography:
 geometry: margin=1in
 fontfamily: libertine
 fontsize: 11pt
-# spacing: double
-endnote: no
+endnote: false
 ---
 
 ```{r setup, include=FALSE}

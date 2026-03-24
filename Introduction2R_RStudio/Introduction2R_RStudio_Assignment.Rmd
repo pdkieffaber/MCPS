@@ -22,6 +22,7 @@ Push **both** of the following files to your GitHub classroom repository:
 **Reminder**
 
 Knit early and often. Most problems are easiest to fix when you catch them immediately (e.g., a missing parenthesis, a misspelled column name, or a chunk that runs out of order).
+
 ---
 
 # Part A — R Markdown Setup and Formatting

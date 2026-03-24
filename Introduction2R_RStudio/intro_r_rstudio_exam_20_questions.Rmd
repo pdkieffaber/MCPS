@@ -249,7 +249,7 @@ Using `student_data`, write a single line that returns only the `Name` and `Majo
 
 ## Question 19 (Write code)
 
-Using `student_data`, write code that creates a new object named `biology_majors` containing only rows where `Major` is `"Biology"`.
+Using `student_data`, write code that creates a **new object** named `biology_majors` containing only rows where `Major` is `"Biology"`.
 
 ```{r q19, eval=FALSE}
 # YOUR CODE

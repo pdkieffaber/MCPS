@@ -1,0 +1,50 @@
+---
+title: "In-Class Activity"
+author: "Paul Kieffaber"
+date: "2026-02-10"
+output:
+  slidy_presentation:
+    widescreen: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+---
+
+## In a Galaxy Far Away
+
+***The Rebel Alliance is overwhelmed and needs an automated screening tool. They need an R function that assigns each person a “Rebel Readiness” label or number based on traits like species, height, mass, homeworld, etc. The “algorithm” is up to you to design.***
+
+Goals:
+
+* Write a custom function with arguments + defaults
+* Use logical operators (&, |, !) and if / else if / else
+* Apply the function across the starwars dataset with sapply() or a for loop
+* Create a new column and summarize results
+
+---
+
+## Part 1
+
+1. Load the data 
+
+```
+library(dplyr)
+data(starwars, package = "dplyr")
+sw <- starwars
+```
+
+2. Write a function called `rebel_readiness()` that takes one character’s row (or individual character values) and returns a single label.
+
+Required features:
+
+* Should use at least 2 logical operators and at least 1 if/else-if/else chain
+* Should handle missing values (NA) gracefully
+* Should return one of several labels (examples below or make up your own):
+  - "Rebel Hero"
+  - "Probably Fine"
+  - "Sketchy"
+  - "Definitely Sith"
+  - "Unknown"

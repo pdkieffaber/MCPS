@@ -1,0 +1,195 @@
+---
+title: "Quiz: Introduction to R & RStudio"
+author: ""
+date: ""
+output:
+  pdf_document:
+    toc: false
+    number_sections: false
+---
+
+
+
+> NAME: _____________________________________
+
+# Reference objects (for questions that use them)
+
+Copy/paste the following into R **if you want to test your thinking**, but the exam questions can be answered without running code.
+
+```{r reference_objects, eval=FALSE}
+# Variables for operator questions
+x <- 10
+y <- 5
+
+# A vector for indexing/slicing questions
+ages <- c(25, 31, 19, 42, 50, 22)
+
+# A simple data frame for data-frame questions
+student_data <- data.frame(
+  ID = c(101, 102, 103, 104),
+  Name = c("Alice", "Bob", "Charlie", "David"),
+  Score = c(88, 92, 75, 85),
+  Major = c("Biology", "History", "Math", "Biology")
+)
+```
+
+## Question 1 (Write code)
+
+Create a character variable named `name` that stores the text `"Jordan"`.
+
+```{r q16, eval=FALSE}
+# YOUR CODE
+
+
+```
+
+---
+
+## Question 2 (Output)
+
+What printed output do you expect from each line?
+
+```{r q1, eval=FALSE}
+5 + 3
+
+10 - 4
+
+6 * 7
+
+20 / 4
+
+2 ** 2
+
+10 %% 10
+```
+
+---
+
+\newpage
+
+## Question 3 (Output)
+
+For each line, describe what the command is doing and what the output would be (if any)
+```{r q3, eval=FALSE}
+x <- 10
+
+y <= 5
+
+x > 10
+
+y == 10
+
+x > y
+```
+
+---
+
+## Question 4 (Output)
+
+What printed output do you expect from each line?
+```{r q4, eval=FALSE}
+(x > 5) & (y < 10)
+
+(x == 5) | (y == 5)
+
+!(x > y)
+```
+
+---
+
+## Question 5 (Output)
+
+What printed output do you expect from each line?
+```{r q5, eval=FALSE}
+ages[3]
+
+ages[c(1, 5)]
+
+ages[2:4]
+```
+
+---
+
+## Question 6 (Output)
+What printed output do you expect from each line?
+
+```{r q7, eval=FALSE}
+student_data$Score[2]
+
+student_data[1,2]
+```
+
+
+---
+
+## Question 7 (Debugging)
+
+A student tries to subset (i.e., extract) the third **row** of a data frame but gets an error.
+
+Identify the mistake and provide a corrected version that returns the **third row**.
+
+```{r q10, eval=FALSE}
+student_data[3 ]
+
+
+
+
+
+```
+
+---
+
+## Question 8 (Debugging)
+
+A student tries to install a package:
+
+What is the error? Provide the corrected command.
+
+```{r q12, eval=FALSE}
+install.packages(dplyr)
+
+
+
+```
+
+---
+
+## Question 9 (Debugging)
+
+A student tries to search the help system for a function to compute a correlation:
+
+What is the issue? Provide the corrected command.
+```{r q14, eval=FALSE}
+help.search(correlation)
+
+
+
+```
+
+---
+
+## Question 10 (Write code)
+
+Using `student_data`, write a single line that returns only the `Name` and `Major` columns (all rows).
+
+```{r q18, eval=FALSE}
+# YOUR CODE
+
+
+
+```
+
+---
+
+## Question 11 (Write code)
+
+Using `student_data`, write code that creates a **new object** named `biology_majors` containing only rows where `Major` is `"Biology"`.
+
+```{r q19, eval=FALSE}
+# YOUR CODE
+
+
+#-
+```
+
+---

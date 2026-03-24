@@ -1,0 +1,506 @@
+---
+title: "Midterm Exam"
+author: "PSYC470"
+date: ""
+output:
+  pdf_document:
+    toc: false
+    number_sections: false
+---
+
+
+
+> NAME: _____________________________________
+
+---
+
+General Data Science
+---
+**1.** Which statement best describes the difference between a `script` and the `console` when performing data analysis in R?
+
+A) The Console automatically saves a history of all commands, whereas Scripts do not.
+B) Scripts are reproducible and shareable, while the Console is typically used for interactive exploration.
+C) The Console is reproducible and shareable, while Scripts are for quick checks.
+D) Scripts and the Console are functionally identical.
+
+**2.** Which concept distinguishes replicability from reproducibility?
+
+A) Reproducibility concerns re-running the same analysis with the same data, while replicability concerns obtaining similar results on new data.
+B) Replicability requires sharing data publicly, reproducibility does not
+C) Reproducibility is about external validation, replicability is about internal checks
+D) Replicability and reproducibility are identical concepts
+
+**3.** What is the main purpose of pre-registration in open science?
+
+A) To specify hypotheses and analysis plans before data collection to reduce researcher degrees of freedom.
+B) To lock in the data collection timeframe.
+C) To prevent any exploratory analyses.
+D) To replace the need for peer review.
+
+**4.** What is the primary purpose of a data wrangling pipeline in data science for psychology?
+
+A) To perform final statistical tests directly from raw data.
+B) To store data without any cleaning steps.
+C) To replace the need for statistical modeling.
+D) To transform raw, messy data into clean, usable data for analysis.
+
+---
+
+R-basics
+---
+
+**5.** Which R function would you use to check the structure and data types of a dataset quickly?
+
+A) `summary()`
+B) `View()`
+C) `glimpse()`
+D) `str()`
+
+\newpage
+
+**6.** Which of the following lines is a valid comment in R?
+
+A) `% This is a comment`
+B) `// This is a comment`
+C) `## This is a comment` 
+D) `# This is a comment`
+
+**7.** Which of the following commands creates the vector `(0, 0.2, 0.4, 0.6, 0.8, 1)` (select all that apply)?
+
+A) `x = c(0, 0.2, 0.4, 0.6, 0.8, 1)`
+B) `seq(0, 1, by = 0.2)`
+C) `{0, 0.2, 0.4, 0.6, 0.8, 1}`
+D) `seq(0, 1, length=5)`
+
+**8.** Flow control in R includes conditionals and loops. Which example best illustrates a conditional statement in R?
+
+A) 
+```{r eval=FALSE} 
+while (x > 0) { 
+x <- x - 1 
+}
+```
+
+B)
+```{r eval=FALSE}
+if (grade >= 90) { 
+  print('You got an A!') 
+} else { 
+    print('Not an A') 
+}
+```
+
+C)
+```{r eval=FALSE}
+for (i in 1:10) { 
+  print(i) 
+}
+```
+
+D)
+```{r eval=FALSE}
+plot(x, y)
+```
+
+\newpage
+
+**9.** What is the primary purpose of "loops" in R?
+A) To execute a block of code multiple times
+B) To define a function
+C) To create a data frame
+D) To install packages
+
+**10.** Which loop is used for iterating over a sequence in R?
+
+A) for loop
+B) while loop
+C) repeat loop
+D) all of the above
+
+**11.** Which of the following will correctly define a while loop in R?
+A) 
+```{r eval=FALSE}
+while(condition) {
+  code 
+}
+```
+
+B) 
+```{r eval=FALSE}
+loop while(condition) {
+  code 
+}
+```
+
+C) 
+```{r eval=FALSE}
+repeat while(condition) {
+  code 
+}
+```
+
+D)
+```{r eval=FALSE}
+for(condition) {
+  code 
+}
+```
+
+**12.** What will the output be when the code below is executed?
+```{r eval=FALSE}
+for (i in 1:3) {
+  my_message <- paste(i, " Mississippi")
+  print(my_message)
+}
+```
+
+A) `"3 Mississippi"`
+B) `"1 Mississippi", "2 Mississippi", "3 Mississippi"`
+C) `" i Mississippi"`
+D) Nothing (loops don’t print)
+
+**13.** After the code below is executed, what will the value of "s" be?
+```{r eval=TRUE}
+x <- c(10, 20, 30)
+s <- 0
+for (i in 1:length(x)) {
+  s <- s + x[i]
+}
+```
+
+A) 0
+B) 3
+C) 30
+D) 60
+
+\newpage
+
+**14** After the code below is executed, what will the value of y be?
+```{r eval=FALSE}
+x <- c(2, 4, 6)
+y <- c()
+for (v in x) {
+  y <- c(y, v/2)
+}
+```
+
+A) `c(1, 2, 3)`
+B) `c(1, 2, 3, 4, 5, 6)`
+C) `c(1, 2, NA)`
+D) `c(1, 1, 1)`
+
+**15.** What is the error in the code below?
+```{r eval=FALSE}
+x <- 5
+if (x = 5) {
+  print("yes")
+}
+```
+
+A) if can’t be used with numbers
+B) Uses assignment = instead of comparison ==
+C) Missing else
+D) `print()` can’t print strings
+
+**16.** What is the error in the code below?
+```{r eval=FALSE}
+x <- c(1, 2, 3)
+if (x > 2) {
+  print("big")
+}
+```
+
+A) the variable "big" has not been defined
+B) if requires a single TRUE/FALSE, but x > 2 returns a vector
+C) `print()` should be `cat()`
+D) Need == instead of >
+
+**17.** What is the error in the code below?
+```{r eval=FALSE}
+x <- c(2, 4, 6)
+s <- 0
+for (i in x) {
+  s <- s + x[i]
+  print(s)
+}
+s
+```
+A) s must be a vector
+B) for (i in x) makes i equal to values (2,4,6), not positions (1,2,3)
+C) Must use seq_along(x) only when x has NA
+D) x[i] is always invalid in R
+
+\newpage
+
+---
+
+TidyVerse
+---
+
+**18.** In the R tidyverse, which pipe operator is most commonly used to sequence data transformations in a readable, left-to-right flow?
+
+A) `|>`
+B) `->%`
+C) `%>%`
+D) `%<>%`
+
+**19.** Which verb is used to compute summary statistics by groups after a `group_by()` operation?
+
+A) `filter()`
+B) `slice()`
+C) `mutate()`
+D) `summarise()`
+
+**20.** What is the error in the code below?
+```{r eval=FALSE}
+library(dplyr)
+df %>% 
+  filter(group = "control")
+```
+
+A) filter() can’t be used in a pipe
+B) Uses = instead of == for comparison inside filter()
+C) group must be numeric
+D) Need mutate() first
+
+**21.** What is the error in the code below?
+```{r eval=FALSE}
+library(dplyr)
+df %>% 
+  filter("age" > 18)
+```
+
+A) filter() only works on characters
+B) "age" is a string, not the column name `age`
+C) `>` can’t be used in filter()
+D) Need select() not filter()
+
+**22.** What is the error in the code below?
+```{r eval=FALSE}
+library(dplyr)
+df %>% 
+  select(score > 80)
+```
+
+A) select() is for columns; score > 80 is a row-filtering condition (should use filter())
+B) select() can’t select numeric columns
+C) `>` is invalid in tidyverse
+D) Must use df[score > 80]
+
+\newpage
+
+**23.** A student tries to search the help system for a function to compute a correlation but does not know the exact name of the function he is looking for.  Which of the commands below would be the best way to find functions that might compute a correlation?
+
+A) `help.search("correlation")`
+B) `help.find("correlation")`
+C) `help("correlation")`
+D) `help(correlation)`
+
+---
+
+***The remaining problems will refer to the object defined below.***
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+```
+
+```{r echo=TRUE}
+student_data <- data.frame(
+  ID = c(101, 102, 103, 104, 105, 106),
+  Name = c("Alice", "Bob", "Charlie", "David", "Paul", "Jen"),
+  Score = c(88, 92, 75, 85, 89, 90),
+  Class = c("Freshman", "Sophomore", "Sophomore", "Sophomore", "Junior", "Junior"),
+  Major = c("Biology", "History", "Math", "Biology", "Psychology", "DataScience")
+)
+student_data
+```
+
+---
+
+**24.** What will the code below produce when executed?
+```{r eval=FALSE}
+student_data %>% 
+  group_by(Class) %>% 
+  summarise(avg = mean(Score))
+```
+
+A) One row per observation with a new column avg
+B) One row per Class with the mean score in that group
+C) The overall mean of score
+D) The mean of group
+
+\newpage
+
+**25.** Which of the following commands, when executed, would give a single line per Major and the counts of the number of people in those Majors?
+
+A. 
+```{r echo=TRUE, eval=FALSE}
+student_data %>% 
+  group_by(Major) %>% 
+  summarise(n = n())
+```
+
+B. 
+```{r eval=FALSE, error=TRUE}
+student_data %>% 
+  summarise(n = n(Major))
+```
+
+C. 
+```{r eval=FALSE}
+student_data %>% 
+  group_by(Major) %>% 
+  mutate(n = n())
+```
+
+D. 
+```{r echo=TRUE, error=TRUE, eval=FALSE}
+student_data %>% 
+  count() %>%
+  group_by(Major)
+```
+
+**26.** Which of the following correctly uses `mutate()` to add a new column `ScorePct` that converts `Score` to a proportion (divide by 100) while keeping all existing columns in student_data?
+
+A)
+```{r eval=FALSE}
+student_data %>% 
+  mutate(ScorePct == Score/100)
+```
+
+B)
+```{r eval=FALSE}
+student_data %>% 
+  mutate(ScorePct = Score/100)
+```
+
+C)
+```{r eval=FALSE}
+student_data %>% 
+  summarise(ScorePct = Score/100)
+```
+
+D)
+```{r eval=FALSE}
+student_data %>% 
+  select(ScorePct = Score/100) %>%
+  mutate()
+```
+
+
+**27.** During office hours, the instructor wants to extract all information she has about her student named Charlie.  Which of the following commands should she use?
+
+A) `student_data[3 ]`
+B) `student_data["Charlie",]`
+C) `student_data[3,]`
+D) `student_data[3,"Charlie"]`
+
+\newpage
+
+**28.** Which command below will return only the `Name` and `Major` columns (all rows) of student_data.
+
+A) `student_data[c("Name","Major")]`
+B) `student_data[2,3:4]`
+C) `student_data[c("Name","Major"), rows="all"]`
+D) `student_data[ ,c("Name","Major")]
+
+**29.** Which of the following commands would create a **new object** from student_data named `biology_majors` containing only rows where `Major` is `"Biology"`.
+
+A.
+```{r eval=FALSE}
+biology_majors <- student_data %>% 
+  select(Major == "Biology")
+```
+
+B.
+```{r eval=FALSE}
+biology_majors <- student_data %>% 
+  filter(Major == "Biology")
+```
+
+C.
+```{r eval=FALSE}
+biology_majors <- student_data %>% 
+  mutate(Major == "Biology")
+```
+
+D.
+```{r eval=FALSE}
+biology_majors <- student_data %>% 
+  summarise(Major == "Biology")
+```
+
+**30.** What will the code below return?
+```{r eval=FALSE}
+student_data %>% 
+  filter(Class == "Sophomore") %>% 
+  select(Name, Score)
+```
+
+A) A data frame with all rows and only the Name and Score columns
+B) A single number: the mean Score for Sophomores
+C) A data frame with only Sophomores and only the Name and Score columns
+D) A data frame with only the Class column equal to "Sophomore"
+
+
+**31.** Which command will create a new column in student_data called "Passed" that is "Yes" if Score >= 80 and "No" otherwise?
+
+A)
+```{r eval=FALSE}
+student_data %>% 
+  filter(Passed = if_else(Score >= 80, "Yes", "No"))
+```
+
+B)
+```{r eval=FALSE}
+student_data %>% 
+  mutate(Passed = if_else(Score >= 80, "Yes", "No"))
+```
+
+C)
+```{r eval=FALSE}
+student_data %>% 
+  select(Passed = if_else(Score >= 80, "Yes", "No"))
+```
+
+D)
+```{r eval=FALSE}
+student_data %>% 
+  summarise(Passed = if_else(Score >= 80, "Yes", "No"))
+```
+
+
+**32.** The instructor wants the name of the highest-scoring student in each Class. Which command does this correctly?
+
+A)
+```{r eval=FALSE}
+student_data %>% 
+  group_by(Class) %>% 
+  filter(Score == max(Score)) %>% 
+  select(Class, Name)
+```
+
+B)
+```{r eval=FALSE}
+student_data %>% 
+  filter(Score == max(Score)) %>% 
+  group_by(Class)
+```
+
+C)
+```{r eval=FALSE}
+student_data %>% 
+  arrange(desc(Score)) %>% 
+  slice(1) %>% 
+  group_by(Class)
+```
+
+D)
+```{r eval=FALSE}
+student_data %>% 
+  summarise(max_score = max(Score)) %>% 
+  group_by(Class)
+```
+
+
+
+
