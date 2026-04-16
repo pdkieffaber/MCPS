@@ -1247,6 +1247,29 @@ airquality_tidy <- airquality_long %>%
   # 5. Arrange the data logically
   arrange(month, day)
 
+  # 6. Recode values in the "condition" "gender", and "party" columns.
+  mutate(
+    condition = recode(condition,
+      ctl  = "Control",
+      tx   = "Treatment",
+      wait = "Waitlist"
+    ),
+    gender = recode(gender,
+      M = "Male",
+      F = "Female",
+      .default = "Other/Unspecified",  # catches "NB" and anything unexpected
+      .missing = "Missing"             # catches NA
+    ),
+    party_label = recode(party,
+      `1` = "Democrat", #using back-tick around numbers is best
+      `2` = "Republican",
+      `3` = "Independent",
+      .default = NA_character_, # You can even handle missing while recoding
+      .missing = NA_character_ # Use NA_real_ and NA_integer_ for numeric missing
+    )
+  )
+
+
 # Inspect our final, tidy tibble
 glimpse(airquality_tidy)
 ```

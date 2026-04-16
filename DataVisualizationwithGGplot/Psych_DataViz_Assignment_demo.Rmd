@@ -64,7 +64,12 @@ The bfi dataset contains 25 personality items from the Big Five Inventory (BFI),
 * Use theme_minimal().
 
 ```{r p1}
-#YOUR CODE HERE
+Newdata <- bfi %>% mutate(Agree = rowMeans(select(.,A1:A5),na.rm=TRUE))
+
+ggplot(Newdata, aes(x=Agree)) +
+  geom_density(fill = "blue", alpha = 0.6) +
+  labs(title = "Distribution of Agreeableness", y = "Count") + 
+  theme_minimal()
 ```
 
 ---
@@ -86,7 +91,13 @@ The bfi dataset contains 25 personality items from the Big Five Inventory (BFI),
 * Use theme_minimal() and remove the legend (theme(legend.position = "none")).
 
 ```{r p2}
-#YOUR CODE HERE
+bfi %>% mutate(Neuroticism=rowMeans(select(.,N1:N5),na.rm=TRUE)) %>% 
+  mutate(gender=factor(gender,levels=c(1,2),labels=c('Male','Female'))) %>% 
+  ggplot(aes(x=gender,y=Neuroticism,fill=gender)) +
+     geom_boxplot() +
+     labs(title = "Boxplot of Neuroticism by Gender", y = "Neuroticism", x="Gender") + 
+     theme_minimal() +
+     theme(legend.position = "none")
 ```
 
 ---
@@ -110,12 +121,36 @@ The bfi dataset contains 25 personality items from the Big Five Inventory (BFI),
 * Use scale_x_discrete() to provide meaningful labels for the education levels (1=HS, 2=Finished HS, 3=Some College, 4=College Grad, 5=Grad School).
 
 ```{r p3}
-# Example use of scale_x_discrete()
-#scale_x_discrete(
-#    limits = c("3", "2", "1"), # limits controls order of factors
-#    labels = c("Subcompact", "Compact", "Midsize") # create labels
+bfi %>% mutate(Conscientiousness=rowMeans(select(.,C1:C5),na.rm=TRUE)) %>%
+  group_by(education) %>% 
+  summarise(AvgConscientiousness=mean(Conscientiousness, na.rm=TRUE),
+            sd_c = sd(Conscientiousness),
+            n_c = n(),
+            se = sd_c / sqrt(n_c),
+            ci = 1.96 * se,
+            lower = AvgConscientiousness - ci, 
+            upper = AvgConscientiousness + ci,
+            .groups = "drop"
+            ) %>% 
+  ggplot(aes(x=education,y=AvgConscientiousness,fill=education)) +
+     geom_col() +
+     geom_errorbar(aes(ymin = AvgConscientiousness-sd_c, ymax = AvgConscientiousness+sd_c), 
+                   width = 0.2,
+                   color = "black"
+     ) +
+     labs(title = "Column Plot of Mean Conscientiousness by Education level", y = "Conscientiousness", x="Education") + 
+     theme_minimal() +
+     theme(legend.position = "none") +
+     scale_x_discrete(
+      limits = c("1", "2", "3","4","5"), # limits controls order of factors
+      labels = c("High School", "Finished HS", "Some College", "BA/BS","Graduade Degree")) 
+
+# create labels
 #  ) 
+# Example use of scale_x_discrete()
+#
 #YOUR CODE HERE
+#head(bfi)
 ```
 
 # Part 2: Visualizing Relationships (sat.act Dataset)
@@ -139,7 +174,10 @@ The bfi dataset contains 25 personality items from the Big Five Inventory (BFI),
 * Use theme_bw().
 
 ```{r p4}
-#YOUR CODE HERE
+sat.act %>% 
+  ggplot(aes(x=SATV, y=SATQ)) +
+    geom_point()
+  
 ```
 
 ---
@@ -161,7 +199,25 @@ The bfi dataset contains 25 personality items from the Big Five Inventory (BFI),
 * Use labs() and theme_bw().
 
 ```{r p5}
-#YOUR CODE HERE
+bfi%>%mutate(Conscientiousness=rowMeans(select(.,C1:C5),na.rm=TRUE))%>%
+  group_by(education)%>%
+  summarise(mean_c_score=mean(Conscientiousness,na.rm=TRUE),
+            sd_c = sd(Conscientiousness),
+            n=n(),
+            se=sd_c/sqrt(n),
+            ci=1.96*se,
+            lower=mean_c_score-ci,
+            upper=mean_c_score+ci)%>%
+   ggplot(aes(x=education,y=mean_c_score,fill=education))+
+   geom_col()+
+   geom_errorbar(aes(ymin=lower,ymax=upper,width=0.2,color="black"))+
+   labs(title="Conscientiousness Across Education",subtitle="An Average",x="Education Level",y="Average Conscientiousness")+
+   theme_minimal()+
+   theme(legend.position="none")+
+   scale_x_discrete(
+    limits = c("5","4","3", "2", "1"), 
+    labels = c("Graduate Degree", "College Grad", "Some College","HS Grad", "HS"))
+
 ```
 
 ---

@@ -1,0 +1,691 @@
+---
+title: "Logistic Regression"
+author: "Data Science for the Psychological Sciences"
+date: "Paul D. Kieffaber, Ph.D."
+runtime: shiny
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: true
+    toc_depth: 2
+    theme: cosmo
+    css: style.css
+  pdf_document:
+    toc: true
+    toc_depth: 2
+  word_document:
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r echo=FALSE}
+# This chunk sets up the R environment for the rest of the document
+knitr::opts_chunk$set(
+  echo = TRUE,       # Show the R code
+  message = FALSE,   # Hide messages
+  warning = FALSE,   # Hide warnings
+  fig.align = "center", # Center plots
+  out.width = '70%'
+)
+```
+
+```{r}
+library(tidyverse)
+library(shiny)
+library(plotly)
+library(DiagrammeR)
+if (!require(patchwork)) install.packages("NHANES")
+library(NHANES)
+```
+
+
+# Logistic Regression
+
+Now that we have a solid foundation in linear regression, we are ready to extend that framework to a new kind of outcome. In many research settings, the dependent variable is not continuous at all. Instead, it is **categorical**, and in the simplest case, **binary**. For example: Did a participant answer correctly or incorrectly? Did a patient respond to treatment or not? Did a student pass or fail? In each of these situations, the outcome only takes on two possible values, often coded as 0 and 1.
+
+This creates a problem for ordinary least squares (OLS) regression. OLS assumes that the outcome is continuous, that residuals are normally distributed, and that the model can produce fitted values anywhere on the real number line. But binary outcomes violate these assumptions. A straight-line model can easily predict impossible values like -0.3 or 1.4, even though probabilities must always stay between 0 and 1.
+
+To solve this, we use **logistic regression**. Logistic regression is a member of the **Generalized Linear Model (GLM)** family. Instead of modeling the raw outcome directly, logistic regression models the **log-odds** of the outcome as a linear function of the predictors. This lets us preserve the logic of regression while adapting the model to binary data.
+
+# The Foundation
+
+### Quantitative Reasoning
+
+The fundamental question of logistic regression is: How does the probability of a binary outcome ($Y$) change as a predictor variable ($X$) changes?
+
+For example, we might ask: How does the probability that someone develops clinical depression change as their sleep quality or income changes?
+
+Because the outcome is binary, we do not model the raw values of $Y$ directly. Instead, we model the probability that $Y = 1$.
+
+$$P(Y_i = 1) = p_i$$
+
+Logistic regression models the relationship between the predictors and the **logit** (that is, the log-odds) of that probability:
+
+$$\log\left(\frac{p_i}{1 - p_i}\right) = \beta_0 + \beta_1X_i$$
+
+Let's break this down:
+
+* $Y_i$ (Outcome): The *i*-th observation of the binary dependent variable (e.g., whether car *i* has a manual transmission: 1 = yes, 0 = no).
+* $p_i$: The probability that $Y_i = 1$.
+* $\frac{p_i}{1 - p_i}$ (Odds): The odds that the event occurs.
+* $\log\left(\frac{p_i}{1 - p_i}\right)$ (Logit): The natural log of the odds. This transforms probabilities from a bounded scale (0 to 1) to an unbounded scale ($-\infty$ to $+\infty$), which makes linear modeling possible.
+* $\beta_0$ (Intercept): The predicted log-odds of the outcome when $X = 0$.
+* $\beta_1$ (Slope): The change in the log-odds of the outcome for a one-unit increase in $X$.
+
+The structure should look familiar. It resembles linear regression, but instead of modeling raw scores, we model **log-odds**.
+
+
+### Why Not Use a Straight Line?
+
+If we use standard Linear Regression (Ordinary Least Squares) to predict a binary outcome, we run into two major issues:
+
+- **Impossible Predictions**: A straight line will eventually predict probabilities below 0 or above 1.
+
+- **Non-linearity**: In the real world, the "jump" in probability from 0.01 to 0.05 is much more significant than from 0.50 to 0.54. Linear lines can't capture this.
+
+To fix this, we don't predict probability ($p$) directly. Instead, we transform $p$ into Log-Odds (also called the Logit).As you can see in the plots below, the Log-Odds transformation takes a probability bounded between 0 and 1 and stretches it to a continuous line from $-\infty$ to $+\infty$.
+
+```{r, echo=FALSE}
+# Load libraries
+library(ggplot2)
+if (!require(patchwork)) install.packages("patchwork")
+library(patchwork)
+
+# Create a sequence of probabilities
+df <- data.frame(p = seq(0.01, 0.99, length.out = 100))
+
+# Calculate Odds and Log-Odds
+df$odds <- df$p / (1 - df$p)
+df$log_odds <- log(df$odds)
+
+# Plot 1: Odds
+p1 <- ggplot(df, aes(x = p, y = odds)) +
+  geom_line(color = "blue", size = 1) +
+  labs(title = "Odds vs. Probability",
+       subtitle = "Odds = p / (1 - p)",
+       x = "Probability (p)",
+       y = "Odds") +
+  theme_minimal()
+
+# Plot 2: Log-Odds
+p2 <- ggplot(df, aes(x = p, y = log_odds)) +
+  geom_line(color = "red", size = 1) +
+  geom_hline(yintercept = 0, linetype = "dashed", alpha = 0.5) +
+  labs(title = "Log-Odds vs. Probability",
+       subtitle = "Log-Odds = ln(p / (1 - p))",
+       x = "Probability (p)",
+       y = "Log-Odds (Logit)") +
+  theme_minimal()
+
+# Combine plots
+p1 + p2
+```
+
+**Symmetry**: The transformation is perfectly symmetrical around $p=0.5$ (where Log-Odds = 0).
+
+**Linearization**: By modeling the Log-Odds, we can use a linear equation ($\beta_0 + \beta_1X$) without worrying about hitting "ceilings" or "floors."
+
+Once we have calculated our linear prediction in "Log-Odds land," the **inverse-logit** function is used to map those values back into a probability between 0 and 1:
+
+$$p_i = \frac{1}{1 + e^{-(\beta_0 + \beta_1X_i)}}$$
+This mathematical "sandwich" (transforming to Log-Odds to do the math, then back to Probability for the results) guarantees that the predicted values stay between 0 and 1 and creates the familiar **S-shaped logistic curve**. This curve effectively "flattens out" as it approaches 0 and 1, ensuring our predictions always make sense.
+
+```{r, echo=FALSE}
+grViz("
+digraph logistic_flow {
+  graph [
+    layout = dot,
+    rankdir = LR,
+    nodesep = 0.5,
+    ranksep = 0.7,
+    margin = 0,
+    pad = 0
+  ]
+
+  node [
+    shape = box,
+    style = rounded,
+    fontname = Helvetica,
+    fontsize = 18,
+    width = 2.8,
+    height = 1.0,
+    margin = 0.25
+  ]
+
+  edge [penwidth = 1.5]
+
+  X [label = 'Predictor X']
+  LOGIT [label = 'Linear Model on the Log-Odds Scale\nlog(p / (1-p)) = beta[0] + beta[1]X']
+  INV [label = 'Inverse Logit Transformation']
+  P [label = 'Predicted Probability\nbetween 0 and 1']
+
+  X -> LOGIT -> INV -> P
+}
+", width = "100%", height = "220px")
+```
+
+
+```{r, echo=FALSE}
+# Create data: z represents the linear predictor (beta0 + beta1*X)
+# We look at a range from -6 to 6 to see the full "S" shape
+df_logistic <- data.frame(z = seq(-6, 6, length.out = 200))
+
+# Apply the logistic function (inverse logit)
+df_logistic$p <- 1 / (1 + exp(-df_logistic$z))
+
+# Plot the Logistic S-Curve
+ggplot(df_logistic, aes(x = z, y = p)) +
+  geom_line(color = "#2c3e50", size = 1.2) +
+  # Add reference lines for clarity
+  geom_hline(yintercept = 0.5, linetype = "dashed", color = "red", alpha = 0.5) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "red", alpha = 0.5) +
+  # Annotations to help students
+  annotate("text", x = 4, y = 0.55, label = "p = 0.5 at z = 0", color = "red") +
+  labs(
+    title = "The Logistic Function (The S-Curve)",
+    subtitle = "Mapping the linear predictor (z) to a probability (p)",
+    x = "Linear Predictor (z = β0 + β1X)",
+    y = "Predicted Probability (p)"
+  ) +
+  scale_y_continuous(breaks = seq(0, 1, 0.2), limits = c(0, 1)) +
+  theme_minimal()
+```
+
+
+### The Model Parameters
+
+**1. The Slope ($\beta_1$):**
+
+In logistic regression, the slope tells us how much the **log-odds** of the outcome change for a one-unit increase in $X$.
+
+$$\beta_1 = \text{change in log-odds for a 1-unit increase in } X$$
+
+This is mathematically correct, but log-odds are not especially intuitive. So in practice, we often exponentiate the coefficient:
+
+$$e^{\beta_1}$$
+
+This gives us the **odds ratio (OR)**.
+
+* If $e^{\beta_1} = 1$, there is no relationship between $X$ and the outcome.
+* If $e^{\beta_1} > 1$, higher values of $X$ are associated with **higher odds** of the outcome.
+* If $e^{\beta_1} < 1$, higher values of $X$ are associated with **lower odds** of the outcome.
+
+**2. The Intercept ($\beta_0$):**
+
+The intercept is the predicted **log-odds** of the outcome when $X = 0$.
+
+$$\beta_0 = \log\left(\frac{p}{1-p}\right) \text{ when } X = 0$$
+
+As in linear regression, the intercept may or may not be practically meaningful. If $X = 0$ is outside the observed range of the data, the intercept is still mathematically necessary, but may not be substantively interpretable.
+
+Use the interactive plot below to manipulate the intercept and slope directly to see how they are related to the shape of the logistic curve.
+
+```{r, echo=FALSE}
+fluidRow(
+  column(
+    width = 4,
+    sliderInput("beta0", "Intercept (beta_0)", min = -8, max = 8, value = 0, step = 0.1),
+    sliderInput("beta1", "Slope (beta_1)", min = -5, max = 5, value = 1, step = 0.1)
+  ),
+  column(
+    width = 8,
+    plotlyOutput("logistic_curve_plot")
+  )
+)
+
+output$logistic_curve_plot <- renderPlotly({
+  plot_data <- tibble(
+    x = seq(-6, 6, length.out = 300)
+  ) %>%
+    mutate(
+      eta = input$beta0 + input$beta1 * x,
+      probability = 1 / (1 + exp(-eta))
+    )
+
+  p <- ggplot(
+    plot_data,
+    aes(
+      x = x,
+      y = probability,
+      group = 1,
+      text = paste0(
+        "X: ", round(x, 2),
+        "<br>Linear predictor: ", round(eta, 2),
+        "<br>Probability: ", round(probability, 3)
+      )
+    )
+  ) +
+    geom_line(linewidth = 1) +
+    coord_cartesian(ylim = c(0, 1)) +
+    labs(
+      title = "Interactive Logistic Curve",
+      x = "Predictor (X)",
+      y = "Predicted Probability"
+    ) +
+    theme_bw()
+
+  ggplotly(p, tooltip = "text")
+})
+```
+
+<details>
+<summary><strong>Student prompt</strong></summary>
+
+Move the slope slider from positive to negative values. How does the direction of the curve change? What happens when the slope is close to 0?
+
+</details>
+
+<details>
+<summary><strong>Instructor note / suggested answer</strong></summary>
+
+A positive slope means probability increases as X increases. A negative slope means probability decreases as X increases. When the slope is close to 0, the curve flattens and the predictor has little effect on the outcome.
+
+</details>
+
+## From Probability to Decision
+
+A logistic regression model doesn't actually say "This is a Human" or "This is a Droid." Instead, it says: "There is an 84% probability that this is a Droid." To make a final classification, we must choose a Threshold (often called a "Cutoff").
+
+The most common rule is the Simple Majority:If $P(Y=1) \geq 0.50$, classify as 1 (Droid).If $P(Y=1) < 0.50$, classify as 0 (Not Droid).
+
+In the real world, 0.50 isn't always the best choice. This depends on the cost of being wrong. For example, if you are testing for a rare disease, you might set the threshold lower (e.g., 0.10). You’d rather have a "False Alarm" than miss someone who is actually sick. 
+
+What if you used a logistic regression to predict the probability that an email is "spam"? You don’t want to accidentally send an important work email to the Spam folder unless the model is extremely certain, so you might use a higher threshold (e.g., 0.9).  
+
+You can visualize how well a classification works using a confusion Matrix. This table counts where the model was right and where it was "confused."
+
+::: {.infobox}
+```{r, echo=FALSE}
+library(tibble)
+library(gt)
+
+# 1. Create the plain data
+concept_df <- tribble(
+  ~Actual, ~`Predicted: 0 (Negative)`, ~`Predicted: 1 (Positive)`,
+  "Actual: 0", "True Negative (Correct)", "False Positive (Type I Error)",
+  "Actual: 1", "False Negative (Type II Error)", "True Positive (Correct)"
+)
+
+# 2. Use 'gt' to style it (No HTML tags needed!)
+concept_df %>%
+  gt() %>%
+  tab_header(
+    title = "Logic of Classification Outcomes",
+    subtitle = "Mapping Model Decisions to Reality"
+  ) %>%
+  # Color the "Correct" diagonal Green
+  tab_style(
+    style = cell_fill(color = "#d4edda"),
+    locations = cells_body(columns = 2, rows = 1) # Top Left
+  ) %>%
+  tab_style(
+    style = cell_fill(color = "#d4edda"),
+    locations = cells_body(columns = 3, rows = 2) # Bottom Right
+  ) %>%
+  # Color the "Error" diagonal Red
+  tab_style(
+    style = cell_fill(color = "#f8d7da"),
+    locations = cells_body(columns = 3, rows = 1) # Top Right
+  ) %>%
+  tab_style(
+    style = cell_fill(color = "#f8d7da"),
+    locations = cells_body(columns = 2, rows = 2) # Bottom Left
+  ) %>%
+  # Bold the first column
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_body(columns = 1)
+  ) %>%
+  cols_align(align = "center")
+```
+:::
+
+
+# R Implementation
+
+Now, let's look at how to fit a logistic regression model in R. We will use the `NHANES` dataset from the `NHANES` package and test whether we can predict whether will have clinical depression based on their sleep quality.
+
+### Wrangle the Data
+
+First, we need to handle the missing values and create our binary "Target" variable. 
+
+```{r}
+# Data Cleaning
+dep_data <- NHANES %>%
+  select(Depressed, SleepHrsNight, Age) %>%
+  na.omit() %>%
+  # Recode: "None" = 0, "Several" or "Most" = 1
+  mutate(is_depressed = ifelse(Depressed == "None", 0, 1))
+head(dep_data)
+```
+
+### Fit the Model
+
+To fit a logistic regression in R, we use the `glm()` function, which stands for **generalized linear model**. We also specify `family = binomial` to tell R that the outcome is binary.
+
+```{r}
+# Fit the model: is_human predicted by height and mass
+model_logit <- glm(is_depressed ~  SleepHrsNight, 
+               data = dep_data, 
+               family = "binomial")
+
+summary(model_logit)
+```
+
+**Reading the summary() Output**
+
+The most important part is the `Coefficients` table.
+
+- `(Intercept)`: This is our $\beta_0$, the predicted log-odds of a manual transmission when `wt = 0`.
+
+- `mass` Estimate: This is our $\beta_1$. It tells us how much the **log-odds** of a character being human change for each one-unit increase in mass.
+
+- `Pr(>|z|)` (p-value): This is the p-value for the hypothesis test on that coefficient.
+
+Unlike `lm()`, logistic regression uses a **z test** rather than a t test for individual coefficients.
+
+### Hypothesis Testing
+
+For our slope, the null hypothesis ($H_0$) is that there is no relationship between mass and the log-odds of being human:
+
+$H_0: \beta_1 = 0$
+
+The alternative hypothesis ($H_a$) is that there is a relationship:
+
+$H_a: \beta_1 \neq 0$
+
+If the p-value is small, we reject the null hypothesis and conclude that `mass` is significantly associated with the odds of being human in the Star Wars universe.
+
+### Statistical vs. Practical Significance
+
+In a logistic regression, a highly significant $b_1$ (slope) means that the predictor is a reliable "dial" for the probability.  That is, turning the dial definitely moves the needle. However, if the Intercept ($b_0$) is very small, or even a negative number, the needle might start so low that even a "full turn" of the dial only brings the probability up to 0.30.
+
+**The "Base Rate" Explanation** - In many psychology and medical studies (like the depression example), the outcome is relatively rare. If only 10% of your total sample is depressed, the "Baseline" probability is very low. Even if having sleep trouble triples your risk of depression, a triple risk for someone who starts at 5% is still only 15%. The relationship is significant (sleep definitely matters) but the probability is low (most people, even those with sleep trouble, still aren't depressed).
+
+### Odds Ratios
+
+Because logistic regression coefficients are expressed in log-odds units, we usually exponentiate them to get **odds ratios**, which are easier to interpret.
+
+```{r}
+# Convert coefficients from log-odds to odds ratios
+exp(coef(model_logit))
+```
+
+If the odds ratio is less than 1, then characters with higher mass/height have lower odds of being a Droid. If the odds ratio is greater than 1, then characters with more mass/height have higher odds of being a droid.
+
+### Predicted Probabilities
+
+One of the most useful features of logistic regression is that we can convert the fitted model into predicted probabilities.
+
+```{r}
+# 1. Create a sequence of sleep hours (from the least to the most)
+# We'll keep age constant at the average for this visualization
+new_dep_data <- tibble(
+  SleepHrsNight = seq(0, 13, length.out = 100),
+  age = mean(dep_data$Age) 
+)
+
+# 2. Predict probabilities using 'type = "response"'
+# This converts the log-odds back into a 0 to 1 scale
+new_dep_data$predicted_prob <- predict(
+  model_logit, # This is the glm(Depression ~ SleepHrsNight) we built
+  newdata = new_dep_data,
+  type = "response"
+)
+
+# 3. View the first few rows
+head(new_dep_data)
+```
+
+Notice that we used `type = "response"`. This tells R to return predicted **probabilities** rather than predicted **log-odds**.
+
+```{r, echo=FALSE}
+ggplot(new_dep_data, aes(x = SleepHrsNight, y = predicted_prob)) +
+  # 1. Add the raw data as "jittered" points so they don't all overlap
+  geom_jitter(height = 0.05, alpha = 0.1, color = "steelblue") +
+  
+  # 2. Add the S-curve using your new_dep_data
+  geom_line(data = new_dep_data, 
+            aes(x = SleepHrsNight, y = predicted_prob), 
+            color = "red", 
+            size = 1.2) +
+  
+  # 3. Clean up the labels
+  labs(
+    title = "Logistic Regression: Sleep vs. Depression",
+    subtitle = "The red line shows the probability of depression as sleep increases",
+    x = "Hours of Sleep per Night",
+    y = "Probability of Depression"
+  ) +
+  theme_minimal()
+```
+
+### Classification
+
+```{r, echo=FALSE}
+
+# STEP 1: Convert probabilities to binary 'predictions' 
+# We use 0.5 as the standard "cutoff" or threshold
+dep_data$prediction <- ifelse(dep_data$prob_depressed >= 0.2, 1, 0)
+
+# STEP 2: Create the Confusion Table
+confusion_matrix <- table(Actual = dep_data$is_depressed, Predicted = dep_data$prediction)
+print(confusion_matrix)
+```
+
+### Final Visualization
+
+Now we can visualize the raw binary data and the fitted logistic curve.
+
+```{r, echo=FALSE}
+# Generate predicted probabilities from our model
+dep_data$prob_depressed <- predict(model_logit, type = "response")
+
+# Plot the S-Curve
+ggplot(dep_data, aes(x = SleepHrsNight, y = prob_depressed)) +
+  # Actual data points (jittered to prevent overlapping)
+  geom_jitter(height = 0.05, alpha = 0.5, color = "darkgrey") +
+  # The Logistic Regression Curve
+  geom_smooth(method = "glm", 
+              method.args = list(family = "binomial"), 
+              se = FALSE, color = "steelblue", size = 1.2) +
+  labs(title = "Predicting 'Is-Depressed' in NHANES Data",
+       subtitle = "Based on Sleep Hours",
+       x = "Nightly Sleep Hours",
+       y = "Probability of being Depressed") +
+  theme_minimal()
+```
+
+The jittered points represent the observed data, where values are either 0 or 1. The fitted line represents the model's estimated probability of being a droid across the observed range of heights.
+
+
+---
+
+**Tips & Tricks - Accessing Data in Model Output **
+
+Just like with `lm()`, the `summary()` output is great for humans but harder for R to use directly. The `broom` package helps us work with model results in a clean tabular format.
+
+```{r}
+# Tidy model output
+logit_results <- broom::tidy(model_logit)
+logit_results
+```
+
+We can also extract odds ratios and confidence intervals.
+
+```{r}
+or_table <- broom::tidy(model_logit, conf.int = TRUE, exponentiate = TRUE)
+or_table
+```
+
+This output is often easier to interpret because:
+
+* `estimate` = odds ratio
+* `conf.low` and `conf.high` = confidence interval for the odds ratio
+
+Here is an example of how to extract the odds ratio and p-value for `SleepHrsNight`:
+
+```{r}
+# Extract odds ratio for wt
+wt_or <- or_table %>%
+  filter(term == "SleepHrsNight") %>%
+  pull(estimate)
+
+# Extract p-value for wt
+wt_p <- logit_results %>%
+  filter(term == "SleepHrsNight") %>%
+  pull(p.value)
+
+# Format p-value
+wt_p_formatted <- scales::pvalue(wt_p, accuracy = 0.001)
+
+# Create a simple annotation
+logistic_annotation <- paste0(
+  "Odds Ratio = ", round(wt_or, 3),
+  " | p ", wt_p_formatted
+)
+
+print(logistic_annotation)
+```
+
+
+### A Note on Multiple Predictors
+
+Just like ordinary regression, logistic regression can include more than one predictor. For example, we could predict transmission type from both nightly sleep hours and age:
+
+```{r}
+# Fit the model: is_human predicted by height and mass
+model_logit <- glm(is_depressed ~  SleepHrsNight + Age, 
+               data = dep_data, 
+               family = "binomial")
+
+summary(model_logit)
+```
+
+The interpretation is the same as in multiple regression: each coefficient reflects the effect of that predictor **while holding the others constant**.
+
+For example:
+
+* The coefficient for `SleepHrsNight` represents the change in log-odds of Depression for a one-unit increase in reported nightly sleep hours, **holding `Age` constant**.
+* The coefficient for `Age` represents the change in log-odds of Depression for a one-unit increase in Age, **holding 'SleepHrsNight' constant**.
+
+This makes logistic regression one of the most useful tools for analyzing binary outcomes in real-world research.
+
+### Testing the Overall Model
+
+### Testing Interaction Effects
+
+# Practice Exercises
+
+
+```{r, echo=FALSE}
+library(DiagrammeR)
+
+grViz("
+digraph screen_stack_receding_arrow {
+
+  graph [
+    layout = neato,
+    overlap = true,
+    splines = line,
+    outputorder = edgesfirst,
+    bgcolor = white
+  ]
+
+  node [
+    shape = plain,
+    fontname = Helvetica
+  ]
+
+  edge [
+    color = gray35,
+    penwidth = 1.8,
+    arrowsize = 0.9
+  ]
+
+  # Back-most screen
+  s4 [
+    pos = '7.2,4.8!',
+    label = <
+      <TABLE BORDER='1' CELLBORDER='0' CELLSPACING='0' CELLPADDING='6'>
+        <TR><TD BGCOLOR='gray55'><FONT COLOR='white'><B>Response</B></FONT></TD></TR>
+        <TR><TD WIDTH='220' HEIGHT='135' BGCOLOR='white'>
+          <FONT POINT-SIZE='11'>Was the word positive?</FONT><BR/><BR/>
+          <FONT POINT-SIZE='10'>F = No &nbsp;&nbsp; J = Yes</FONT>
+        </TD></TR>
+        <TR><TD BGCOLOR='gray95'><FONT POINT-SIZE='9'>until response</FONT></TD></TR>
+      </TABLE>
+    >
+  ]
+
+  # Third screen
+  s3 [
+    pos = '5.0,3.3!',
+    label = <
+      <TABLE BORDER='1' CELLBORDER='0' CELLSPACING='0' CELLPADDING='6'>
+        <TR><TD BGCOLOR='gray45'><FONT COLOR='white'><B>Mask</B></FONT></TD></TR>
+        <TR><TD WIDTH='220' HEIGHT='135' BGCOLOR='white'>
+          <FONT POINT-SIZE='16'>#######</FONT><BR/><BR/>
+          <FONT POINT-SIZE='10'>mask</FONT>
+        </TD></TR>
+        <TR><TD BGCOLOR='gray95'><FONT POINT-SIZE='9'>200 ms</FONT></TD></TR>
+      </TABLE>
+    >
+  ]
+
+  # Second screen
+  s2 [
+    pos = '2.7,1.8!',
+    label = <
+      <TABLE BORDER='1' CELLBORDER='0' CELLSPACING='0' CELLPADDING='6'>
+        <TR><TD BGCOLOR='gray30'><FONT COLOR='white'><B>Stimulus</B></FONT></TD></TR>
+        <TR><TD WIDTH='220' HEIGHT='135' BGCOLOR='white'>
+          <FONT POINT-SIZE='14'><B>TARGET WORD</B></FONT><BR/><BR/>
+          <FONT POINT-SIZE='10'>stimulus display</FONT>
+        </TD></TR>
+        <TR><TD BGCOLOR='gray95'><FONT POINT-SIZE='9'>1000 ms</FONT></TD></TR>
+      </TABLE>
+    >
+  ]
+
+  # Front-most screen
+  s1 [
+    pos = '0.3,0.2!',
+    label = <
+      <TABLE BORDER='1' CELLBORDER='0' CELLSPACING='0' CELLPADDING='6'>
+        <TR><TD BGCOLOR='gray15'><FONT COLOR='white'><B>Fixation</B></FONT></TD></TR>
+        <TR><TD WIDTH='220' HEIGHT='135' BGCOLOR='white'>
+          <FONT POINT-SIZE='24'>+</FONT><BR/>
+          <FONT POINT-SIZE='10'>fixation cross</FONT>
+        </TD></TR>
+        <TR><TD BGCOLOR='gray95'><FONT POINT-SIZE='9'>500 ms</FONT></TD></TR>
+      </TABLE>
+    >
+  ]
+
+  # Direction arrow and label
+  dir_start [
+    pos = '0,0!',
+    shape = plaintext,
+    label = <
+      <FONT POINT-SIZE='11'>sequence of screens</FONT>
+    >
+  ]
+  
+  dir_end [
+    pos = '7.2,4.8!',
+    shape = plaintext,
+    label = ''
+  ]
+
+  dir_start -> dir_end [
+    color = gray40,
+    penwidth = 2.0,
+    arrowsize = 1.0
+  ]
+
+}
+", width = "100%", height = "250px")
+```

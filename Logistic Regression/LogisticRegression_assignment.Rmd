@@ -1,0 +1,129 @@
+---
+title: "Applied Logistic Models Project"
+author: "YOUR_NAME"
+date: "Data Science for the Psychological Sciences"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: cosmo
+    css: AssignmentStyle.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 7,
+  fig.height = 4.8,
+  dpi = 150
+)
+library(tidyverse)
+library(broom) 
+library(NHANES)
+```
+
+# Project Overview
+
+## Purpose
+
+::: instructor-note
+The purpose of this assignment is to apply **Logistic Regression** to a psychological or health-related dataset. You will practice modeling binary outcomes (e.g., Yes/No, Pass/Fail, Diagnosed/Healthy) and interpreting results using log-odds and odds ratios.
+:::
+
+## Dataset Requirement
+
+::: instructor-note
+You must choose **one publicly available dataset**. Your dataset must include:
+
+- At least **one binary outcome variable** (coded as 0 and 1).
+- At least **two continuous predictors**.
+- At least **one categorical predictor**.
+:::
+
+# Load and Inspect Data
+
+```{r}
+# Load your dataset here
+# data <- read.csv("your_data.csv")
+```
+
+::: student-response
+Describe your dataset in 2-4 sentences. What is the binary outcome you are predicting (the '1' vs the '0')?
+:::
+
+# Analysis 1: Simple Logistic (Continuous Predictor)
+
+## Research Question
+::: student-response
+Replace this text with your research question (e.g., "Does variable X predict the probability of outcome Y?").
+:::
+
+## Data Wrangling
+```{r}
+# Ensure outcome is numeric 0/1 and remove NAs
+```
+
+## Visualization
+::: instructor-note
+Create a plot using `geom_jitter()` and `geom_smooth(method = "glm", method.args = list(family = "binomial"))`.
+:::
+
+```{r}
+# Create your S-Curve plot here
+```
+
+## Analysis & Results
+```{r}
+# Run your glm() model here: model1 <- glm(outcome ~ var, data = df, family = "binomial")
+```
+
+::: student-response
+Report the result: 
+1. Is the predictor significant? 
+2. What is the **Odds Ratio** (exp of the coefficient)? 
+3. Interpret: "For every 1-unit increase in [X], the odds of [Y] change by [Z]%."
+:::
+
+# Analysis 2: Simple Logistic (Categorical Predictor)
+
+## Research Question
+::: student-response
+Replace this text with your research question comparing two or more groups.
+:::
+
+## Analysis 
+```{r}
+# Run your categorical glm() model here
+```
+
+## Results
+::: student-response
+Report the Odds Ratio comparing your groups. Which group is more likely to experience the "1" outcome?
+:::
+
+# Analysis 3: Multiple Logistic Regression
+
+## Research Question
+::: student-response
+How do your continuous and categorical predictors work together to predict the outcome?
+:::
+
+## Analysis
+```{r}
+# Run your multiple logistic regression here: glm(outcome ~ var1 + var2, family = "binomial")
+```
+
+## Classification Table (Confusion Matrix)
+```{r}
+# Use predict(..., type = "response") to create a confusion matrix at 0.50 threshold
+```
+
+## Results & Reflection
+::: student-response
+1. Were both predictors significant when included together?
+2. Look at your Confusion Matrix. Did the model make more False Positives or False Negatives?
+3. Reflect on the **Base Rate**: If your model was significant but the probabilities stayed low, why?
+:::

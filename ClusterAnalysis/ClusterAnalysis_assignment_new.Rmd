@@ -1,0 +1,174 @@
+---
+title: "Cluster Analysis Project"
+author: "YOUR_NAME"
+date: "Data Science for the Psychological Sciences"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: cosmo
+    css: AssignmentStyle.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 7,
+  fig.height = 4.8,
+  dpi = 150
+)
+library(tidyverse)
+library(factoextra) 
+library(dbscan)
+```
+
+# Project Overview
+
+## Purpose
+
+::: instructor-note
+The purpose of this assignment is to apply **Cluster Analysis** to a psychological or health-related dataset. You will practice clustering data and then modeling those categorical outcomes (e.g., Yes/No, Pass/Fail, Diagnosed/Healthy) and interpreting results using log-odds and odds ratios.
+:::
+
+## Dataset Requirement
+
+::: instructor-note
+You must choose **one publicly available dataset**. Your dataset must include:
+
+- At least **one binary outcome variable** (coded as 0 and 1).
+- At least **two continuous predictors**.
+- At least **one categorical predictor**.
+:::
+
+# Load and Inspect Data
+
+```{r}
+# Load your dataset here
+# data <- read.csv("your_data.csv")
+```
+
+::: student-response
+Describe your dataset in 2-4 sentences. What is the binary outcome you are predicting (the '1' vs the '0')?
+:::
+
+# Analysis 1: K-Means Clustering
+
+## Research Question
+::: student-response
+Replace this text with your research question (e.g., "What are the natural groupings or subtypes of participants based on their scores across these variables?").
+:::
+
+## Data Preparation (Scaling)
+::: instructor-note
+Cluster analysis is highly sensitive to the scale of your variables. You must standardize your data before running any algorithms.
+:::
+
+```{r}
+# Remove NAs, isolate your numeric variables, and use scale() to standardize the data
+```
+
+## Determining 'K'
+```{r}
+# Use fviz_nbclust() to create an Elbow plot or Silhouette plot to determine the optimal number of clusters
+```
+
+## Analysis & Visualization
+```{r}
+# 1. Run your k-means model here: km.res <- kmeans(df, centers = K, nstart = 25)
+# 2. Visualize the clusters: fviz_cluster(km.res, data = df, geom = "point")
+```
+
+## Results & Interpretation
+::: student-response
+Report the result: 
+1. What was your chosen value for K, and why did you choose it based on your heuristic plots? 
+2. Look at the PCA cluster plot. Are the clusters well-separated, or do they heavily overlap?
+3. Interpret one of your clusters: What defines the participants in this specific group?
+:::
+
+# Analysis 2: Hierarchical Clustering
+
+## Research Question
+::: student-response
+Replace this text with your research question regarding the hierarchical "family tree" structure of your data.
+:::
+
+## Analysis 
+```{r}
+# 1. Calculate the distance matrix: d <- dist(df, method = "euclidean")
+# 2. Run hierarchical clustering: hc.res <- hclust(d, method = "ward.D2")
+```
+
+## The Dendrogram
+::: instructor-note
+Use `fviz_dend()` to plot your hierarchical tree. Cut the tree into the same number of clusters (K) you used in Analysis 1 so you can compare the results.
+:::
+
+```{r}
+# Create your dendrogram plot here
+```
+
+## Results
+::: student-response
+Look at the height (Y-axis) of the major merges on your dendrogram. Are there distinct "families" of data that merge very high up, indicating major differences between the groups? 
+:::
+
+# Analysis 3: Density-Based Clustering (DBSCAN)
+
+## Research Question
+::: student-response
+How does accounting for density and isolating "noise" (outliers) change the structure of our clusters?
+:::
+
+## Analysis & Visualization
+```{r}
+# 1. Run DBSCAN here: db.res <- dbscan(df, eps = 1.25, minPts = 4)  *(Adjust parameters as needed)*
+# 2. Visualize the results using fviz_cluster()
+```
+
+## Results & Reflection
+::: student-response
+1. Did DBSCAN identify any points as "noise" (Cluster 0)? 
+2. Compare this plot to your K-Means plot. Because K-Means forces every single point into a cluster, it can sometimes distort the groups. Do the DBSCAN clusters look more tightly packed and "honest" now that the outliers have been removed?
+3. Reflect on the data: Why might it make theoretical sense that some participants/cases in this dataset do not belong to *any* group?
+:::
+
+# Analysis 4: Evaluating the Clusters (External Validation)
+
+## Research Question
+::: student-response
+Replace this text with your research question. (e.g., "Do the distinct cluster profiles we discovered differ significantly on Outcome Variable Y?")
+:::
+
+## Adding Cluster Labels to the Data
+::: instructor-note
+Before you can run a statistical test, you need to extract the cluster assignments from one of your models (e.g., your K-Means model) and attach them to your original dataframe as a new categorical independent variable.
+:::
+
+```{r}
+# Extract the cluster assignments and add them as a new column
+# Example: df$ClusterProfile <- as.factor(km.res$cluster)
+```
+
+## Analysis
+::: instructor-note
+Now that every participant is assigned to a "ClusterProfile", you can test if these profiles actually matter in predicting other variables!
+- Use an **Independent t-test** if you have exactly 2 clusters and a continuous outcome.
+- Use an **ANOVA** if you have 3 or more clusters and a continuous outcome.
+- Use **Logistic Regression** if your outcome variable is binary (0/1).
+:::
+
+```{r}
+# Run your chosen statistical test here (t.test, aov, or glm)
+# Example: summary(aov(OutcomeVariable ~ ClusterProfile, data = df))
+```
+
+## Results & Reflection
+::: student-response
+1. Which statistical test did you choose to use based on your data, and why?
+2. Was there a statistically significant difference between your clusters on the outcome variable? (Report your p-value).
+3. Interpret the result: What does this tell you about the real-world validity or usefulness of the profiles you discovered?
+:::

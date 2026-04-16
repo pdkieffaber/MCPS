@@ -1,0 +1,474 @@
+---
+title: "Applied Linear Models Project"
+author: "YOUR_NAME"
+date: "Data Science for the Psychological Sciences"
+output:
+  html_document:
+    toc: false
+    toc_float: true
+    number_sections: true
+    css: AssignmentStyle.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 7,
+  fig.height = 4.8,
+  dpi = 150
+)
+```
+
+# Project Overview
+
+## Purpose
+
+::: instructor-note
+The purpose of this assignment is to apply the general linear model to a dataset of your choice. You will identify research questions that can be answered using correlation/regression, a t-test, and ANOVA, then use R to wrangle, visualize, analyze, and interpret your data.
+:::
+
+## Dataset Requirement
+
+::: instructor-note
+You must choose **one publicly available dataset** and use it for the entire project.
+
+Your dataset must include enough variables to support all four analyses below:
+
+-   at least **two continuous variables**
+-   at least **one categorical variable with two levels** for a t-test
+-   at least **one categorical variable with three or more levels** for an ANOVA
+:::
+
+## Deliverable
+
+::: instructor-note
+Submit **one knitted HTML or PDF document** that includes:
+
+-   all annotated R code
+-   all output
+-   all figures
+-   written answers and interpretations for each section
+
+*Your submission should be clear enough that another student could follow your workflow from start to finish.*
+:::
+
+## Required Analyses
+
+::: instructor-note
+You must complete **4 total analyses**:
+
+1.  **Correlation or simple linear regression**
+2.  **A t-test**
+3.  **An ANOVA**
+4.  **One additional analysis of your choice** from the following:
+    -   another correlation/regression
+    -   another t-test
+    -   another ANOVA
+:::
+
+# Load Your Data
+
+```{r}
+# Load your dataset here
+```
+
+## Initial Inspection
+
+Inspect the structure of your data.
+
+```{r}
+# Example:
+# glimpse(your_data)
+# or
+# summary(your_data)
+```
+
+::: instructor-note
+Write 2-4 sentences describing what kinds of variables are available and which ones you may use in your analyses.
+:::
+
+::: student-response
+Replace this text with your hypothesis.
+:::
+
+# Analysis 1: Correlation or Regression
+
+## Research Question
+
+::: student-response
+Replace this text with your research question/hypothesis in 1-2 sentences.
+:::
+
+## Variables
+
+::: instructor-note
+Identify:
+
+-   your predictor variable
+-   your outcome variable
+-   whether each variable is continuous or categorical
+:::
+
+::: student-response
+Replace this text with the description of your variables
+:::
+
+## Data Wrangling
+
+::: instructor-note
+Create a clean dataset for this analysis.
+
+Your wrangling should:
+
+-   keep only the variables needed for this analysis
+-   remove missing values as needed
+-   rename variables if helpful
+-   convert variable types if necessary
+:::
+
+```{r}
+# Wrangle your data for Analysis 1 here
+```
+
+Briefly explain what you changed and why.
+
+::: student-response
+Replace this text with your explanation.
+:::
+
+## Visualization
+
+::: instructor-note
+Create at least:
+
+-   one plot showing the relationship between the variables
+-   one plot showing the distribution of the variables
+-   or use gg_extra to show both in a single plot
+
+Examples may include:
+
+-   scatterplot
+-   histogram
+-   density plot
+-   boxplot
+:::
+
+```{r}
+# Create your visualizations here
+```
+
+::: student-response
+Describe what you notice in 2-4 sentences.
+:::
+
+## Analysis
+
+::: instructor-note
+Conduct either:
+
+-   a correlation analysis, or
+-   a simple linear regression
+:::
+
+```{r}
+# Run your analysis here
+```
+
+## Results
+
+::: instructor-note
+Report the main result in words.
+
+Be sure to describe:
+
+-   whether the relationship was statistically significant
+-   the direction of the relationship
+-   the size of the relationship, if relevant
+-   what the result means in plain English
+:::
+
+::: student-response
+Write 3-5 sentences.
+:::
+
+# Analysis 2: T-Test
+
+## Research Question
+
+::: student-response
+Replace this text with your research question/hypothesis in 1-2 sentences.
+-   What continuous outcome are you comparing?
+-   What two groups are you comparing?
+:::
+
+## Variables
+
+::: instructor-note
+Identify:
+
+-   your grouping variable
+-   your outcome variable
+-   whether this is a **between-subjects** or **within-subjects** comparison
+:::
+
+::: student-response
+Replace this text with a description of your variables
+:::
+
+## Data Wrangling
+
+::: instructor-note
+Create a clean dataset for this analysis.
+
+Your wrangling should:
+
+-   keep only the variables needed
+-   remove missing values
+-   make sure the grouping variable is coded correctly
+-   make sure there are exactly two groups being compared
+:::
+
+```{r}
+# Wrangle your data for Analysis 2 here
+```
+
+Briefly explain what you changed and why.
+
+::: student-response
+Replace this text with your explanation.
+:::
+
+## Visualization
+
+::: instructor-note
+Create an appropriate plot for your t-test.
+
+Examples include:
+
+-   boxplot with jitter
+-   violin plot
+-   mean/error bar plot
+:::
+
+```{r}
+# Create your visualization here
+```
+
+Describe what you notice in 2-4 sentences.
+
+::: student-response
+Replace this text with your description
+:::
+
+## Analysis
+
+::: instructor-note
+Conduct a t-test appropriate for your design.
+
+Examples:
+
+-   `t.test(..., var.equal = TRUE)` for an independent-samples t-test
+-   `t.test(..., paired = TRUE)` for a paired-samples t-test
+:::
+
+```{r}
+# Run your t-test here
+```
+
+## Results
+
+::: instructor-note
+Report the main result in words.
+
+Be sure to describe:
+
+-   whether the group difference was statistically significant
+-   which group had the higher mean
+-   what the result means in plain English
+:::
+
+::: student-response
+Replace this text with the description of your results.
+:::
+
+# Analysis 3: ANOVA
+
+## Research Question
+
+::: student-response
+Replace this text with your research question/hypothesis in 1-2 sentences.
+:::
+
+## Variables
+
+::: instructor-note
+Identify:
+
+-   your grouping variable
+-   your outcome variable
+-   whether this is a **between-subjects one-way ANOVA** or a **within-subjects one-way ANOVA**
+:::
+
+::: student-response
+Replace this text with the description of your variables
+:::
+
+## Data Wrangling
+
+::: instructor-note
+Create a clean dataset for this analysis.
+
+Your wrangling should:
+
+-   keep only the variables needed
+-   remove missing values
+-   make sure the grouping variable is a factor
+-   make sure the factor has at least 3 levels
+:::
+
+```{r}
+# Wrangle your data for Analysis 3 here
+```
+
+Briefly explain what you changed and why.
+
+::: student-response
+Replace this text with your explanation.
+:::
+
+## Visualization
+
+::: instructor-note
+Create an appropriate plot for your ANOVA.
+
+Examples include:
+
+-   boxplot with jitter
+-   violin plot
+-   line plot for repeated-measures data
+:::
+
+```{r}
+# Create your visualization here
+```
+
+Describe what you notice in 2-4 sentences.
+
+::: student-response
+Replace this text with your description
+:::
+
+## Analysis
+
+::: instructor-note
+Conduct an ANOVA appropriate for your design.
+
+Examples:
+
+-   `aov()` for a one-way ANOVA
+-   repeated-measures ANOVA if your design is within-subjects
+:::
+
+```{r}
+# Run your ANOVA here
+```
+
+::: instructor-note
+If your omnibus ANOVA is significant, conduct a follow-up comparison procedure.
+
+Examples:
+
+-   `TukeyHSD()`
+-   pairwise comparisons with p-value adjustment
+:::
+
+```{r}
+# Run post-hoc or follow-up tests here if needed
+```
+
+## Results
+
+::: instructor-note
+Report the main result in words.
+
+Be sure to describe:
+
+-   whether the overall ANOVA was statistically significant
+-   whether there were differences among groups
+-   which groups differed, if you conducted follow-up tests
+-   what the result means in plain English
+:::
+
+::: student-response
+Replace this text with the description of your results.
+:::
+
+# Analysis 4: Additional Analysis of Your Choice
+
+::: instructor-note
+Choose **one additional analysis** from the following:
+
+-   correlation/regression
+-   t-test
+-   ANOVA
+
+This analysis must be different from at least one of your earlier examples in either:
+
+-   variables used
+-   research question
+-   design
+:::
+
+## Research Question
+
+::: student-response
+Replace this text with your research question/hypothesis in 1-2 sentences.
+:::
+
+## Variables
+
+Identify the variables you will use and their types.
+
+::: student-response
+Replace this text with a description of your variables
+:::
+
+## Data Wrangling
+
+```{r}
+# Wrangle your data for Analysis 4 here
+```
+
+Briefly explain what you changed and why.
+
+::: student-response
+Replace this text with your brief explanation
+:::
+
+## Visualization
+
+```{r}
+# Create your visualization(s) here
+```
+
+Describe what you notice in 2-4 sentences.
+
+::: student-response
+Replace this text with your description
+:::
+
+## Analysis
+
+```{r}
+# Run your analysis here
+```
+
+## Results
+
+Report the main result in words.
+
+::: student-response
+Replace this text with 3-5 sentences explaining the result in plain English.
+:::

@@ -7,8 +7,9 @@ output:
     toc: true
     toc_float:
       collapsed: true
-    toc_depth: 3
+    toc_depth: 2
     theme: cosmo
+    css: style.css
   pdf_document:
     toc: true
     toc_depth: 2
@@ -1882,3 +1883,971 @@ qqmath(ranef(model_full, condVar = TRUE))
 * **Interpretation:** This plot shows two panels: one for `(Intercept)` and one for `Days` (the slope). In both panels, the points (which represent our 18 subjects) fall nicely within the confidence bands (the expected range of variation for a perfect normal distribution), supporting the assumption that our random effects are normally distributed.
 
 The way to think about this plot is, "If my 18 subjects were truly drawn from a perfect normal distribution, their random effects should fall within this shaded area 95% of the time."
+\newpage
+
+---
+
+# Review & Summary {.tabset}
+
+## Correlation and Regression
+
+### At a glance
+
+| Use when | Goal | Key functions | Main plot |
+|:--|:--|:--|:--|
+| Two continuous variables | Measure association / predict outcome | `cor.test()`, `lm()` | Scatterplot with regression line |
+
+### Quick guide
+
+```{r echo=FALSE, results='asis'}
+cat("
+<div style='display:flex; gap:18px; flex-wrap:wrap; margin-bottom:16px;'>
+
+<div style='flex:1; min-width:220px; padding:12px; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;'>
+<h4 style='margin-top:0;'>Data type</h4>
+<ul>
+<li>Two <b>continuous</b> variables</li>
+<li>Regression: outcome is <b>continuous</b></li>
+<li>Predictor can be <b>continuous</b> or coded categorical</li>
+</ul>
+</div>
+
+<div style='flex:1; min-width:220px; padding:12px; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;'>
+<h4 style='margin-top:0;'>Goal</h4>
+<ul>
+<li><b>Correlation</b>: measure strength/direction of association</li>
+<li><b>Regression</b>: predict one variable from another</li>
+<li>Estimate slope, intercept, and model fit</li>
+</ul>
+</div>
+
+<div style='flex:1; min-width:220px; padding:12px; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;'>
+<h4 style='margin-top:0;'>Common outputs</h4>
+<ul>
+<li><code>r</code></li>
+<li><code>p</code>-value</li>
+<li>Regression equation</li>
+<li><code>R^2</code></li>
+</ul>
+</div>
+
+</div>
+")
+```
+
+### Analysis Flow
+
+```{r echo=FALSE, results='asis'}
+cat("
+<div style='text-align:center; font-size:18px; margin:14px 0;'>
+Raw data → Wrangle → Visualize → Correlate / Regress → Interpret
+</div>
+")
+```
+
+### Example Raw Data
+```{r, echo=FALSE, include=FALSE}
+
+library(tidyverse)
+library(broom)
+```
+
+- study hours and exam score
+
+```{r, echo=TRUE, include=TRUE}
+df <- tibble(
+  student = 1:12,
+  study_hours = c(2, 3, 4, 5, 5, 6, 6, 7, 8, 8, 9, 10),
+  exam_score  = c(58, 60, 63, 65, 68, 72, 74, 78, 81, 84, 88, 91)
+)
+
+print(df)
+```
+
+### Example Wrangle
+
+```{r}
+df_clean <- df %>%
+  filter(exam_score %in% seq(40,100)) %>%
+  mutate(
+    study_group = case_when(
+      study_hours < 5 ~ "Low",
+      study_hours < 8 ~ "Medium",
+      TRUE ~ "High"
+    )
+  )
+
+df_clean
+```
+
+### Example Visualize
+
+```{r, fig.width=3, fig.height=3}
+ggplot(df_clean, aes(x = study_hours, y = exam_score)) +
+  geom_point(size = 3, color = "#2C7FB8") +
+  geom_smooth(method = "lm", se = FALSE, color = "#D95F0E", linewidth = 1) +
+  labs(
+    title = "Study hours and exam score",
+    x = "Study hours",
+    y = "Exam score"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+#### Correlation
+```{r}
+cor_test <- cor.test(df_clean$study_hours, df_clean$exam_score)
+cor_test
+```
+
+### Regression
+
+```{r}
+model <- lm(exam_score ~ study_hours, data = df_clean)
+summary(model)
+```
+
+### What to Include
+
+```{r, echo=FALSE, results='asis'}
+
+cat("\n<div style='padding:12px; border-left:4px solid #2C7FB8; background:#f7fbff; font-family: sans-serif;'>
+<h3 style='margin-top: 0; color: #2C7FB8;'>What to Report: Correlation & Regression</h3>
+
+When writing up your results, you need to report both the statistical values and what they mean in plain English. Use this checklist:
+
+<br><b>1. The Correlation (The Relationship)</b>
+<ul>
+  <li><b>Pearson's <i>r</i>:</b> Reports the strength and direction of the relationship.</li>
+  <li><b>Degrees of Freedom (<i>df</i>):</b> Usually <i>N</i> - 2 for correlation.</li>
+  <li><b>Significance (<i>p</i>-value):</b> Is the relationship statistically significant?</li>
+  <li><i>Template:</i> \"There was a significant positive correlation between hours studied and exam scores, <i>r</i>(48) = .65, <i>p</i> < .001.\"</li>
+</ul>
+
+<b>2. The Regression (The Prediction)</b>
+<ul>
+  <li><b>Variance Explained (<i>R</i><sup>2</sup>):</b> The percentage of the outcome's variation explained by your predictor.</li>
+  <li><b>Model Fit (<i>F</i>-statistic):</b> Shows if the overall predictive model is significant.</li>
+  <li><b>The Slope (<i>b</i>):</b> The unstandardized coefficient. It tells you exactly how much the outcome changes for every 1-unit increase in the predictor.</li>
+  <li><i>Template:</i> \"The regression model was significant, <i>F</i>(1, 48) = 35.2, <i>p</i> < .001, explaining 42% of the variance in exam scores (<i>R</i><sup>2</sup> = .42). For every additional hour studied, exam scores increased by 4.5 points (<i>b</i> = 4.5, <i>p</i> < .001).\"</li>
+</ul>
+
+<b>3. In words:</b><br>
+Students who studied more tended to score higher. Specifically, the model predicts that studying for one extra hour results in a 4.5-point boost on the exam. Overall, a student's study time accounts for nearly half of the differences we see in their final scores.
+</div>\n")
+
+```
+
+---
+
+## T-Tests (Between & Within)
+
+### At a glance
+
+| Use when | Goal | Key functions | Main plot |
+|:--|:--|:--|:--|
+| One categorical variable (2 levels) & one continuous variable | Compare the means of two groups or two time points | `t.test()` | Boxplot or Bar plot with error bars |
+
+### Quick guide
+
+```{r echo=FALSE, results='asis'}
+cat("
+<div style='display:flex; gap:18px; flex-wrap:wrap; margin-bottom:16px;'>
+
+<div style='flex:1; min-width:220px; padding:12px; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;'>
+<h4 style='margin-top:0;'>Data type</h4>
+<ul>
+<li>Outcome is <b>continuous</b></li>
+<li>Predictor is <b>categorical</b> (exactly 2 groups/levels)</li>
+<li><b>Between:</b> Independent groups (e.g., Control vs. Treatment)</li>
+<li><b>Within:</b> Paired data (e.g., Pre-test vs. Post-test)</li>
+</ul>
+</div>
+
+<div style='flex:1; min-width:220px; padding:12px; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;'>
+<h4 style='margin-top:0;'>Goal</h4>
+<ul>
+<li>Determine if the difference between two means is statistically significant</li>
+<li><b>Between:</b> Do these two separate groups differ?</li>
+<li><b>Within:</b> Did this single group change over time?</li>
+</ul>
+</div>
+
+<div style='flex:1; min-width:220px; padding:12px; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;'>
+<h4 style='margin-top:0;'>Common outputs</h4>
+<ul>
+<li><code>t</code>-statistic</li>
+<li>Degrees of freedom (<code>df</code>)</li>
+<li><code>p</code>-value</li>
+<li>Mean difference & Confidence Intervals</li>
+</ul>
+</div>
+
+</div>
+")
+```
+
+### Analysis Flow
+
+```{r echo=FALSE, results='asis'}
+cat("
+<div style='text-align:center; font-size:18px; margin:14px 0;'>
+Raw data &rarr; Wrangle (Pivot/Filter) &rarr; Visualize &rarr; Run t-test &rarr; Interpret
+</div>
+")
+```
+
+### Example Raw Data
+
+- Students in two conditions (Control vs. Treatment) taking a Pre-test and a Post-test.
+
+```{r}
+df_t <- tibble(
+  student_id = 1:10,
+  condition  = rep(c("Control", "Treatment"), each = 5),
+  score_pre  = c(45, 50, 42, 55, 48, 46, 52, 44, 58, 49),
+  score_post = c(47, 49, 45, 53, 50, 65, 70, 62, 75, 68)
+)
+
+print(df_t)
+```
+
+### Example Wrangle
+
+To run a **Within-Subjects (Paired) t-test** or easily plot the data in `ggplot2`, it is often best to pivot the data from "wide" format to "long" format so all scores are in one column.
+
+```{r}
+df_t_clean <- df_t %>%
+  mutate(condition = factor(condition, levels = c("Control", "Treatment"))) %>%
+  pivot_longer(
+    cols = c(score_pre, score_post), 
+    names_to = "time_point", 
+    values_to = "score"
+  ) %>%
+  mutate(time_point = str_replace(time_point, "score_", ""))
+
+df_t_clean
+```
+
+### Example Visualizations
+
+Modern data visualization in the behavioral sciences encourages showing the raw data points alongside the summary statistics. Here are two common approaches:
+
+#### 1. Between-Subjects (Boxplot with Jitter)
+Used to compare independent groups (e.g., Control vs. Treatment at Post-test).
+
+```{r}
+ggplot(df_t, aes(x = condition, y = score_post, fill = condition)) +
+  geom_boxplot(alpha = 0.4, outlier.shape = NA) +
+  # geom_jitter adds the raw data points over the boxplot
+  geom_jitter(width = 0.15, size = 2, alpha = 0.8) +
+  labs(
+    title = "Post-Test Scores by Condition",
+    subtitle = "Independent Groups Comparison",
+    x = "Condition",
+    y = "Post-Test Score"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none") # Hides redundant legend
+```
+
+#### 2. Within-Subjects (Spaghetti Plot)
+Used to track the same individuals across two time points (e.g., Pre-test to Post-test). We use the "long" data (`df_t_clean`) for this.
+
+```{r}
+ggplot(df_t_clean, aes(x = time_point, y = score, group = student_id, color = condition)) +
+  geom_line(alpha = 0.6, size = 1) +
+  geom_point(size = 3) +
+  labs(
+    title = "Individual Score Changes: Pre to Post",
+    subtitle = "Paired Observations (Spaghetti Plot)",
+    x = "Time Point",
+    y = "Exam Score",
+    color = "Condition"
+  ) +
+  theme_minimal()
+```
+
+### Example Analyses
+
+In base R, the `t.test()` function handles both independent and paired tests depending on the arguments you provide.
+
+#### 1. Between-Subjects (Independent) T-Test
+Are the Post-Test scores significantly different between the Control and Treatment groups?
+*Note: We use the `~` (tilde) formula syntax here, which reads as "score predicted by condition."*
+
+```{r}
+# var.equal = FALSE is the default in R (Welch's t-test), which is safer for unequal variances!
+t_between <- t.test(score_post ~ condition, data = df_t, var.equal = FALSE)
+
+t_between
+```
+
+#### 2. Within-Subjects (Paired) T-Test
+Did the scores for the entire class change significantly from Pre-test to Post-test?
+*Note: For paired tests, you input the two columns of data side-by-side and set `paired = TRUE`.*
+
+```{r}
+t_within <- t.test(df_t$score_post, df_t$score_pre, paired = TRUE)
+
+t_within
+```
+
+### What to Report
+
+```{r, echo=FALSE, results='asis'}
+cat("\n<div style='padding:12px; border-left:4px solid #2C7FB8; background:#f7fbff; font-family: sans-serif;'>
+<h3 style='margin-top: 0; color: #2C7FB8;'>What to Report: T-Tests</h3>
+
+<br><b>1. The Statistics</b>
+<ul>
+  <li><b>The <i>t</i>-statistic:</b> The ratio of the difference between groups to the variance within groups.</li>
+  <li><b>Degrees of Freedom (<i>df</i>):</b> Based on sample size.</li>
+  <li><b>Significance (<i>p</i>-value):</b> Is the mean difference significant?</li>
+  <li><i>Template:</i> \"There was a significant difference in scores between the treatment (<i>M</i> = 64.0, <i>SD</i> = 5.2) and control groups (<i>M</i> = 48.8, <i>SD</i> = 3.1); <i>t</i>(18) = 2.85, <i>p</i> = .011.\"</li>
+</ul>
+
+<b>2. In words:</b><br>
+Students in the treatment group scored significantly higher on average than those in the control group.
+</div>\n")
+```
+
+
+## One-Way ANOVA
+
+### One-Way ANOVA (Between-Subjects)
+
+#### At a glance
+
+| Use when | Goal | Key functions | Main plot |
+|:--|:--|:--|:--|
+| One categorical variable (3+ levels) & one continuous variable | Compare the means of three or more independent groups | `aov()`, `summary()`, `TukeyHSD()` | Boxplot with jitter |
+
+#### Quick guide
+
+```{r echo=FALSE, results='asis'}
+cat("
+<div style='display:flex; gap:18px; flex-wrap:wrap; margin-bottom:16px;'>
+
+<div style='flex:1; min-width:220px; padding:12px; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;'>
+<h4 style='margin-top:0;'>Data type</h4>
+<ul>
+<li>Outcome is <b>continuous</b></li>
+<li>Predictor is <b>categorical</b> (3 or more groups/levels)</li>
+<li>Groups must be independent (different people in each group)</li>
+</ul>
+</div>
+
+<div style='flex:1; min-width:220px; padding:12px; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;'>
+<h4 style='margin-top:0;'>Goal</h4>
+<ul>
+<li><b>Omnibus Test:</b> Is there <i>any</i> significant difference between the group means?</li>
+<li><b>Post-Hoc Test:</b> Exactly <i>which</i> specific groups are different from each other?</li>
+</ul>
+</div>
+
+<div style='flex:1; min-width:220px; padding:12px; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;'>
+<h4 style='margin-top:0;'>Common outputs</h4>
+<ul>
+<li><code>F</code>-statistic</li>
+<li>Degrees of freedom (Between & Within)</li>
+<li><code>p</code>-value</li>
+<li>Pairwise differences (Tukey)</li>
+</ul>
+</div>
+
+</div>
+")
+```
+
+### Analysis Flow
+
+<div style='text-align:center; font-size:18px; margin:14px 0;'>
+Raw data &rarr; Wrangle (Factorize) &rarr; Visualize &rarr; Run ANOVA &rarr; Run Post-Hoc &rarr; Interpret
+</div>
+
+### Example Raw Data
+
+- 15 students were randomly assigned to one of three study methods: Re-reading, Highlighting, or Practice Testing.
+
+```{r, echo=TRUE}
+df_anova <- tibble(
+  student_id = 1:15,
+  study_method = rep(c("Read", "Highlight", "Practice"), each = 5),
+  exam_score = c(65, 68, 70, 62, 71,
+                 68, 72, 75, 70, 74,
+                 85, 82, 88, 79, 86)
+)
+
+print(df_anova)
+```
+
+### Example Wrangle
+
+For ANOVA, it is absolutely critical that R knows your grouping variable is a categorical factor, not just a list of words.
+
+```{r}
+df_anova_clean <- df_anova %>%
+  mutate(study_method = factor(study_method, levels = c("Read", "Highlight", "Practice")))
+
+df_anova_clean
+```
+
+### Example Visualizations
+
+When dealing with 3 or more groups, a boxplot with jittered points is the gold standard. It allows the reader to see the median, the spread, and the actual sample size of every group at a glance.
+
+```{r}
+ggplot(df_anova_clean, aes(x = study_method, y = exam_score, fill = study_method)) +
+  geom_boxplot(alpha = 0.5, outlier.shape = NA) +
+  geom_jitter(width = 0.15, size = 2.5, alpha = 0.8) +
+  labs(
+    title = "Exam Scores by Study Method",
+    subtitle = "Practice Testing yields visibly higher scores",
+    x = "Study Method",
+    y = "Exam Score"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+### Example Analyses
+
+Running a between-subjects one-way ANOVA is a two-step process. First, you run the omnibus test to see whether there is evidence of any group difference at all. If that test is significant, you follow up with post-hoc comparisons to identify which specific groups differ.
+
+Note: We wrap the aov() function inside summary() to get the classic ANOVA table output.
+
+#### Step 1: The Omnibus ANOVA
+*Note: We wrap the `aov()` function inside `summary()` to get the classic ANOVA table output.*
+
+```{r}
+anova_model <- aov(exam_score ~ study_method, data = df_anova_clean)
+
+summary(anova_model)
+```
+
+#### Step 2: The Post-Hoc Test (Tukey HSD)
+
+Because the overall $p$-value above is significant ($p < 0.05$), we need to know which methods beat which. Tukey's Honestly Significant Difference (HSD) test compares every possible pair and adjusts the $p$-values to prevent false positives.
+
+```{r}
+tukey_results <- TukeyHSD(anova_model)
+
+tukey_results
+```
+*(Look at the `p adj` column: Practice is significantly different from Read and Highlight, but Highlight is NOT significantly different from Read).*
+
+### What to Report
+
+```{r, echo=FALSE, results='asis'}
+cat("\n<div style='padding:12px; border-left:4px solid #2C7FB8; background:#f7fbff; font-family: sans-serif;'>
+<h3 style='margin-top: 0; color: #2C7FB8;'>What to Report: One-Way ANOVA (Between-Subjects)</h3>
+
+<br><b>1. The Omnibus Test</b>
+<ul>
+  <li><b>The <i>F</i>-statistic:</b> Compares the variance between the groups to the variance within the groups.</li>
+  <li><b>Degrees of Freedom (<i>df</i>):</b> Report both the Between-groups <i>df</i> and the Within-groups (Residuals) <i>df</i>.</li>
+  <li><b>Significance (<i>p</i>-value):</b> Is there a difference somewhere?</li>
+  <li><i>Template:</i> \"A one-way ANOVA revealed a statistically significant difference in exam scores between the three study methods, <i>F</i>(2, 12) = 17.54, <i>p</i> < .001.\"</li>
+</ul>
+
+<b>2. The Post-Hoc Comparisons</b>
+<ul>
+  <li>Report the exact pairs that were significantly different, including their means, standard deviations, and adjusted <i>p</i>-values.</li>
+  <li><i>Template:</i> \"Tukey's HSD post-hoc analysis showed that the Practice Testing group (<i>M</i> = 84.0) scored significantly higher than both the Re-reading group (<i>M</i> = 67.2, <i>p</i> < .001) and the Highlighting group (<i>M</i> = 71.8, <i>p</i> = .003). There was no significant difference between Re-reading and Highlighting (<i>p</i> = .367).\"</li>
+</ul>
+
+<b>3. In words:</b><br>
+The way students studied had a major impact on their exam scores. Specifically, taking practice tests resulted in much better grades than just re-reading or highlighting the textbook. Highlighting was no more effective than simply reading the text.
+</div>\n")
+```
+
+## One-Way ANOVA (Within-Subjects / Simple Repeated Measures)
+
+### At a glance
+
+| Use when | Goal | Key functions | Main plot |
+|:--|:--|:--|:--|
+| One categorical variable (3+ levels) measured repeatedly on the same people & one continuous variable | Compare the means of three or more related conditions or time points | `aov()`, `summary()`, `pairwise.t.test()` | Line plot with points or Boxplot with jitter |
+
+### Quick Guide
+
+```{r, echo=FALSE, results='asis'}
+cat("
+<div style='display:flex; gap:18px; flex-wrap:wrap; margin-bottom:16px;'>
+
+<div style='flex:1; min-width:220px; padding:12px; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;'>
+<h4 style='margin-top:0;'>Data type</h4>
+<ul>
+<li>Outcome is <b>continuous</b></li>
+<li>Predictor is <b>categorical</b> (3 or more repeated conditions/levels)</li>
+<li>The same participants are measured in every condition or at every time point</li>
+</ul>
+</div>
+
+<div style='flex:1; min-width:220px; padding:12px; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;'>
+<h4 style='margin-top:0;'>Goal</h4>
+<ul>
+<li><b>Omnibus Test:</b> Is there <i>any</i> significant difference across the repeated conditions?</li>
+<li><b>Follow-Up Test:</b> Exactly <i>which</i> conditions differ from each other?</li>
+</ul>
+</div>
+
+<div style='flex:1; min-width:220px; padding:12px; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;'>
+<h4 style='margin-top:0;'>Common outputs</h4>
+<ul>
+<li><code>F</code>-statistic</li>
+<li>Degrees of freedom</li>
+<li><code>p</code>-value</li>
+<li>Paired follow-up comparisons</li>
+</ul>
+</div>
+
+</div>
+")
+```
+
+### Analysis Flow
+
+```{r, echo=FALSE, results='asis'}
+cat("
+<div style='text-align:center; font-size:18px; margin:14px 0;'>
+Raw data &rarr; Wrangle (Factorize) &rarr; Visualize &rarr; Run Repeated-Measures ANOVA &rarr; Run Follow-Up Tests &rarr; Interpret
+</div>
+")
+```
+
+### Example Raw Data
+- The same 6 students completed quizzes after using three study methods: Re-reading, Highlighting, and Practice Testing.
+
+```{r}
+df_rm <- tibble(
+  student_id = factor(rep(1:6, each = 3)),
+  study_method = rep(c("Read", "Highlight", "Practice"), times = 6),
+  quiz_score = c(
+    70, 74, 82,
+    68, 71, 80,
+    72, 75, 84,
+    66, 69, 79,
+    71, 73, 85,
+    69, 72, 81
+  )
+)
+
+print(df_rm)
+```
+
+### Example Wrangle
+
+- For a repeated-measures ANOVA, both the participant ID and the repeated condition should be treated as factors.
+
+```{r}
+df_rm_clean <- df_rm %>%
+  mutate(
+    student_id = factor(student_id),
+    study_method = factor(study_method, levels = c("Read", "Highlight", "Practice"))
+  )
+
+df_rm_clean
+```
+
+### Example Visualizations
+
+- A line plot works especially well for repeated-measures data because it shows both the overall pattern and the within-person change across conditions.
+
+```{r}
+ggplot(df_rm_clean, aes(x = study_method, y = quiz_score, group = student_id)) +
+  geom_line(alpha = 0.5, color = "gray60") +
+  geom_point(size = 2) +
+  stat_summary(aes(group = 1), fun = mean, geom = "line", linewidth = 1.2, color = "blue") +
+  stat_summary(aes(group = 1), fun = mean, geom = "point", size = 3, color = "blue") +
+  labs(
+    title = "Quiz Scores Across Repeated Study Methods",
+    subtitle = "Practice Testing tends to produce the highest scores within students",
+    x = "Study Method",
+    y = "Quiz Score"
+  ) +
+  theme_minimal()
+```
+
+### Example Analyses
+
+In a within-subjects one-way ANOVA, we account for the fact that the same people appear in every condition. In base R, this is done by including an Error() term that tells aov() which observations belong to the same participant.
+
+Step 1: The Omnibus Repeated-Measures ANOVA
+
+```{r}
+rm_model <- aov(quiz_score ~ study_method + Error(student_id/study_method), data = df_rm_clean)
+
+summary(rm_model)
+```
+
+Step 2: Follow-Up Paired Comparisons
+
+- If the omnibus test is significant, the next step is to compare the conditions pairwise using paired tests with a correction for multiple comparisons.
+
+```{r}
+pairwise.t.test(
+  x = df_rm_clean$quiz_score,
+  g = df_rm_clean$study_method,
+  paired = TRUE,
+  p.adjust.method = "bonferroni"
+)
+```
+
+(Here, the follow-up tests compare the same students across pairs of study methods, while adjusting the p-values for multiple testing.)
+
+### What to Report
+
+```{r, echo=FALSE, results='asis'}
+cat("\n<div style='padding:12px; border-left:4px solid #2C7FB8; background:#f7fbff; font-family: sans-serif;'>
+<h3 style='margin-top: 0; color: #2C7FB8;'>What to Report: One-Way ANOVA (Within-Subjects)</h3>
+
+<br><b>1. The Omnibus Test</b>
+<ul>
+  <li><b>The <i>F</i>-statistic:</b> Tests whether mean scores differ across the repeated conditions.</li>
+  <li><b>Degrees of Freedom (<i>df</i>):</b> Report the numerator and denominator <i>df</i> from the repeated-measures ANOVA.</li>
+  <li><b>Significance (<i>p</i>-value):</b> Is there evidence that at least one condition differs from the others?</li>
+  <li><i>Template:</i> \"A one-way repeated-measures ANOVA revealed a statistically significant effect of study method on quiz scores, <i>F</i>(2, 10) = 24.36, <i>p</i> < .001.\"</li>
+</ul>
+
+<b>2. The Follow-Up Comparisons</b>
+<ul>
+  <li>Report the specific repeated conditions that differed, including means and adjusted <i>p</i>-values.</li>
+  <li><i>Template:</i> \"Bonferroni-adjusted paired comparisons showed that quiz scores were significantly higher in the Practice Testing condition than in both the Re-reading and Highlighting conditions. The difference between Re-reading and Highlighting was not statistically significant.\"</li>
+</ul>
+
+<b>3. In words:</b><br>
+When the same students used all three study methods, their scores differed across conditions. Practice testing consistently led to the highest performance, suggesting that it was the most effective study strategy within students.
+</div>\n")
+```
+
+## Factorial ANOVA (2-Way)
+
+### At a glance
+
+| Use when | Goal | Key functions | Main plot |
+|:--|:--|:--|:--|
+| Two categorical predictors & one continuous outcome | Test main effects and their interaction | `aov()`, `summary()` | Interaction Line Plot |
+
+### Quick guide
+
+```{r echo=FALSE, results='asis'}
+cat("
+<div style='display:flex; gap:18px; flex-wrap:wrap; margin-bottom:16px;'>
+
+<div style='flex:1; min-width:220px; padding:12px; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;'>
+<h4 style='margin-top:0;'>Data type</h4>
+<ul>
+<li>Outcome is <b>continuous</b></li>
+<li><b>Two Predictors</b> (Factors), both categorical.</li>
+<li>Example 2x3: Factor A has 2 levels, Factor B has 3 levels.</li>
+</ul>
+</div>
+
+<div style='flex:1; min-width:220px; padding:12px; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;'>
+<h4 style='margin-top:0;'>Goal</h4>
+<ul>
+<li><b>Main Effects:</b> Does Factor A matter overall? Does Factor B matter overall?</li>
+<li><b>Interaction Effect:</b> Does the effect of Factor A <i>depend</i> on Factor B?</li>
+</ul>
+</div>
+
+<div style='flex:1; min-width:220px; padding:12px; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;'>
+<h4 style='margin-top:0;'>Common outputs</h4>
+<ul>
+<li>Three <code>F</code>-statistics (A, B, and AxB)</li>
+<li>Three separate <code>p</code>-values</li>
+<li>Interaction plot to visualize the \"crossing\" of effects.</li>
+</ul>
+</div>
+
+</div>
+")
+```
+
+### Analysis Flow
+
+```{r echo=FALSE, results='asis'}
+cat("
+<div style='text-align:center; font-size:18px; margin:14px 0;'>
+Raw data &rarr; Wrangle (Factorize Both) &rarr; Interaction Plot &rarr; Run 2-Way ANOVA &rarr; Interpret
+</div>
+")
+```
+
+### Example Raw Data
+
+- 30 students took an exam. We look at two factors: **Time of Day** (Morning vs. Evening) and **Caffeine Dose** (0mg, 100mg, 200mg). This is a 2x3 Factorial design.
+
+```{r, echo=TRUE}
+df_factorial <- tibble(
+  student_id = 1:30,
+  time_of_day = rep(c("Morning", "Evening"), each = 15),
+  caffeine = rep(rep(c("0mg", "100mg", "200mg"), each = 5), 2),
+  exam_score = c(
+    # Morning Scores (Caffeine helps a lot!)
+    60, 62, 58, 65, 61,  # 0mg
+    75, 78, 72, 74, 76,  # 100mg
+    88, 85, 90, 86, 89,  # 200mg
+    # Evening Scores (Caffeine doesn't really help)
+    72, 70, 75, 71, 74,  # 0mg
+    74, 76, 73, 75, 71,  # 100mg
+    70, 68, 72, 69, 71   # 200mg
+  )
+)
+
+print(df_factorial)
+```
+
+### Example Wrangle
+
+Just like the One-Way ANOVA, you must explicitly tell R that your predictor variables are categorical factors. 
+
+```{r}
+df_fact_clean <- df_factorial %>%
+  mutate(
+    time_of_day = factor(time_of_day, levels = c("Morning", "Evening")),
+    caffeine = factor(caffeine, levels = c("0mg", "100mg", "200mg"))
+  )
+
+df_fact_clean
+```
+
+### Example Visualizations
+
+For a Factorial ANOVA, the **Interaction Plot** is the most important visual. We use `stat_summary()` to automatically calculate and plot the mean score for every combination of Time and Caffeine.
+
+*Note: If the lines are parallel, there is likely no interaction. If they cross or spread apart, an interaction is happening!*
+
+```{r}
+ggplot(df_fact_clean, aes(x = caffeine, y = exam_score, color = time_of_day, group = time_of_day)) +
+  # Adds lines connecting the means
+  stat_summary(fun = mean, geom = "line", size = 1.2) +
+  # Adds dots for the means
+  stat_summary(fun = mean, geom = "point", size = 4) +
+  labs(
+    title = "Interaction Plot: Caffeine & Time of Day",
+    subtitle = "Notice how caffeine only boosts scores in the morning",
+    x = "Caffeine Dose",
+    y = "Mean Exam Score",
+    color = "Time of Day"
+  ) +
+  theme_minimal()
+```
+
+### Example Analyses
+
+If you run a standard `aov()` in R, your results might not match what you would get in other software like Jamovi or SPSS. This is because those programs default to **Type III Sums of Squares**, while base R uses **Type I**. 
+
+To get output that matches other popular software, we need to use the `car` package and tell R to change its default math settings (contrasts) before running the model.
+
+```{r}
+# Load the car package for Type III Sums of Squares
+library(car)
+
+# Change R's default contrasts to match SPSS (Sum-to-zero coding)
+options(contrasts = c("contr.sum", "contr.poly"))
+```
+
+*Note: When reading this output, ignore the "(Intercept)" row. Look at the rows for your main effects and the interaction!*
+
+To test for an interaction in R, use the `*` (asterisk) symbol between your two predictors instead of a `+`. This tells R to calculate the Main Effect of Time, the Main Effect of Caffeine, **and** their Interaction.
+
+```{r}
+# Build the model
+# The asterisk (*) asks for Main Effects AND the Interaction
+factorial_model <- aov(exam_score ~ time_of_day * caffeine, data = df_fact_clean)
+
+# Use the Anova() function from the car package (Note the capital 'A'!)
+# Set type = 3 (this sets the Sums of Squares type to III)
+factorial_model <- Anova(factorial_model, type = 3)
+
+print(factorial_model)
+summary(factorial_model)
+```
+
+### What to Report
+
+```{r, echo=FALSE, results='asis'}
+cat("\n<div style='padding:12px; border-left:4px solid #2C7FB8; background:#f7fbff; font-family: sans-serif;'>
+<h3 style='margin-top: 0; color: #2C7FB8;'>What to Report: Factorial ANOVA</h3>
+
+With a 2-way ANOVA, you must report the results of <b>three</b> separate tests from your summary table.
+
+<br><b>1. Main Effect of Variable 1 (Time of Day)</b>
+<ul>
+  <li>Ignores caffeine completely to ask: Did Morning students score differently than Evening students overall?</li>
+  <li><i>Template:</i> \"There was a significant main effect of Time of Day on exam scores, <i>F</i>(1, 24) = 5.23, <i>p</i> = .031.\"</li>
+</ul>
+
+<b>2. Main Effect of Variable 2 (Caffeine)</b>
+<ul>
+  <li>Ignores time completely to ask: Did caffeine dose affect scores overall?</li>
+  <li><i>Template:</i> \"There was a significant main effect of Caffeine dose, <i>F</i>(2, 24) = 33.15, <i>p</i> < .001.\"</li>
+</ul>
+
+<b>3. The Interaction Effect (Time * Caffeine)</b>
+<ul>
+  <li>The most important question: Did the effect of caffeine <i>depend</i> on what time of day it was?</li>
+  <li><i>Template:</i> \"Crucially, there was a significant interaction between Time of Day and Caffeine dose, <i>F</i>(2, 24) = 48.71, <i>p</i> < .001.\"</li>
+</ul>
+
+<b>4. In words:</b><br>
+Both the time of day and the amount of caffeine consumed significantly impacted exam scores. However, a significant interaction revealed that these factors depend on each other: while higher doses of caffeine drastically improved exam scores for students taking the test in the morning, caffeine had virtually no effect on the scores of students testing in the evening.
+</div>\n")
+```
+
+## Mixed ANOVA (Between-Within)
+
+### At a glance
+
+| Use when | Goal | Key functions | Main plot |
+|:--|:--|:--|:--|
+| 1 Between-Subjects factor, 1 Within-Subjects factor, 1 continuous outcome | Test main effects and how groups change differently over time (Interaction) | `aov()` with `Error()` | Line plot with error bars |
+
+### Quick guide
+
+<div style='display:flex; gap:18px; flex-wrap:wrap; margin-bottom:16px;'>
+
+<div style='flex:1; min-width:220px; padding:12px; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;'>
+<h4 style='margin-top:0;'>Data type</h4>
+<ul>
+<li>Outcome is <b>continuous</b>.</li>
+<li><b>Between Factor:</b> Independent groups (e.g., Treatment vs. Control).</li>
+<li><b>Within Factor:</b> Repeated measures (e.g., Pre, Post, Follow-up).</li>
+<li><i>Crucial:</i> You must have a Subject ID column!</li>
+</ul>
+</div>
+
+<div style='flex:1; min-width:220px; padding:12px; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;'>
+<h4 style='margin-top:0;'>Goal</h4>
+<ul>
+<li><b>Between Main Effect:</b> Do the groups differ overall?</li>
+<li><b>Within Main Effect:</b> Did scores change over time overall?</li>
+<li><b>Interaction:</b> Did the Treatment group change over time <i>differently</i> than the Control group?</li>
+</ul>
+</div>
+
+<div style='flex:1; min-width:220px; padding:12px; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;'>
+<h4 style='margin-top:0;'>Common outputs</h4>
+<ul>
+<li>Three separate <code>F</code>-statistics.</li>
+<li>Output is split into two sections: "Error: ID" (Between) and "Error: ID:Time" (Within & Interaction).</li>
+</ul>
+</div>
+
+</div>
+
+### Analysis Flow
+
+<div style='text-align:center; font-size:18px; margin:14px 0;'>
+Wide Data &rarr; Pivot to Long Data &rarr; Factorize ID! &rarr; Interaction Plot &rarr; Mixed ANOVA &rarr; Interpret
+</div>
+
+### Example Raw Data
+
+- 20 participants suffering from anxiety were assigned to either Cognitive Behavioral Therapy (CBT) or a Waitlist Control group. 
+- Their anxiety was measured at three time points: Pre-treatment, Post-treatment, and a 6-month Follow-up. *(Lower scores = less anxiety).*
+
+```{r}
+df_mixed_wide <- tibble(
+  student_id = 1:20,
+  group = rep(c("Control", "CBT"), each = 10),
+  # Control group stays highly anxious
+  pre_anx =  c(45, 48, 50, 42, 47, 49, 51, 46, 44, 48,   
+               # CBT group starts high...
+               46, 49, 48, 52, 45, 47, 50, 44, 48, 51),  
+  post_anx = c(44, 47, 49, 43, 48, 48, 50, 45, 46, 47,   
+               # ...and drops significantly!
+               25, 28, 26, 30, 24, 27, 29, 23, 26, 28),  
+  fup_anx =  c(46, 48, 48, 41, 46, 49, 52, 44, 45, 49,   
+               # ...and stays low at follow-up.
+               26, 29, 25, 31, 23, 28, 30, 24, 25, 27)   
+)
+
+# This is "wide" data. We need to pivot it!
+head(df_mixed_wide)
+```
+
+### Example Wrangle
+
+For a Mixed ANOVA, the data **must** be in long format, and R **must** know that your `student_id` is a categorical factor, not a numeric value. If you skip factorizing the ID, the math will be completely wrong!
+
+```{r}
+df_mixed <- df_mixed_wide %>%
+  pivot_longer(cols = c(pre_anx, post_anx, fup_anx), 
+               names_to = "time", 
+               values_to = "anxiety") %>%
+  mutate(
+    group = factor(group, levels = c("Control", "CBT")),
+    time = factor(time, levels = c("pre_anx", "post_anx", "fup_anx")),
+    student_id = factor(student_id) # CRITICAL STEP!
+  )
+
+head(df_mixed)
+```
+
+### Example Visualizations
+
+```{r}
+ggplot(df_mixed, aes(x = time, y = anxiety, color = group, group = group)) +
+  stat_summary(fun = mean, geom = "line", size = 1.2) +
+  stat_summary(fun = mean, geom = "point", size = 4) +
+  labs(
+    title = "Anxiety Scores Over Time by Treatment Group",
+    subtitle = "The CBT group shows a massive drop compared to Control",
+    x = "Time Point",
+    y = "Mean Anxiety Score",
+    color = "Group"
+  ) +
+  scale_x_discrete(labels = c("Pre-Test", "Post-Test", "Follow-Up")) +
+  theme_minimal()
+```
+
+### Example Analyses
+
+To run a Mixed ANOVA in base R, we use the `aov()` function, but we add a special error term: `+ Error(student_id/time)`. This tells R: *"Track each student individually, because their scores across time are correlated."*
+
+```{r}
+options(contrasts = c("contr.sum", "contr.poly"))
+library(car)
+
+fit <- lm(anxiety ~ group * time, data = df_mixed)
+Anova(fit, type = 3)
+
+#Same results using aov()
+#mixed_model <- aov(anxiety ~ group * time + Error(student_id/time), data = df_mixed)
+#summary(mixed_model)
+```
+
+### Extracting the Numbers for Write-Up
+
+Because extracting variables directly from a Mixed ANOVA summary list is highly complex, best practice is to read your summary table above and manually type the key values into a quick variable chunk. This keeps your APA text clean and easily updatable!
+
+```{r}
+# Look at the 'Error: student_id:time' section in the output above
+# We are grabbing the Interaction (group:time) values:
+int_df1 <- 2
+int_df2 <- 36
+int_F   <- 306.9  # Round to 2 decimals
+int_p   <- "< .001" # If p is 2e-16, write < .001
+```
+
+### What to Report
+
+*(Note: The text box below is built using HTML and inline R code!)*
+
+<div style='padding:12px; border-left:4px solid #2C7FB8; background:#f7fbff; font-family: sans-serif;'>
+<h3 style='margin-top: 0; color: #2C7FB8;'>What to Report: Mixed ANOVA</h3>
+
+Because a Mixed ANOVA outputs three separate tests, you typically focus your write-up on the <b>Interaction Effect</b>, as that is usually the main hypothesis (e.g., "Did the treatment work better over time than the control?").
+
+<br><b>1. The Statistics (The Interaction)</b>
+<ul>
+  <li><i>Template:</i> "A 2 (Treatment: CBT vs. Control) x 3 (Time: Pre, Post, Follow-up) mixed factorial ANOVA revealed a statistically significant interaction between treatment group and time on anxiety scores, <i>F</i>(`r int_df1`, `r int_df2`) = `r int_F`, <i>p</i> `r int_p`."</li>
+</ul>
+
+<b>2. In words:</b><br>
+While both groups started with similar levels of anxiety, the Cognitive Behavioral Therapy (CBT) group experienced a massive reduction in anxiety after the intervention, and this benefit was maintained at the 6-month follow-up. The control group's anxiety remained high and virtually unchanged across all three time points.
+</div>

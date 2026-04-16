@@ -1,0 +1,195 @@
+/* ------------Decrease size of TOC --------------*/
+.tocify {
+  font-size: 0.7em !important;
+}
+
+.tocify ul,
+.tocify li,
+.tocify-item {
+  line-height: 1.15 !important;
+}
+
+/* ---------- Base page ---------- */
+body {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 18px;
+  line-height: 1.7;
+  color: #222;
+  background: #fcfcfa;
+}
+
+/* Main content width */
+.main-container,
+.book .book-body .page-wrapper .page-inner section.normal {
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+/* ---------- Headings ---------- */
+h1, h2, h3, h4 {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  color: #111;
+  line-height: 1.25;
+  margin-top: 2em;
+  margin-bottom: 0.6em;
+  font-weight: 700;
+}
+
+h1 {
+  font-size: 2.2em;
+  border-bottom: 2px solid #e5e5e5;
+  padding-bottom: 0.25em;
+}
+
+h2 {
+  font-size: 1.6em;
+  border-bottom: 1px solid #ececec;
+  padding-bottom: 0.2em;
+}
+
+h3 {
+  font-size: 1.25em;
+}
+
+/* ---------- Paragraphs and lists ---------- */
+p {
+  margin-top: 0.4em;
+  margin-bottom: 1em;
+}
+
+ul, ol {
+  margin-bottom: 1.1em;
+}
+
+li {
+  margin-bottom: 0.35em;
+}
+
+/* ---------- Links ---------- */
+a {
+  color: #1f5e9c;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Blockquotes ---------- */
+blockquote {
+  border-left: 4px solid #d0d7de;
+  padding: 0.4em 1em;
+  margin: 1.5em 0;
+  color: #444;
+  background: #f7f9fb;
+}
+
+/* ---------- Code ---------- */
+code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.9em;
+  background: #f4f4f4;
+  padding: 0.15em 0.35em;
+  border-radius: 4px;
+}
+
+pre {
+  background: #f7f7f7;
+  border: 1px solid #e3e3e3;
+  border-radius: 8px;
+  padding: 1em;
+  overflow-x: auto;
+}
+
+pre code {
+  background: transparent;
+  padding: 0;
+}
+
+/* ---------- Tables ---------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  font-size: 0.95em;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 0.6em 0.8em;
+  text-align: left;
+}
+
+th {
+  background: #f3f3f3;
+  font-weight: 700;
+}
+
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* ---------- Images ---------- */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1.5em auto;
+  border-radius: 6px;
+}
+
+/* ---------- Horizontal rules ---------- */
+hr {
+  border: 0;
+  height: 1px;
+  background: #ddd;
+  margin: 2.5em 0;
+}
+
+/* ---------- Figure captions ---------- */
+.caption, figcaption, p.caption {
+  font-size: 0.9em;
+  color: #666;
+  text-align: center;
+  margin-top: 0.5em;
+}
+
+/* ---------- TOC floating ---------- */
+.tocify {
+  font-size: 0.85em;
+  border-radius: 8px;
+  border: 1px solid #e5e5e5;
+  background: #fbfbfb;
+  padding: 0.5em;
+}
+
+.tocify-header {
+  font-weight: 700;
+}
+
+.tocify .list-group-item {
+  border: none;
+  background: transparent;
+  padding-top: 0.35em;
+  padding-bottom: 0.35em;
+}
+
+.tocify .list-group-item.active {
+  background: #eaf2fb;
+  color: #184d80;
+  border-radius: 6px;
+}
+
+/* ---------- Optional first paragraph style after headings ---------- */
+h1 + p, h2 + p, h3 + p {
+  margin-top: 0.2em;
+}
+
+/* ---------- Optional callout boxes ---------- */
+.note, .callout {
+  background: #f8fbff;
+  border-left: 4px solid #7aa6d8;
+  padding: 0.9em 1em;
+  margin: 1.5em 0;
+  border-radius: 6px;
+}

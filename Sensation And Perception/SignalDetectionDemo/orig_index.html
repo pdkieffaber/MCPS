@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Airplane Signal Detection Demo</title>
+  <style>
+    body {
+      margin: 0;
+      background: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+    }
+
+    .wrap {
+      text-align: center;
+      max-width: 1200px;
+      width: 100%;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 16px 0 22px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      margin: 0;
+      padding: 0.8rem 1.1rem;
+      font-size: 1rem;
+      cursor: pointer;
+      border: 1px solid #555;
+      background: #222;
+      color: #fff;
+    }
+
+    .tab-btn.active {
+      background: #444;
+      border-color: #777;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .info-panel {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: left;
+      background: #181818;
+      border: 1px solid #333;
+      padding: 24px 28px;
+      line-height: 1.55;
+    }
+
+    .info-panel h2,
+    .info-panel h3 {
+      text-align: center;
+    }
+
+    canvas {
+      background: black;
+      border: 1px solid #444;
+      display: block;
+      margin: 1rem auto;
+      max-width: 100%;
+      height: auto;
+    }
+
+    button {
+      margin: 0.25rem;
+      padding: 0.8rem 1.1rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    #status {
+      min-height: 1.5rem;
+      margin-top: 0.5rem;
+      color: #ccc;
+    }
+
+    #summary {
+      white-space: pre-line;
+      margin-top: 1rem;
+      color: #ddd;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Airplane Signal Detection Demo</h1>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="infoTab">About Signal Detection Theory</button>
+      <button class="tab-btn" data-tab="experimentTab">Experiment</button>
+    </div>
+
+    <div id="infoTab" class="tab-panel active">
+      <div class="info-panel">
+        <h2>Signal Detection Theory</h2>
+        <p>
+          Signal detection theory explains how people make decisions under uncertainty.
+          In many real-world settings, the evidence is noisy or ambiguous, so observers
+          must decide whether a signal is present even when they are not fully sure.
+        </p>
+
+        <h3>Radar Example</h3>
+        <p>
+          A radar operator might need to decide whether one object on the screen indicates
+          a meaningful target or whether what they see is just background noise. In this
+          classroom demonstration, the moving airplanes stand in for potential radar targets.
+          On some trials, one airplane moves faster than the others. On other trials, all
+          airplanes move at the same speed.
+        </p>
+
+        <h3>Possible Outcomes</h3>
+        <p>
+          There are four basic outcomes in signal detection theory:
+        </p>
+        <p>
+          <strong>Hit:</strong> the signal is present and the observer says “signal present.”<br>
+          <strong>Miss:</strong> the signal is present and the observer says “no signal.”<br>
+          <strong>False alarm:</strong> no signal is present, but the observer says “signal present.”<br>
+          <strong>Correct rejection:</strong> no signal is present and the observer says “no signal.”
+        </p>
+
+        <h3>Sensitivity and Response Bias</h3>
+        <p>
+          <strong>Sensitivity</strong> refers to how well a person can distinguish signal trials from
+          no-signal trials. Sensitivity goes up when the signal becomes easier to detect.
+        </p>
+        <p>
+          <strong>Response bias</strong> refers to a person’s tendency to favor one response over another.
+          For example, if missing a target is costly, a person may become more likely to say
+          “signal present,” even when uncertain.
+        </p>
+
+        <h3>What Changes Across Blocks</h3>
+        <p>
+          In this demonstration, the first block serves as a baseline. In the second block,
+          the target is easier to discriminate, which should increase sensitivity. In the third
+          block, the instructions encourage a more liberal response tendency, which should shift
+          response bias.
+        </p>
+
+        <p style="text-align:center; margin-top: 24px;">
+          When you are ready, click the <strong>Experiment</strong> tab.
+        </p>
+      </div>
+    </div>
+
+    <div id="experimentTab" class="tab-panel">
+      <p>Press <strong>F</strong> if one airplane was faster. Press <strong>J</strong> if all airplanes were the same.</p>
+      <canvas id="scene" width="1100" height="700"></canvas>
+      <div>
+        <button id="startBtn">Start Experiment</button>
+        <button id="downloadBtn" style="display:none;">Download Raw Data CSV</button>
+      </div>
+      <div id="status">Press Start Experiment</div>
+      <div id="summary"></div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.tab-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>

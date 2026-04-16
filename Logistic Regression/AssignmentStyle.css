@@ -1,0 +1,19 @@
+.student-response {
+  background: #f5f7fb;
+  border-left: 5px solid #4a6fa5;
+  padding: 12px 16px;
+  margin: 12px 0 20px 0;
+  border-radius: 8px;
+}
+
+.student-response p:last-child {
+  margin-bottom: 0;
+}
+
+.instructor-note {
+  background: #fff8e8;
+  border-left: 5px solid #d9a441;
+  padding: 12px 16px;
+  margin: 12px 0;
+  border-radius: 8px;
+}

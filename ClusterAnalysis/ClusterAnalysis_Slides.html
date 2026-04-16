@@ -6,7 +6,7 @@
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
   <meta name="author" content="Your Name" />
-  <meta name="date" content="2025-11-13" />
+  <meta name="date" content="2026-04-14" />
   <title>Cluster Analysis — Lecture Summary</title>
   <style type="text/css">
 code{white-space: pre-wrap;}
@@ -530,230 +530,253 @@ Psychological Sciences</h1>
   <p class="author">
 Your Name
   </p>
-  <p class="date">November 13, 2025</p>
+  <p class="date">April 14, 2026</p>
 </div>
-<div id="learning-goals" class="slide section level1">
-<h1>Learning Goals</h1>
-<ul class="incremental">
-<li>Distinguish <strong>cluster analysis</strong> from
-<strong>PCA/Factor Analysis</strong>.</li>
-<li>Understand why <strong>scaling</strong> matters and how
-<strong>distance metrics</strong> work.</li>
-<li>Compare three families of algorithms: <strong>K-means</strong>,
-<strong>Hierarchical</strong>, <strong>DBSCAN</strong>.</li>
-<li>Practice choosing <strong>K</strong> (elbow &amp; silhouette) and
-reading <strong>dendrograms</strong>.</li>
-<li>Recognize common pitfalls and when to use each method.</li>
-</ul>
+<div id="introduction-to-cluster-analysis" class="slide section level1 inverse">
+<h1 class="inverse">Introduction to Cluster Analysis</h1>
+<div class="center" style="margin-top: 100px;">
+<h1 style="font-size: 3em;">
+From Data to Discovery
+</h1>
+<h3 id="methods-computing-for-the-psychological-sciences">Methods &amp;
+Computing for the Psychological Sciences</h3>
+<p><br> <strong>Topic:</strong> Cluster Analysis</p>
+</div>
 </div>
 <div id="what-is-cluster-analysis" class="slide section level1">
-<h1>What Is Cluster Analysis?</h1>
-<ul class="incremental">
-<li><strong>Goal:</strong> group <em>rows/subjects/cases</em> into
-unlabeled clusters based on similarity.</li>
-<li><strong>Outputs:</strong> a categorical label (cluster ID) and
-optionally profiles/centroids.</li>
-<li><strong>Contrast with PCA/FA:</strong> reduces
-<strong>columns/variables</strong> rather than rows.</li>
+<h1>What is Cluster Analysis?</h1>
+<div class="section-tag">
+Unsupervised Machine Learning
+</div>
+<p>Unlike supervised learning, where you have a known target variable
+(like price or species) to predict, clustering operates in a world
+without pre-existing labels.</p>
+<ul>
+<li><strong>The Primary Goal:</strong> To discover natural groupings or
+clusters within your data.</li>
+<li><strong>The Application:</strong> Identifying profiles or subtypes
+within a sample (e.g., grouping 500 patients into smaller sets of
+underlying groups like ‘Mildly Anxious’ or ‘Healthy’).</li>
 </ul>
-<h2 id="pcafa-vs.-clustering-big-picture">PCA/FA vs. Clustering (Big
-Picture)</h2>
-<ul class="incremental">
-<li>PCA/FA answers: <em>“Which variables hang together?”</em> → produces
-<strong>components/factors</strong> (new variables).</li>
-<li>Clustering answers: <em>“Which cases hang together?”</em> → produces
-<strong>groups of cases</strong> (new labels).</li>
-<li>Unit of analysis: PCA/FA → variables; Clustering →
-observations.</li>
+<div class="note-box">
+<p><strong>Common Applications:</strong> Customer Segmentation, Anomaly
+Detection, Genomics, Identifying Psychiatric Subtypes, and Creating
+Cognitive/Personality Profiles.</p>
+</div>
+</div>
+<div id="pca-vs.-cluster-analysis" class="slide section level1">
+<h1>PCA vs. Cluster Analysis</h1>
+<div class="section-tag">
+Two Types of Data Reduction
+</div>
+<p>While both are “data reduction” techniques, they reduce the data in
+fundamentally opposite ways:</p>
+<div class="two-col">
+<div id="pca-factor-analysis" class="left-col">
+<h3>PCA / Factor Analysis</h3>
+<p><strong>Reduces Columns</strong></p>
+<ul>
+<li><strong>Answers:</strong> “Which of my <em>variables</em> hang
+together?”</li>
+<li><strong>Goal:</strong> Take many variables and find a smaller set of
+underlying components.</li>
+<li><strong>Analogy:</strong> Sorting a bookshelf of 50 books by
+genre.</li>
 </ul>
 </div>
-<div id="data-as-coordinates" class="slide section level1">
-<h1>Data as Coordinates</h1>
-<ul class="incremental">
-<li>Each case is a point in <em>p</em>-dimensional space.</li>
-<li>Similarity is operationalized via a <strong>distance</strong> in
-that space.</li>
-<li>Visual intuition: “clumps” of nearby points represent potential
-clusters.</li>
-</ul>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Simulate two 2D clumps + a few specific cases</span></span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span></span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">rnorm</span>(n,  <span class="dv">0</span>, <span class="dv">1</span>), <span class="fu">rnorm</span>(n,  <span class="dv">0</span>, <span class="dv">1</span>))</span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">rnorm</span>(n,  <span class="dv">4</span>, <span class="dv">1</span>), <span class="fu">rnorm</span>(n,  <span class="dv">4</span>, <span class="dv">1</span>))</span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>pts <span class="ot">&lt;-</span> <span class="fu">rbind</span>(A, B)</span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="fu">plot</span>(pts, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">main =</span> <span class="st">&quot;Two Clumps in 2D&quot;</span>, <span class="at">xlab =</span> <span class="st">&quot;X1&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;X2&quot;</span>)</span></code></pre></div>
-</div>
-<div id="data-preparation" class="slide section level1">
-<h1>Data Preparation</h1>
-<h2 id="feature-scaling">Feature Scaling</h2>
-<ul class="incremental">
-<li>Always <strong>scale</strong> continuous features (mean 0, SD 1)
-before computing distances.</li>
-<li>Prevents a single large-scale variable from dominating.</li>
-</ul>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">scale</span>(USArrests)  <span class="co"># built-in dataset: states × (Murder, Assault, UrbanPop, Rape)</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">head</span>(df)</span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="fu">apply</span>(df, <span class="dv">2</span>, mean); <span class="fu">apply</span>(df, <span class="dv">2</span>, sd)</span></code></pre></div>
-<h2 id="distance-metrics">Distance Metrics</h2>
-<ul class="incremental">
-<li><strong>Euclidean</strong> (L2): straight-line distance. Sensitive
-to <strong>outliers</strong>.</li>
-<li><strong>Manhattan</strong> (L1): city-block distance. More
-<strong>robust</strong> to outliers; can yield square-ish clusters.</li>
-<li>Others: cosine, correlation distance, Gower (for mixed types).</li>
-</ul>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>patient_demo <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="at">anxiety    =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">3</span>),</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="at">depression =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">6</span>, <span class="dv">3</span>, <span class="dv">5</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>)</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="fu">row.names</span>(patient_demo) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>,<span class="st">&quot;B&quot;</span>,<span class="st">&quot;C&quot;</span>,<span class="st">&quot;D&quot;</span>)</span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>patient_demo_scaled <span class="ot">&lt;-</span> <span class="fu">scale</span>(patient_demo)</span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>dist_euclid   <span class="ot">&lt;-</span> <span class="fu">dist</span>(patient_demo_scaled, <span class="at">method =</span> <span class="st">&quot;euclidean&quot;</span>)</span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>dist_manhattan<span class="ot">&lt;-</span> <span class="fu">dist</span>(patient_demo_scaled, <span class="at">method =</span> <span class="st">&quot;manhattan&quot;</span>)</span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>dist_euclid; dist_manhattan</span></code></pre></div>
-</div>
-<div id="method-1-k-means-clustering" class="slide section level1">
-<h1>Method 1: K-Means Clustering</h1>
-<ul class="incremental">
-<li>Assumes roughly <strong>spherical</strong>, similarly sized clusters
-in scaled space.</li>
-<li>Minimizes within-cluster variance; initialization matters (use
-<code>nstart</code>).</li>
-<li>Pros: fast, simple; Cons: need <strong>K</strong> in advance;
-sensitive to outliers.</li>
-</ul>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">library</span>(factoextra)</span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">scale</span>(USArrests)</span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co"># Elbow method</span></span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="fu">fviz_nbclust</span>(df, kmeans, <span class="at">method =</span> <span class="st">&quot;wss&quot;</span>) <span class="sc">+</span> ggplot2<span class="sc">::</span><span class="fu">labs</span>(<span class="at">subtitle =</span> <span class="st">&quot;Elbow Method&quot;</span>)</span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co"># Silhouette method</span></span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="fu">fviz_nbclust</span>(df, kmeans, <span class="at">method =</span> <span class="st">&quot;silhouette&quot;</span>) <span class="sc">+</span> ggplot2<span class="sc">::</span><span class="fu">labs</span>(<span class="at">subtitle =</span> <span class="st">&quot;Silhouette Method&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>km <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(df, <span class="at">centers =</span> <span class="dv">4</span>, <span class="at">nstart =</span> <span class="dv">25</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>km<span class="sc">$</span>size; km<span class="sc">$</span>centers</span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>factoextra<span class="sc">::</span><span class="fu">fviz_cluster</span>(km, <span class="at">data =</span> df) <span class="sc">+</span> ggplot2<span class="sc">::</span><span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;K-means (K = 4)&quot;</span>)</span></code></pre></div>
-</div>
-<div id="visualizing-cluster-profiles-example" class="slide section level1">
-<h1>Visualizing Cluster Profiles (Example)</h1>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">library</span>(dplyr); <span class="fu">library</span>(tidyr); <span class="fu">library</span>(ggplot2)</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>USArrests_kmeans <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(df)</span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>USArrests_kmeans<span class="sc">$</span>state   <span class="ot">&lt;-</span> <span class="fu">row.names</span>(USArrests)</span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>USArrests_kmeans<span class="sc">$</span>cluster <span class="ot">&lt;-</span> <span class="fu">factor</span>(km<span class="sc">$</span>cluster)</span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>cluster_profiles <span class="ot">&lt;-</span> USArrests_kmeans <span class="sc">|&gt;</span></span>
-<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(cluster) <span class="sc">|&gt;</span></span>
-<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="fu">across</span>(Murder<span class="sc">:</span>Rape, mean)) <span class="sc">|&gt;</span></span>
-<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(Murder<span class="sc">:</span>Rape, <span class="at">names_to=</span><span class="st">&quot;Variable&quot;</span>, <span class="at">values_to=</span><span class="st">&quot;Z&quot;</span>) </span>
-<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a></span>
-<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="fu">ggplot</span>(cluster_profiles, <span class="fu">aes</span>(Variable, Z, <span class="at">group =</span> cluster)) <span class="sc">+</span></span>
-<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">&quot;line&quot;</span>) <span class="sc">+</span></span>
-<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">facet_wrap</span>(<span class="sc">~</span>cluster) <span class="sc">+</span></span>
-<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Cluster Profiles (Z-scores)&quot;</span>)</span></code></pre></div>
-</div>
-<div id="mapping-clusters-states-example" class="slide section level1">
-<h1>Mapping Clusters (States Example)</h1>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">library</span>(ggplot2); <span class="fu">library</span>(dplyr); <span class="fu">library</span>(maps); <span class="fu">library</span>(mapproj)</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>cluster_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">region  =</span> <span class="fu">tolower</span>(<span class="fu">row.names</span>(USArrests)),</span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">cluster =</span> <span class="fu">factor</span>(km<span class="sc">$</span>cluster)</span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>)</span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>us_map <span class="ot">&lt;-</span> <span class="fu">map_data</span>(<span class="st">&quot;state&quot;</span>)</span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>map_with_clusters <span class="ot">&lt;-</span> <span class="fu">left_join</span>(us_map, cluster_data, <span class="at">by =</span> <span class="st">&quot;region&quot;</span>)</span>
-<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="fu">ggplot</span>(map_with_clusters, <span class="fu">aes</span>(<span class="at">x =</span> long, <span class="at">y =</span> lat, <span class="at">group =</span> group, <span class="at">fill =</span> cluster)) <span class="sc">+</span></span>
-<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>  <span class="fu">geom_polygon</span>(<span class="at">color =</span> <span class="st">&quot;white&quot;</span>, <span class="at">linewidth =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>  <span class="fu">coord_map</span>(<span class="st">&quot;albers&quot;</span>, <span class="at">lat0 =</span> <span class="dv">39</span>, <span class="at">lat1 =</span> <span class="dv">45</span>) <span class="sc">+</span></span>
-<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;K-Means Clustering of US States (K = 4)&quot;</span>, <span class="at">fill =</span> <span class="st">&quot;Cluster&quot;</span>)</span></code></pre></div>
-</div>
-<div id="method-2-hierarchical-clustering" class="slide section level1">
-<h1>Method 2: Hierarchical Clustering</h1>
-<ul class="incremental">
-<li>Build a tree of merges; no need to pick <strong>K</strong> up
-front.</li>
-<li>Key choices: <strong>linkage</strong> (e.g., Ward.D2, complete,
-average) and <strong>distance</strong>.</li>
-<li>Pros: dendrogram insight; Cons: greedy, harder to scale to very
-large <em>n</em>.</li>
-</ul>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>d  <span class="ot">&lt;-</span> <span class="fu">dist</span>(df, <span class="at">method =</span> <span class="st">&quot;euclidean&quot;</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>hc <span class="ot">&lt;-</span> <span class="fu">hclust</span>(d, <span class="at">method =</span> <span class="st">&quot;ward.D2&quot;</span>)</span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="fu">plot</span>(hc, <span class="at">cex =</span> <span class="fl">0.6</span>, <span class="at">hang =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">main =</span> <span class="st">&quot;Hierarchical Clustering — Ward.D2&quot;</span>)</span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="fu">rect.hclust</span>(hc, <span class="at">k =</span> <span class="dv">4</span>, <span class="at">border =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>)</span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>clusters_hc <span class="ot">&lt;-</span> <span class="fu">cutree</span>(hc, <span class="at">k =</span> <span class="dv">4</span>)</span></code></pre></div>
-<h2 id="reading-dendrograms">Reading Dendrograms</h2>
-<ul class="incremental">
-<li><strong>Height</strong> reflects dissimilarity at merge.</li>
-<li><strong>Long vertical jumps</strong> suggest natural cut
-points.</li>
-<li><strong>Cut</strong> to choose a desired number of clusters (e.g.,
-<code>cutree(hc, k = 4)</code>).</li>
+<div id="cluster-analysis" class="right-col">
+<h3>Cluster Analysis</h3>
+<p><strong>Reduces Rows</strong></p>
+<ul>
+<li><strong>Answers:</strong> “Which of my <em>subjects</em> hang
+together?”</li>
+<li><strong>Goal:</strong> Take many subjects and find a smaller set of
+underlying profiles.</li>
+<li><strong>Analogy:</strong> Sorting the 50 readers into groups based
+on the genres they read.</li>
 </ul>
 </div>
-<div id="method-3-dbscan-density-based" class="slide section level1">
-<h1>Method 3: DBSCAN (Density-Based)</h1>
-<ul class="incremental">
-<li>Defines clusters as dense regions separated by sparse regions.</li>
-<li>Parameters:
-<ul class="incremental">
-<li><code>eps</code>: neighborhood radius,</li>
-<li><code>minPts</code>: minimum points to form a dense core (often ≈
-<em>p</em>+1 or 2<em>p</em>).</li>
-</ul></li>
-<li>Pros: finds <strong>arbitrary shapes</strong>, flags
-<strong>outliers</strong>; Cons: parameter tuning.</li>
-</ul>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">library</span>(dbscan)</span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co"># Heuristic: use k-NN distance plot to choose eps</span></span>
-<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">4</span></span>
-<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="fu">kNNdistplot</span>(df, <span class="at">k =</span> k) <span class="sc">+</span> <span class="fu">abline</span>(<span class="at">h =</span> <span class="fl">1.2</span>, <span class="at">lty =</span> <span class="dv">2</span>)  <span class="co"># set a tentative eps</span></span>
-<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a></span>
-<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>db <span class="ot">&lt;-</span> dbscan<span class="sc">::</span><span class="fu">dbscan</span>(df, <span class="at">eps =</span> <span class="fl">1.2</span>, <span class="at">minPts =</span> k <span class="sc">+</span> <span class="dv">1</span>)</span>
-<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="fu">table</span>(db<span class="sc">$</span>cluster)   <span class="co"># 0 denotes noise</span></span>
-<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>factoextra<span class="sc">::</span><span class="fu">fviz_cluster</span>(<span class="fu">list</span>(<span class="at">data =</span> df, <span class="at">cluster =</span> db<span class="sc">$</span>cluster),</span>
-<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>                         <span class="at">stand =</span> <span class="cn">FALSE</span>, <span class="at">geom =</span> <span class="st">&quot;point&quot;</span>,</span>
-<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>                         <span class="at">ellipse =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> ggplot2<span class="sc">::</span><span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;DBSCAN&quot;</span>)</span></code></pre></div>
 </div>
-<div id="choosing-among-methods" class="slide section level1">
-<h1>Choosing Among Methods</h1>
-<ul class="incremental">
-<li><strong>K-means:</strong> compact, spherical clusters; large
-<em>n</em>; need K.</li>
-<li><strong>Hierarchical:</strong> exploratory structure; small–medium
-<em>n</em>; dendrogram needed.</li>
-<li><strong>DBSCAN:</strong> varying density, noise/outliers,
-non-spherical shapes.</li>
+</div>
+<div id="the-core-principle" class="slide section level1">
+<h1>The Core Principle</h1>
+<div class="section-tag">
+The Golden Rule of Clustering
+</div>
+<div class="center" style="margin-top: 60px;">
+<h2 style="font-size: 2em; color: #173F5F;">
+<ol style="list-style-type: decimal">
+<li>Participants <strong>within</strong> a cluster should be highly
+similar to one another. <br><br></li>
+<li>Participants <strong>between</strong> different clusters should be
+highly dissimilar from one another.</li>
+</ol>
+</h2>
+</div>
+</div>
+<div id="crucial-step-data-preparation" class="slide section level1">
+<h1>Crucial Step: Data Preparation</h1>
+<div class="section-tag">
+Feature Scaling
+</div>
+<p>Before you run an algorithm, you <strong>must</strong> prepare your
+data. Clustering distance metrics are highly sensitive to the scale of
+your variables.</p>
+<ul>
+<li><strong>The Problem:</strong> Variables with large ranges (e.g.,
+populations in the millions) will mathematically dominate variables with
+small ranges (e.g., percentages from 1 to 100).</li>
+<li><strong>The Solution:</strong> You must scale your data so all
+variables contribute equally.</li>
+<li><strong>Z-score Standardization:</strong> The standard approach in R
+using <code>scale()</code>.</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Load the built-in USArrests dataset and scale it</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">scale</span>(USArrests)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">head</span>(df)</span></code></pre></div>
+</div>
+<div id="three-main-families-of-algorithms" class="slide section level1 inverse">
+<h1 class="inverse">Three Main Families of Algorithms</h1>
+<div class="center" style="margin-top: 80px;">
+<h3 id="partitioning-clustering-e.g.-k-means">1. Partitioning Clustering
+(e.g., K-Means)</h3>
+<p>Partitions data into a pre-specified number of clusters (K).</p>
+<h3 id="hierarchical-clustering">2. Hierarchical Clustering</h3>
+<p>Builds a tree-like hierarchy (dendrogram). Does not require you to
+specify K beforehand.</p>
+<h3 id="density-based-clustering-e.g.-dbscan">3. Density-Based
+Clustering (e.g., DBSCAN)</h3>
+<p>Groups closely packed points and identifies isolated points as
+“noise.” Great for finding true outliers.</p>
+</div>
+</div>
+<div id="partitioning-k-means-clustering" class="slide section level1">
+<h1>Partitioning: K-Means Clustering</h1>
+<div class="section-tag">
+Minimizing Variance
+</div>
+<p>The goal of K-Means is to define clusters so that the total
+within-cluster variation (WCSS) is minimized.</p>
+<p><strong>How it works (Iterative Process):</strong> 1. You specify the
+number of clusters (K). 2. The algorithm randomly drops K “centroids”
+into the data space. 3. <strong>Assignment Step:</strong> Every data
+point is assigned to its closest centroid. 4. <strong>Update
+Step:</strong> The centroid moves to the exact mathematical center
+(mean) of all the points assigned to it. 5. Repeat steps 3 &amp; 4 until
+the centroids stop moving.</p>
+</div>
+<div id="finding-the-optimal-k" class="slide section level1">
+<h1>Finding the Optimal ‘K’</h1>
+<div class="section-tag">
+Heuristics
+</div>
+<p>How do you pick the “right” number for K? We use heuristics to find
+the optimal balance.</p>
+<div class="two-col">
+<div id="the-elbow-method" class="left-col">
+<h3>The Elbow Method</h3>
+<p>Plots the within-cluster sum of squares (WSS) against values of K.
+Look for the “elbow”—the point where adding another cluster doesn’t
+significantly reduce error.</p>
+</div>
+<div id="the-silhouette-score" class="right-col">
+<h3>The Silhouette Score</h3>
+<p>Calculates how cohesive a point is to its own cluster vs. how
+separated it is from the nearest neighboring cluster. Choose the K that
+maximizes this score.</p>
+</div>
+</div>
+</div>
+<div id="visualizing-k-means" class="slide section level1">
+<h1>Visualizing K-Means</h1>
+<div class="section-tag">
+Dimensionality Reduction via PCA
+</div>
+<p>If our K-Means model uses 4 variables (Murder, Assault, Rape,
+UrbanPop), our clusters exist in 4D space. <code>fviz_cluster()</code>
+uses Principal Component Analysis (PCA) to create 2D axes that give us
+the “best angle” of cluster separation.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>km.res <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(df, <span class="at">centers =</span> <span class="dv">4</span>, <span class="at">nstart =</span> <span class="dv">25</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="fu">fviz_cluster</span>(km.res, <span class="at">data =</span> df,</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>             <span class="at">ellipse.type =</span> <span class="st">&quot;convex&quot;</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>             <span class="at">geom =</span> <span class="st">&quot;point&quot;</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>             <span class="at">ggtheme =</span> <span class="fu">theme_bw</span>())</span></code></pre></div>
+</div>
+<div id="hierarchical-clustering-1" class="slide section level1">
+<h1>Hierarchical Clustering</h1>
+<div class="section-tag">
+Bottom-Up Agglomerative
+</div>
+<p>Hierarchical clustering builds a “family tree” without needing a
+pre-specified K.</p>
+<p><strong>The Logic:</strong> 1. Start: Treat every single data point
+as its own tiny cluster. 2. Find Closest: Find the two “closest”
+clusters in the dataset. 3. Merge: Merge those two into one new, larger
+cluster. 4. Repeat until all points are merged into one giant
+cluster.</p>
+<p><strong>Ward’s Method:</strong> The most robust linkage method.
+Instead of just looking at physical distance, it merges the two clusters
+that result in the <em>minimum increase</em> in total within-cluster
+variance.</p>
+</div>
+<div id="interpreting-the-dendrogram" class="slide section level1">
+<h1>Interpreting the Dendrogram</h1>
+<div class="section-tag">
+The Family Tree
+</div>
+<div class="two-col">
+<div class="left-col">
+<ul>
+<li><strong>X-axis (Leaves):</strong> Individual data points
+(States).</li>
+<li><strong>Y-axis (Height):</strong> The dissimilarity at which two
+clusters were merged.</li>
+<li><strong>Reading the Tree:</strong> Short U-shapes at the bottom
+indicate highly similar points merging. Long vertical lines near the top
+indicate major, distinct “families” of data.</li>
 </ul>
 </div>
-<div id="common-pitfalls-tips" class="slide section level1">
-<h1>Common Pitfalls &amp; Tips</h1>
-<ul class="incremental">
-<li>Forgetting to <strong>scale</strong> features → distorted
-distances.</li>
-<li>Using Euclidean with heavy <strong>outliers</strong> → prefer
-Manhattan/robust methods.</li>
-<li>Blindly trusting elbow plots; corroborate with
-<strong>silhouette</strong> and domain sense.</li>
-<li>Evaluating clusters: <strong>cohesion/separation</strong>, profile
-interpretability, stability.</li>
-<li>Keep a <strong>reproducible</strong> pipeline: set seeds, record
-preprocessing choices.</li>
-</ul>
+<div class="right-col">
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">dist</span>(df, <span class="at">method =</span> <span class="st">&quot;euclidean&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>hc.res <span class="ot">&lt;-</span> <span class="fu">hclust</span>(d, <span class="at">method =</span> <span class="st">&quot;ward.D2&quot;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="fu">fviz_dend</span>(hc.res, <span class="at">cex =</span> <span class="fl">0.5</span>, <span class="at">k =</span> <span class="dv">4</span>, </span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>          <span class="at">rect =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>          <span class="at">main =</span> <span class="st">&quot;Hierarchical Clustering Dendrogram&quot;</span>)</span></code></pre></div>
 </div>
-<div id="references-further-reading" class="slide section level1">
-<h1>References / Further Reading</h1>
-<ul class="incremental">
-<li>Built-in example adapted from <code>USArrests</code> dataset and
-standard clustering workflows in R.</li>
-<li>See <code>?kmeans</code>, <code>?hclust</code>, <code>dbscan</code>
-package docs, and <code>factoextra</code> for visualization.</li>
-</ul>
+</div>
+</div>
+<div id="density-based-clustering-dbscan" class="slide section level1">
+<h1>Density-Based Clustering (DBSCAN)</h1>
+<div class="section-tag">
+Honest Outliers
+</div>
+<p>DBSCAN defines clusters as crowded areas separated by empty
+space.</p>
+<p><strong>Why use DBSCAN?</strong> K-Means and Hierarchical methods
+force <em>every single state</em> into a group, which can distort the
+data. DBSCAN identifies and isolates true outliers (like Alaska or
+Hawaii) as “noise”, providing a more accurate reflection of reality.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">library</span>(dbscan)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co"># Note: eps and minPts must be defined based on your kNNdistplot in the chapter</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>db.res <span class="ot">&lt;-</span> <span class="fu">dbscan</span>(df, <span class="at">eps =</span> <span class="fl">1.25</span>, <span class="at">minPts =</span> <span class="dv">4</span>) </span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co"># Visualize, note how &#39;0&#39; (black points) are the outliers</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="fu">fviz_cluster</span>(db.res, <span class="at">data =</span> df,</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>             <span class="at">ellipse =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>             <span class="at">geom =</span> <span class="st">&quot;point&quot;</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>             <span class="at">ggtheme =</span> <span class="fu">theme_bw</span>())</span></code></pre></div>
+<div class="takeaway-box">
+<p><strong>Final Interpretation:</strong> This might be the most
+“honest” result. K-Means and Hierarchical forced every state into a
+group. DBSCAN tells us that states like Florida, Alaska, California, and
+Nevada (which are often in the “noise” cluster) might be too unique to
+be grouped, leaving us with more homogenous, tightly-packed
+clusters.</p>
+</div>
 </div>
 
   <!-- dynamically load mathjax for compatibility with self-contained -->

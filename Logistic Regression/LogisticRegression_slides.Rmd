@@ -1,0 +1,234 @@
+---
+title: "Logistic Regression in Psychology"
+subtitle: "Understanding Binary Outcomes"
+author: "Paul D. Kieffaber, Ph.D."
+date: "`r Sys.Date()`"
+runtime: shiny
+output: 
+  slidy_presentation:
+    footer: "Psychological Sciences: Logistic Regression"
+    highlight: tango
+    duration: 45
+---
+
+```{r setup, include=FALSE}
+# This chunk sets up the environment and loads the "Psych-friendly" datasets
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center"
+)
+
+library(tidyverse)
+library(NHANES)
+library(plotly)
+library(gt)
+library(patchwork)
+library(broom)
+```
+
+# Why Logistic Regression?
+
+* **The Problem:** In psychology, many outcomes are binary (Yes/No), not continuous.
+    * Did the patient respond to therapy? (Yes/No)
+    * Did the participant pass the memory test? (Pass/Fail)
+    * Does the individual screen positive for Depression? (Yes/No)
+* **The Limitation of OLS:** Linear regression (a straight line) can predict "impossible" probabilities like -0.2 or 1.5.
+* **The Solution:** Logistic regression uses a mathematical "sandwich" to ensure all predictions stay between 0 and 1.
+
+---
+
+# The Foundation
+
+### Quantitative Reasoning
+
+The fundamental question of logistic regression is: How does the probability of a binary outcome ($Y$) change as a predictor variable ($X$) changes?
+
+For example, we might ask: How does the probability that someone develops clinical depression change as their sleep quality or income changes?
+
+Because the outcome is binary, we do not model the raw values of $Y$ directly. Instead, we model the probability that $Y = 1$.
+
+$$P(Y_i = 1) = p_i$$
+---
+
+Logistic regression models the relationship between the predictors and the **logit** (that is, the log-odds) of that probability:
+
+$$\log\left(\frac{p_i}{1 - p_i}\right) = \beta_0 + \beta_1X_i$$
+
+Let's break this down:
+
+* $Y_i$ (Outcome): The *i*-th observation of the binary dependent variable (e.g., whether car *i* has a manual transmission: 1 = yes, 0 = no).
+* $p_i$: The probability that $Y_i = 1$.
+* $\frac{p_i}{1 - p_i}$ (Odds): The odds that the event occurs.
+* $\log\left(\frac{p_i}{1 - p_i}\right)$ (Logit): The natural log of the odds. This transforms probabilities from a bounded scale (0 to 1) to an unbounded scale ($-\infty$ to $+\infty$), which makes linear modeling possible.
+* $\beta_0$ (Intercept): The predicted log-odds of the outcome when $X = 0$.
+* $\beta_1$ (Slope): The change in the log-odds of the outcome for a one-unit increase in $X$.
+
+The structure should look familiar. It resembles linear regression, but instead of modeling raw scores, we model **log-odds**.
+
+
+---
+
+# The Mathematical "S-Curve"
+
+Instead of predicting the outcome directly, we model the **Log-Odds** (Logit). This creates the characteristic "S-Curve."
+
+```{r, echo=FALSE, fig.height=4}
+# Creating the visual representation of the S-Curve
+z_seq <- seq(-6, 6, length.out = 200)
+p_seq <- 1 / (1 + exp(-z_seq))
+
+ggplot(data.frame(z_seq, p_seq), aes(x = z_seq, y = p_seq)) +
+  geom_line(color = "#2c3e50", linewidth = 1.5) +
+  geom_hline(yintercept = 0.5, linetype = "dashed", color = "red") +
+  labs(
+    title = "The Logistic Function",
+    subtitle = "Mapping the Linear Predictor to a Probability",
+    x = "Linear Predictor (Log-Odds)",
+    y = "Predicted Probability (0 to 1)"
+  ) +
+  theme_minimal()
+```
+
+---
+
+# Interactive: How Slopes and Intercepts Work in Logistic Regression
+
+Move the sliders to see how the Intercept ($\beta_0$) and Slope ($\beta_1$) change the "S" shape.
+
+```{r, echo=FALSE}
+fluidRow(
+  column(3,
+    sliderInput("s_beta0", "Intercept (Baseline Risk)", min = -8, max = 8, value = 0, step = 0.5),
+    sliderInput("s_beta1", "Slope (Effect Size)", min = -5, max = 5, value = 1, step = 0.5)
+  ),
+  column(9, plotlyOutput("s_logistic_plot"))
+)
+
+output$s_logistic_plot <- renderPlotly({
+  plot_data <- tibble(x = seq(-6, 6, length.out = 200)) %>%
+    mutate(p = 1 / (1 + exp(-(input$s_beta0 + input$s_beta1 * x))))
+  
+  p <- ggplot(plot_data, aes(x = x, y = p)) +
+    geom_line(linewidth = 1.2, color = "darkblue") +
+    coord_cartesian(ylim = c(0, 1)) +
+    theme_bw()
+  ggplotly(p)
+})
+```
+
+---
+
+# Real-World Example: Sleep and Depression
+
+Using the `NHANES` dataset, we can predict the probability of **Depression** based on **Nightly Sleep Hours**.
+
+```{r}
+# 1. Wrangle the data (Psychology-focused)
+dep_data <- NHANES %>%
+  select(Depressed, SleepHrsNight, Age) %>%
+  na.omit() %>%
+  # Binary outcome: 1 = Depressed (Several/Most days), 0 = None
+  mutate(is_depressed = ifelse(Depressed == "None", 0, 1))
+
+# 2. Fit the Model
+model_logit <- glm(is_depressed ~ SleepHrsNight * Age, 
+                   data = dep_data, 
+                   family = "binomial")
+
+# 3. View the results
+tidy(model_logit)
+```
+
+---
+
+# Interpreting the "Log-Odds"
+
+The coefficient for `SleepHrsNight` is **negative**. What does this mean?
+
+* **In Log-Odds:** For every 1-hour increase in sleep, the log-odds of depression decrease.
+* **In Odds Ratios:** We use $e^\beta$ to make it intuitive.
+
+```{r}
+# Convert to Odds Ratios
+exp(coef(model_logit))
+```
+
+* **Interpretation:** If the Odds Ratio is **0.80**, it means each hour of sleep reduces the odds of depression by 20%.
+
+---
+
+# Visualizing the Prediction
+
+We use `geom_jitter` to show where the individual people are, and the red line to show the model's "S-Curve."
+
+```{r, echo=TRUE, fig.height=5}
+ggplot(dep_data, aes(x = SleepHrsNight, y = is_depressed)) +
+  geom_jitter(height = 0.05, alpha = 0.1, color = "steelblue") +
+  geom_smooth(method = "glm", method.args = list(family = "binomial"), 
+              se = FALSE, color = "red", linewidth = 1.5) +
+  labs(
+    title = "Does Sleep Protect Against Depression?",
+    x = "Reported Nightly Sleep Hours",
+    y = "Probability of Clinical Depression"
+  ) +
+  theme_minimal()
+```
+
+---
+
+# Why is the probability so low?
+
+You might notice the curve never reaches 1.0. This is the **Base Rate** problem.
+
+* **Statistical Significance:** The $p$-value is very small, meaning sleep *definitely* matters.
+* **Low Absolute Risk:** Because only ~10% of people are depressed, the model's "S-Curve" stays in the bottom half of the graph.
+* **Clinical Thresholds:** If we used a 0.5 threshold, we would predict "Not Depressed" for everyone. In psychology, we might lower that threshold to 0.15 to catch at-risk patients!
+
+---
+
+# Decisions: The Confusion Matrix
+
+How do we know if our model is "confused"?
+
+```{r, echo=FALSE}
+# Creating the logical table using gt
+tribble(
+  ~Actual, ~`Predicted: 0 (Healthy)`, ~`Predicted: 1 (At-Risk)`,
+  "Actual: 0", "True Negative (Correct)", "False Positive (Type I)",
+  "Actual: 1", "False Negative (Type II)", "True Positive (Correct)"
+) %>%
+  gt() %>%
+  tab_style(style = cell_fill(color = "#d4edda"), locations = cells_body(columns = 2, rows = 1)) %>%
+  tab_style(style = cell_fill(color = "#d4edda"), locations = cells_body(columns = 3, rows = 2)) %>%
+  tab_style(style = cell_fill(color = "#f8d7da"), locations = cells_body(columns = 3, rows = 1)) %>%
+  tab_style(style = cell_fill(color = "#f8d7da"), locations = cells_body(columns = 2, rows = 2)) %>%
+  tab_header(title = "Classification Logic")
+```
+
+Create a classification Table in R
+
+```{r}
+# STEP 1: Get the model's predictions
+# Generate predicted probabilities from our model
+dep_data$prob_depressed <- predict(model_logit, type = "response")
+
+# STEP 2: Convert probabilities to binary 'predictions' 
+# We use 0.5 as the standard "cutoff" or threshold
+dep_data$prediction <- ifelse(dep_data$prob_depressed >= 0.2, 1, 0)
+
+# STEP 3: Create the Confusion Table
+confusion_matrix <- table(Actual = dep_data$is_depressed, Predicted = dep_data$prediction)
+print(confusion_matrix)
+```
+
+---
+
+# Summary and Takeaways
+
+1. **Logistic Regression** is the standard tool for binary outcomes in psychology.
+2. It transforms probabilities into **Log-Odds** to allow for linear modeling.
+3. **Odds Ratios** ($e^\beta$) tell us how much the "risk" changes for each unit of our predictor.
+4. **Significance** tells us if the predictor matters; **Probability** tells us how likely the event is.
+5. In clinical settings, we often adjust the **Threshold** to avoid missing cases (False Negatives).

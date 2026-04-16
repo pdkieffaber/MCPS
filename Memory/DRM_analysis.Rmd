@@ -1,0 +1,303 @@
+---
+title: "The DRM Experiment"
+subtitle: "Research Methods in the Psychological Sciences"
+author: "Paul D. Kieffaber, Ph.D."
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  slidy_presentation:
+    widescreen: true
+    self_contained: true
+    fig_width: 8
+    fig_height: 4.8
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  fig.align = 'center',
+  fig.retina = 2
+)
+
+library(tidyverse)
+library(DiagrammeR)
+library(htmltools)
+library(scales)
+```
+
+```{r styles, results='asis', echo=FALSE}
+knitr::asis_output('
+<style>
+body {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+}
+
+h1.title {
+  color: #173F5F;
+}
+
+h2, h3 {
+  color: #173F5F;
+}
+
+.slide {
+  background: #FAFCFE;
+  font-size: 26px !important;
+}
+
+.inverse {
+  background: linear-gradient(135deg, #173F5F 0%, #20639B 100%);
+  color: white;
+}
+
+.inverse h1, .inverse h2, .inverse h3, .inverse p, .inverse li {
+  color: white !important;
+}
+
+.section-tag {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #EAF2F8;
+  color: #20639B;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  margin-bottom: 12px;
+}
+
+.note-box {
+  background: #FDF2E9;
+  border-left: 8px solid #F39C12;
+  padding: 14px 18px;
+  border-radius: 8px;
+  margin-top: 14px;
+}
+
+.takeaway-box {
+  background: #EBF5FB;
+  border-left: 8px solid #2E86C1;
+  padding: 14px 18px;
+  border-radius: 8px;
+  margin-top: 14px;
+}
+
+.small {
+  font-size: 0.82em;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.left-col {
+  font-size: 0.95em;
+}
+
+.right-col {
+  text-align: center;
+}
+
+.slide ul, .slide ol {
+  margin-top: 0.35em;
+  margin-bottom: 0.35em;
+  padding-left: 1.1em;
+}
+
+.slide li {
+  margin-top: 0.15em;
+  margin-bottom: 0.15em;
+  line-height: 1.1;
+}
+
+.html-widget {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.html-widget svg {
+  display: block;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+</style>
+')
+```
+
+```{r themefun, include=FALSE}
+theme_lecture <- function(base_size = 12, base_family = "") {
+  theme_minimal(base_size = base_size, base_family = base_family) +
+    theme(
+      plot.title = element_text(size = base_size * 1.2, face = "bold"),
+      plot.subtitle = element_text(size = base_size * 0.95),
+      plot.caption = element_text(size = base_size * 0.72),
+      axis.title = element_text(size = base_size * 0.95),
+      axis.text = element_text(size = base_size * 0.82),
+      legend.title = element_text(size = base_size * 0.88),
+      legend.text = element_text(size = base_size * 0.8),
+      strip.text = element_text(size = base_size * 0.9, face = "bold"),
+      panel.grid.minor = element_blank()
+    )
+}
+```
+# Extra-credit
+
+<div class="two_col">
+<div class="left-col">
+Use your smartphone (or computer) to complete the brief experiment.  
+
+Enter your full name for 2 free questions on the Final exam.
+</div>
+
+<div class="right-col">
+```{r, echo=FALSE, out.width="30%"}
+   knitr::include_graphics('./DRM_qr.png')
+```
+https://us.psytoolkit.org/c/3.6.9/survey?s=pB3Zk
+</div>
+</div>
+
+#  Deese–Roediger–McDermott (DRM) paradigm
+
+<div class="section-tag">Studying False Memory</div>
+
+<div class="two-col">
+
+<div class="left-col">
+
+### Basic Procedure
+1. Present a list of semantically related words  
+2. Omit the most strongly related “critical lure”  
+3. Test recall or recognition  
+4. Measure how often the lure is falsely remembered  
+
+### Example
+**Presented:**  
+bed, dream, tired, wake, snooze, blanket
+
+**Not presented:**  
+**sleep**
+
+</div>
+
+<div class="right-col">
+
+### What it shows
+- Memory is not a literal replay
+- Meaning-based encoding can drive errors
+- Retrieval can produce vivid but inaccurate recollections
+
+<div class="note-box">
+Participants often report the missing lure with high confidence, even though it never appeared.
+</div>
+
+</div>
+
+</div>
+---
+
+# Results
+
+<div class="section-tag">Did you experience a false memory?</div>
+
+```{r DRM-plot, echo=FALSE, out.width='95%', fig.width=6.8, fig.height=3.8}
+# Import the data
+dat <- read_csv("/Users/paul/Downloads/PsyToolkitData_DRM_InClass_2026_04_16_17_03/data.csv")
+
+#create proportion scores
+  # hits ranges from 0 to 8
+  # lure_fa ranges from 0 to 4
+  # foil_fa ranges from 0 to 8
+dat <- dat %>%
+  mutate(
+    hit_rate = hits / 8,
+    lure_fa_rate = lure_fa / 4,
+    foil_fa_rate = foil_fa / 8
+  )
+
+# Get a quick descriptive summary
+summary_rates <- dat %>%
+  summarise(
+    mean_hit = mean(hit_rate, na.rm = TRUE),
+    sd_hit = sd(hit_rate, na.rm = TRUE),
+    mean_lure_fa = mean(lure_fa_rate, na.rm = TRUE),
+    sd_lure_fa = sd(lure_fa_rate, na.rm = TRUE),
+    mean_foil_fa = mean(foil_fa_rate, na.rm = TRUE),
+    sd_foil_fa = sd(foil_fa_rate, na.rm = TRUE)
+  )
+
+print(summary_rates)
+
+# Plot the main results
+plot_dat <- dat %>%
+  select(hit_rate, lure_fa_rate, foil_fa_rate) %>%
+  pivot_longer(everything(), names_to = "measure", values_to = "rate") %>%
+  mutate(
+    measure = factor(
+      measure,
+      levels = c("hit_rate", "lure_fa_rate", "foil_fa_rate"),
+      labels = c("Studied words (hits)", "Critical lures (false alarms)", "Foils (false alarms)")
+    )
+  )
+
+ggplot(plot_dat, aes(x = measure, y = rate)) +
+  stat_summary(fun = mean, geom = "col", width = 0.65) +
+  stat_summary(fun.data = mean_se, geom = "errorbar", width = 0.15) +
+  labs(
+    title = "Recognition performance in the DRM task",
+    x = NULL,
+    y = "Proportion 'Old' responses"
+  ) +
+  theme_minimal(base_size = 14)
+
+# Test the key false-memory effect
+
+#The classic classroom comparison is:
+  # false alarms to critical lures
+  # vs.
+  # false alarms to unrelated foils
+t.test(dat$lure_fa_rate, dat$foil_fa_rate, paired = TRUE)
+
+#If the DRM effect worked, lure false alarms should be significantly higher than foil false alarms.
+
+#Optional confidence analysis
+conf_dat <- dat %>%
+  select(studied_conf, lure_conf, foil_conf) %>%
+  pivot_longer(everything(), names_to = "measure", values_to = "confidence") %>%
+  mutate(
+    measure = factor(
+      measure,
+      levels = c("studied_conf", "lure_conf", "foil_conf"),
+      labels = c("Studied words", "Critical lures", "Foils")
+    )
+  )
+
+ggplot(conf_dat, aes(x = measure, y = confidence)) +
+  stat_summary(fun = mean, geom = "col", width = 0.65) +
+  stat_summary(fun.data = mean_se, geom = "errorbar", width = 0.15) +
+  labs(
+    title = "Confidence by item type",
+    x = NULL,
+    y = "Mean confidence"
+  ) +
+  theme_minimal(base_size = 14)
+
+# Nice long-format table for class discussion
+class_summary <- dat %>%
+  summarise(
+    Hits = mean(hit_rate, na.rm = TRUE),
+    LureFalseAlarms = mean(lure_fa_rate, na.rm = TRUE),
+    FoilFalseAlarms = mean(foil_fa_rate, na.rm = TRUE),
+    StudiedConfidence = mean(studied_conf, na.rm = TRUE),
+    LureConfidence = mean(lure_conf, na.rm = TRUE),
+    FoilConfidence = mean(foil_conf, na.rm = TRUE)
+  )
+
+class_summary
+```
+
+

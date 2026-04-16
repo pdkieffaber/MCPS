@@ -1,0 +1,1155 @@
+---
+title: "Visualizing Data with Graphs"
+author: "Paul D. Kieffaber, Ph.D."
+date: "Spring 2026"
+output:
+  html_document:
+    css: styles.css
+    toc: true
+    toc_float: true
+    number_sections: true
+    df_print: paged
+  pdf_document:
+    toc: true
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Visualizing Data with Graphs
+
+<div class="chapter-opening">
+<p class="lead">
+Graphs are not just decorative. They are tools for reasoning about data. The best graph is the one that matches the structure of the data and helps the reader see the pattern that matters.
+</p>
+</div>
+
+Once researchers collect data, one of the first tasks is to **represent that data clearly**. Tables can be useful, but graphs often make patterns easier to see. A good graph can reveal the shape of a distribution, differences between groups, potential outliers, or how values change over time. In other words, visualizations help us move from raw numbers to interpretation.
+
+That said, not every graph is appropriate for every kind of data. One of the most common mistakes students make is choosing a graph based on what looks familiar rather than what best matches the data. A pie chart, for example, can be useful for showing parts of a whole, but it is not a good choice for displaying the distribution of a continuous variable. A histogram works well for distributions, but not for comparing a small set of category means. The key question is always:
+
+> What kind of variable am I trying to represent, and what pattern do I want the reader to see?
+
+In this chapter, we will look at several common graph types used in undergraduate research methods:
+
+* pie charts
+* column charts
+* histograms
+* boxplots
+* line charts
+* scatterplots
+
+For each one, we will discuss **when to use it**, **when not to use it**, and how to create it in **R**.
+
+# The Foundation
+
+### Quantitative Reasoning
+
+The logic of data visualization starts with matching the graph to the **type of data** and the **research question**.
+
+Some graphs are designed for **categorical variables**. For example:
+
+* A **pie chart** or **column chart** may show the proportion of participants in different groups.
+* A **column chart** may compare counts or means across conditions.
+
+Other graphs are designed for **continuous variables**. For example:
+
+* A **histogram** shows the distribution of a numeric variable.
+* A **boxplot** summarizes center, spread, and potential outliers.
+* A **line chart** shows how values change across time or another ordered sequence.
+* A **scatterplot** shows the relationship between two continuous variables.
+
+A useful rule of thumb is this:
+
+* Use **column charts** for comparing categories.
+* Use **histograms** for distributions of one numeric variable.
+* Use **boxplots** for comparing distributions across groups.
+* Use **line charts** for trends across ordered values, especially time.
+* Use **scatterplots** for relationships between two continuous variables.
+* Use **pie charts** sparingly, and mainly when you want to emphasize parts of a whole.
+
+<div class="callout-tip">
+<span class="callout-title">Tips &amp; Tricks</span>
+Before making a graph, ask two questions: <em>What kind of variable do I have?</em> and <em>What do I want the reader to notice?</em> Those two questions usually point you to the right graph.
+</div>
+
+# Which Plot Should I Use?
+
+One of the most useful habits in research methods is learning to choose a graph based on the **kind of variable** you have and the **question** you want the graph to answer.
+
+```{r echo=FALSE}
+library(DiagrammeR)
+
+grViz("
+digraph plot_decision_tree {
+
+  graph [
+    layout = dot,
+    rankdir = TB,
+    nodesep = 0.45,
+    ranksep = 0.65,
+    margin = 0,
+    pad = 0
+  ]
+
+  node [
+    shape = box,
+    style = rounded,
+    fontname = Helvetica,
+    fontsize = 14,
+    width = 2.8,
+    height = 0.9,
+    margin = 0.18
+  ]
+  
+  edge [
+    fontname = Helvetica,
+    fontsize = 12
+  ]
+
+  start [label = 'What kind of data do you want to graph?']
+
+  cat1 [label = 'One categorical variable']
+  cont1 [label = 'One continuous variable']
+  mixed [label = 'A continuous variable across groups']
+  time1 [label = 'Values across ordered time points\\nor another ordered sequence']
+  cont2 [label = 'Two continuous variables']
+
+  pie [label = 'Pie chart\\nUse when showing parts of a whole\\nwith a small number of categories']
+  col1 [label = 'Column chart\\nUse when comparing counts\\nor proportions across categories']
+  hist [label = 'Histogram\\nUse when showing the distribution\\nof one continuous variable']
+  box [label = 'Boxplot\\nUse when comparing distributions\\nacross groups']
+  line [label = 'Line chart\\nUse when showing change\\nover time or order']
+  scatter [label = 'Scatterplot\\nUse when showing the relationship\\nbetween two continuous variables']
+
+  start -> cat1
+  start -> cont1
+  start -> mixed
+  start -> time1
+  start -> cont2
+
+  cat1 -> pie [label = 'parts of a whole']
+  cat1 -> col1 [label = 'compare categories']
+
+  cont1 -> hist
+  mixed -> box
+  time1 -> line
+  cont2 -> scatter
+}
+", width='100%', height = "220px")
+```
+
+<div class="callout-check">
+<span class="callout-title">Student Check</span>
+Suppose you measured participants' reaction times and want to examine whether the distribution is skewed. Which path through the decision tree would you follow, and which graph would you choose?
+</div>
+
+# Pie Charts
+
+A **pie chart** represents categories as slices of a circle. Each slice corresponds to a proportion of the whole.
+
+### When to Use a Pie Chart
+
+Pie charts are most appropriate when:
+
+* the variable is **categorical**
+* there are only a **small number of categories**
+* the categories make up **parts of a whole**
+* the goal is to emphasize **relative proportion**
+
+For example, a pie chart might show the proportion of participants who identified as first-year, sophomore, junior, or senior.
+
+### When *Not* to Use a Pie Chart
+
+Pie charts become hard to read when:
+
+* there are many categories
+* categories have very similar proportions
+* the goal is precise comparison
+
+## R Implementation
+
+Let's create a small example dataset showing participants' preferred study environment.
+
+```{r}
+library(tidyverse)
+
+study_pref <- tibble(
+  environment = c("Library", "Dorm", "Coffee Shop", "Outside"),
+  count = c(18, 10, 7, 5)
+)
+
+study_pref <- study_pref %>%
+  mutate(
+    proportion = count / sum(count),
+    label = paste0(environment, ": ", scales::percent(proportion, accuracy = 1))
+  )
+
+study_pref
+```
+
+```{r}
+ggplot(study_pref, aes(x = "", y = count, fill = environment)) +
+  geom_col(width = 1) +
+  coord_polar(theta = "y") +
+  labs(
+    title = "Preferred Study Environment",
+    fill = "Environment"
+  ) +
+  theme_bw() +
+  theme(
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid = element_blank(),
+    panel.border = element_blank()
+  )
+```
+
+### Interpreting the Plot
+
+This plot shows the proportion of participants in each category. The largest slice corresponds to the most common category.
+
+<div class="callout-note">
+<span class="callout-title">Teaching Note</span>
+Pie charts are widely recognized, but in many research settings a column chart is easier to interpret because readers compare lengths more accurately than angles.
+</div>
+
+<div class="callout-check">
+<span class="callout-title">Student Check</span>
+Why might a pie chart become difficult to read if there are eight or nine categories?
+</div>
+
+# Column Charts
+
+A **column chart** displays categories on one axis and values on the other. In `ggplot2`, this is usually made with `geom_col()` or `geom_bar()`.
+
+### When to Use a Column Chart
+
+Use a column chart when:
+
+* you are comparing **counts** across categories
+* you are comparing **means** or other summary statistics across groups
+* the x-axis consists of **discrete categories**
+
+### When *Not* to Use a Column Chart
+
+Do not use a column chart when:
+
+* the variable is continuous and you want to show the shape of its distribution
+* you want to show the relationship between two continuous variables
+* the x-axis is naturally ordered and continuous over time, where a line chart would be better
+
+## R Implementation: Counts by Category
+
+```{r}
+major_counts <- tibble(
+  major = c("Psychology", "Biology", "Business", "Engineering"),
+  count = c(24, 16, 12, 8)
+)
+
+ggplot(major_counts, aes(x = major, y = count)) +
+  geom_col() +
+  labs(
+    title = "Number of Students by Major",
+    x = "Major",
+    y = "Count"
+  ) +
+  theme_bw()
+```
+
+## R Implementation: Means by Group
+
+Now let's use the built-in `ToothGrowth` dataset and compare mean tooth length across supplement types.
+
+```{r}
+mean_tooth <- ToothGrowth %>%
+  group_by(supp) %>%
+  summarise(mean_len = mean(len), .groups = "drop")
+
+mean_tooth
+```
+
+```{r}
+ggplot(mean_tooth, aes(x = supp, y = mean_len)) +
+  geom_col() +
+  labs(
+    title = "Mean Tooth Length by Supplement Type",
+    x = "Supplement Type",
+    y = "Mean Tooth Length"
+  ) +
+  theme_bw()
+```
+
+### Interpreting the Plot
+
+Each bar represents one category, and the bar height represents either the count or the summary value for that category.
+
+<div class="callout-warning">
+<span class="callout-title">Common Mistake</span>
+A column chart of means hides the distribution of the data. Two groups can have the same mean but very different variability. If spread matters, use a boxplot.
+</div>
+
+<div class="callout-check">
+<span class="callout-title">Student Check</span>
+If two groups have the same mean but very different spread, would a column chart reveal that difference clearly?
+</div>
+
+# Histograms
+
+A **histogram** shows the distribution of a single continuous variable by dividing the variable into intervals called **bins**.
+
+### When to Use a Histogram
+
+Use a histogram when:
+
+* you want to examine the **distribution** of one quantitative variable
+* you want to see whether the data are **symmetric**, **skewed**, or **multimodal**
+* you want to inspect where values cluster and whether there are gaps
+
+### When *Not* to Use a Histogram
+
+Do not use a histogram when:
+
+* the variable is categorical
+* you want to compare a large number of groups side by side
+* you are trying to display the relationship between two variables
+
+## R Implementation
+
+Let's use the built-in `mpg` dataset and examine the distribution of highway mileage.
+
+```{r}
+ggplot(mpg, aes(x = hwy)) +
+  geom_histogram(binwidth = 2) +
+  labs(
+    title = "Distribution of Highway Mileage",
+    x = "Highway Miles Per Gallon",
+    y = "Frequency"
+  ) +
+  theme_bw()
+```
+
+### Interpreting the Plot
+
+The x-axis shows the range of mileage values, and the y-axis shows how many observations fall into each bin.
+
+The histogram helps answer questions like:
+
+* Is the distribution roughly symmetric?
+* Is it skewed?
+* Are there multiple peaks?
+* Are there unusually low or high values?
+
+### A Note on Bin Width
+
+The choice of `binwidth` matters. Smaller bins show more detail; larger bins smooth the distribution.
+
+```{r}
+ggplot(mpg, aes(x = hwy)) +
+  geom_histogram(binwidth = 4) +
+  labs(
+    title = "Distribution of Highway Mileage (Larger Bin Width)",
+    x = "Highway Miles Per Gallon",
+    y = "Frequency"
+  ) +
+  theme_bw()
+```
+
+<div class="callout-check">
+<span class="callout-title">Student Check</span>
+What changes when the bin width becomes larger? Does the distribution look more detailed or more smoothed out?
+</div>
+
+# Boxplots
+
+A **boxplot** summarizes the distribution of a continuous variable. It shows the median, quartiles, spread, and potential outliers.
+
+### When to Use a Boxplot
+
+Use a boxplot when:
+
+* you want to compare the distribution of a continuous variable across groups
+* you want to show **center**, **spread**, and **outliers**
+* you want a compact summary of a distribution
+
+### When *Not* to Use a Boxplot
+
+Do not use a boxplot when:
+
+* students need to see the detailed shape of a distribution
+* the sample size is very small and individual points are more informative
+* the variable is categorical
+
+## R Implementation
+
+Let's use `ToothGrowth` and compare tooth length by supplement type.
+
+```{r}
+ggplot(ToothGrowth, aes(x = supp, y = len)) +
+  geom_boxplot() +
+  labs(
+    title = "Tooth Length by Supplement Type",
+    x = "Supplement Type",
+    y = "Tooth Length"
+  ) +
+  theme_bw()
+```
+
+We can also compare tooth length by dose.
+
+```{r}
+ggplot(ToothGrowth, aes(x = factor(dose), y = len)) +
+  geom_boxplot() +
+  labs(
+    title = "Tooth Length by Dose",
+    x = "Dose",
+    y = "Tooth Length"
+  ) +
+  theme_bw()
+```
+
+### Interpreting the Plot
+
+A boxplot includes several components:
+
+* the **line inside the box** is the median
+* the **box** shows the interquartile range (IQR)
+* the **whiskers** extend to values within a typical range
+* points beyond the whiskers may be plotted as **outliers**
+
+<div class="callout-note">
+<span class="callout-title">Teaching Note</span>
+Boxplots are especially useful because they show more information than a simple chart of group means.
+</div>
+
+<div class="callout-check">
+<span class="callout-title">Student Check</span>
+What does it mean if one group has a taller box than another group?
+</div>
+
+# APA-Style Figures and Error Bars
+
+In research methods, making a graph is only part of the job. Researchers also need to present figures in a style that is **clear**, **professional**, and consistent with disciplinary conventions. In psychology and many social sciences, that usually means following **APA style** guidelines for figure presentation.
+
+An APA-style figure is not defined by one single template, but it generally emphasizes:
+
+* clear axis labels
+* readable text
+* minimal visual clutter
+* informative captions
+* careful use of color
+* figures that help the reader understand the data, rather than impress the reader with decoration
+
+In this section, we will look at two related issues:
+
+1. how to make figures look more like APA-style figures in R
+2. how to add **error bars** to graphs that display group summaries
+
+# What Makes a Figure Look APA-Style?
+
+In practice, APA-style figures usually have several features:
+
+* simple, readable fonts
+* clearly labeled axes
+* no unnecessary background effects or 3D decoration
+* limited use of distracting colors
+* figure titles and captions that explain what the graph shows
+* visual elements that are large enough to read when printed
+
+For classroom purposes, a good rule of thumb is:
+
+> An APA-style figure should be easy to read, easy to interpret, and free of unnecessary decoration.
+
+<div class="callout-note">
+<span class="callout-title">Teaching Note</span>
+Students sometimes assume that a “good” figure needs bright colors, shadows, 3D effects, or complicated styling. In research writing, the opposite is usually true. A figure is successful when it communicates the result clearly and efficiently.
+</div>
+
+# A Simple Example: From Basic Plot to Cleaner Plot
+
+Let's start with a basic graph using `ToothGrowth`.
+
+```{r}
+library(tidyverse)
+
+mean_tooth <- ToothGrowth %>%
+  group_by(supp) %>%
+  summarise(mean_len = mean(len), .groups = "drop")
+
+ggplot(mean_tooth, aes(x = supp, y = mean_len)) +
+  geom_col() +
+  labs(
+    title = "Mean Tooth Length by Supplement Type",
+    x = "Supplement Type",
+    y = "Mean Tooth Length"
+  )
+```
+
+That graph is fine, but we can make it look cleaner and more publication-friendly.
+
+```{r}
+ggplot(mean_tooth, aes(x = supp, y = mean_len)) +
+  geom_col(fill = "gray70", color = "black", width = 0.6) +
+  labs(
+    x = "Supplement Type",
+    y = "Mean Tooth Length"
+  ) +
+  theme_classic(base_size = 12)
+```
+
+This version is closer to the kind of style commonly used in academic writing because it removes unnecessary visual clutter and uses a simple black-and-gray palette.
+
+# What Are Error Bars?
+
+When we graph a group mean, that mean is only a **summary** of the sample. It does not show how much variability exists in the data, nor does it show how precisely the mean has been estimated. That is where **error bars** come in.
+
+Error bars are lines drawn above and below a point or bar to represent uncertainty or variability. Different kinds of error bars can show different things, including:
+
+* **standard deviation (SD)**
+* **standard error of the mean (SE)**
+* **confidence intervals (CI)**
+
+These are not interchangeable, and students should be careful about what the error bars represent.
+
+### Standard Deviation
+
+Standard deviation shows how spread out the individual observations are around the mean.
+
+### Standard Error
+
+Standard error reflects how precisely the sample mean estimates the population mean.
+
+### Confidence Interval
+
+A confidence interval gives a range of plausible values for the population parameter.
+
+<div class="callout-warning">
+<span class="callout-title">Common Mistake</span>
+Do not add error bars without saying what they represent. A reader should know whether the bars show standard deviation, standard error, or confidence intervals.
+</div>
+
+# Computing Error Bars in R
+
+Before we can add error bars, we need to calculate the summary statistics for each group.
+
+Here is one common pattern using `dplyr`.
+
+```{r}
+tooth_summary <- ToothGrowth %>%
+  group_by(supp) %>%
+  summarise(
+    n = n(),
+    mean_len = mean(len),
+    sd_len = sd(len),
+    se_len = sd_len / sqrt(n),
+    .groups = "drop"
+  )
+
+tooth_summary
+```
+
+This table gives us:
+
+* `n`: number of observations in each group
+* `mean_len`: group mean
+* `sd_len`: standard deviation
+* `se_len`: standard error
+
+# Adding Standard Error Bars
+
+Now we can use `geom_errorbar()` to add error bars to a plot of the means.
+
+```{r}
+ggplot(tooth_summary, aes(x = supp, y = mean_len)) +
+  geom_col(fill = "gray70", color = "black", width = 0.6) +
+  geom_errorbar(
+    aes(ymin = mean_len - se_len, ymax = mean_len + se_len),
+    width = 0.15,
+    linewidth = 0.7
+  ) +
+  labs(
+    x = "Supplement Type",
+    y = "Mean Tooth Length"
+  ) +
+  theme_classic(base_size = 12)
+```
+
+### Interpreting the Figure
+
+In this figure:
+
+* the bars show the group means
+* the error bars show the standard error around each mean
+
+This gives the reader more information than the bars alone.
+
+<div class="callout-check">
+<span class="callout-title">Student Check</span>
+If one group has a larger standard error than another group, what does that suggest about the precision of the mean estimate?
+</div>
+
+# Adding Confidence Intervals Instead
+
+In many cases, confidence intervals are more informative than standard errors. We can approximate a 95% confidence interval as:
+
+$$
+\text{mean} \pm 1.96 \times SE
+$$
+
+Let's add those to the summary table.
+
+```{r}
+tooth_summary <- tooth_summary %>%
+  mutate(
+    ci_lower = mean_len - 1.96 * se_len,
+    ci_upper = mean_len + 1.96 * se_len
+  )
+
+tooth_summary
+```
+
+Now we can make a figure with 95% confidence interval error bars.
+
+```{r}
+ggplot(tooth_summary, aes(x = supp, y = mean_len)) +
+  geom_col(fill = "gray70", color = "black", width = 0.6) +
+  geom_errorbar(
+    aes(ymin = ci_lower, ymax = ci_upper),
+    width = 0.15,
+    linewidth = 0.7
+  ) +
+  labs(
+    x = "Supplement Type",
+    y = "Mean Tooth Length"
+  ) +
+  theme_classic(base_size = 12)
+```
+
+<div class="callout-note">
+<span class="callout-title">Teaching Note</span>
+When students first encounter error bars, they often assume that overlapping bars automatically mean “not significant” and non-overlapping bars automatically mean “significant.” That is too simple. Error bars are useful visual aids, but statistical inference should be based on the appropriate analysis.
+</div>
+
+# Bar Charts with Error Bars vs. Point Plots with Error Bars
+
+Although bar charts with error bars are common, many researchers prefer **point plots** because they emphasize the estimated means without filling in a large rectangular area.
+
+Here is the same information shown with points instead of bars.
+
+```{r}
+ggplot(tooth_summary, aes(x = supp, y = mean_len)) +
+  geom_point(size = 3) +
+  geom_errorbar(
+    aes(ymin = ci_lower, ymax = ci_upper),
+    width = 0.15,
+    linewidth = 0.7
+  ) +
+  labs(
+    x = "Supplement Type",
+    y = "Mean Tooth Length"
+  ) +
+  theme_classic(base_size = 12)
+```
+
+This style is often cleaner and more modern, especially when the goal is to emphasize estimates rather than raw totals.
+
+# A More APA-Style Example
+
+Here is a somewhat more polished version using a point plot with confidence intervals.
+
+```{r}
+ggplot(tooth_summary, aes(x = supp, y = mean_len)) +
+  geom_point(size = 3, color = "black") +
+  geom_errorbar(
+    aes(ymin = ci_lower, ymax = ci_upper),
+    width = 0.1,
+    linewidth = 0.7,
+    color = "black"
+  ) +
+  labs(
+    x = "Supplement Type",
+    y = "Mean Tooth Length"
+  ) +
+  theme_classic(base_size = 12) +
+  theme(
+    axis.text = element_text(color = "black"),
+    axis.title = element_text(color = "black")
+  )
+```
+
+This figure is simple, readable, and close to the style students will often see in published work.
+
+# Figure Captions in APA Style
+
+In a full paper, the graph itself is only part of the figure. An APA-style figure also includes a **figure number** and a **figure caption**.
+
+For example:
+
+> **Figure 1**  
+> Mean tooth length by supplement type. Error bars represent 95% confidence intervals.
+
+The exact formatting can vary depending on the version of APA style you are using and the way your document is being produced, but the important idea is that the caption should tell the reader:
+
+* what the figure shows
+* what the groups or variables are
+* what the error bars represent
+
+<div class="callout-tip">
+<span class="callout-title">Tips &amp; Tricks</span>
+Whenever you include error bars, state clearly in the caption what they represent. For example: “Error bars represent standard errors” or “Error bars represent 95% confidence intervals.”
+</div>
+
+# Example: A Figure Showing Means Across Dose
+
+Let's use the `dose` variable from `ToothGrowth` and make a grouped summary.
+
+```{r}
+dose_summary <- ToothGrowth %>%
+  group_by(dose) %>%
+  summarise(
+    n = n(),
+    mean_len = mean(len),
+    sd_len = sd(len),
+    se_len = sd_len / sqrt(n),
+    ci_lower = mean_len - 1.96 * se_len,
+    ci_upper = mean_len + 1.96 * se_len,
+    .groups = "drop"
+  )
+
+dose_summary
+```
+
+Now let's make an APA-style point figure.
+
+```{r}
+ggplot(dose_summary, aes(x = factor(dose), y = mean_len)) +
+  geom_point(size = 3, color = "black") +
+  geom_errorbar(
+    aes(ymin = ci_lower, ymax = ci_upper),
+    width = 0.1,
+    linewidth = 0.7,
+    color = "black"
+  ) +
+  labs(
+    x = "Dose",
+    y = "Mean Tooth Length"
+  ) +
+  theme_classic(base_size = 12) +
+  theme(
+    axis.text = element_text(color = "black"),
+    axis.title = element_text(color = "black")
+  )
+```
+
+# Good Habits for APA-Style Figures
+
+Here are several habits that make graphs more professional and more consistent with APA-style expectations:
+
+* Use clear axis labels.
+* Avoid unnecessary color or decoration.
+* Use readable font sizes.
+* Make sure the graph can still be understood if printed in grayscale.
+* State what any error bars represent.
+* Prefer clarity over visual flair.
+
+# When Should You Use Error Bars?
+
+Error bars are most useful when:
+
+* you are graphing **means or other summary statistics**
+* you want to show **uncertainty** or **variability**
+* the reader needs more than just the central value
+
+Error bars are less useful when:
+
+* you are already showing the full distribution with something like a boxplot
+* the figure is meant to emphasize raw data points rather than summary estimates
+
+For example, if your goal is to compare distributions, a **boxplot** may be more informative than a mean-and-error-bar graph.
+
+<div class="callout-warning">
+<span class="callout-title">Common Mistake</span>
+Students sometimes use a bar chart with error bars when a boxplot would better show the data. If the shape of the distribution matters, do not rely only on means and error bars.
+</div>
+
+# Practice Exercises
+
+### Exercise 1
+
+Using `ToothGrowth`, compute group means and standard errors for `supp`, then create a bar chart with standard error bars.
+
+```{r eval=FALSE}
+tooth_summary <- ToothGrowth %>%
+  group_by(supp) %>%
+  summarise(
+    n = n(),
+    mean_len = mean(len),
+    sd_len = sd(len),
+    se_len = sd_len / sqrt(n),
+    .groups = "drop"
+  )
+
+ggplot(tooth_summary, aes(x = supp, y = mean_len)) +
+  geom_col(fill = "gray70", color = "black", width = 0.6) +
+  geom_errorbar(
+    aes(ymin = mean_len - se_len, ymax = mean_len + se_len),
+    width = 0.15
+  ) +
+  theme_classic()
+```
+
+**Question:** What additional information do the error bars provide beyond the bars alone?
+
+### Exercise 2
+
+Create a point plot with 95% confidence intervals for `dose`.
+
+```{r eval=FALSE}
+dose_summary <- ToothGrowth %>%
+  group_by(dose) %>%
+  summarise(
+    n = n(),
+    mean_len = mean(len),
+    sd_len = sd(len),
+    se_len = sd_len / sqrt(n),
+    ci_lower = mean_len - 1.96 * se_len,
+    ci_upper = mean_len + 1.96 * se_len,
+    .groups = "drop"
+  )
+
+ggplot(dose_summary, aes(x = factor(dose), y = mean_len)) +
+  geom_point(size = 3) +
+  geom_errorbar(
+    aes(ymin = ci_lower, ymax = ci_upper),
+    width = 0.1
+  ) +
+  theme_classic()
+```
+
+**Question:** Why might a point plot be preferable to a bar chart in this case?
+
+### Exercise 3
+
+Look back at one of your earlier graphs from this chapter. How could you revise it to make it look more like an APA-style figure?
+
+**Question:** List at least two changes you would make.
+
+# Final Takeaway
+
+An APA-style figure should help the reader understand the data quickly and clearly. Error bars can improve a figure by showing uncertainty or variability, but only when they are used thoughtfully and labeled clearly.
+
+As with all graphs, the most important question is not simply “Can I add error bars?” but rather:
+
+> What does this figure need to communicate to the reader?
+
+# Line Charts
+
+A **line chart** connects points across an ordered x-axis. It is especially useful for showing change over time.
+
+### When to Use a Line Chart
+
+Use a line chart when:
+
+* the x-axis is **ordered**
+* you want to show **change over time**
+* you want to highlight trends, trajectories, or repeated measurements
+
+### When *Not* to Use a Line Chart
+
+Do not use a line chart when:
+
+* the x-axis categories are unordered
+* you are comparing independent categories with no natural sequence
+* the points should not imply continuity between observations
+
+## R Implementation
+
+Let's create a simple dataset of average stress ratings across a semester.
+
+```{r}
+stress_time <- tibble(
+  week = 1:6,
+  mean_stress = c(3.2, 3.8, 4.1, 4.5, 5.0, 4.4)
+)
+
+stress_time
+```
+
+```{r}
+ggplot(stress_time, aes(x = week, y = mean_stress)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "Average Stress Across Six Weeks",
+    x = "Week",
+    y = "Mean Stress Rating"
+  ) +
+  theme_bw()
+```
+
+### Interpreting the Plot
+
+The line emphasizes the direction of change across the ordered x-axis. Here, stress increases across most weeks and then drops slightly at the end.
+
+<div class="callout-warning">
+<span class="callout-title">Common Mistake</span>
+Do not use a line chart for unordered categories like major or favorite color. A line implies continuity and sequence.
+</div>
+
+<div class="callout-check">
+<span class="callout-title">Student Check</span>
+Why would a line chart be misleading for categories like Psychology, Biology, and Business?
+</div>
+
+# Scatterplots
+
+A **scatterplot** displays the relationship between two continuous variables. Each point represents one observation.
+
+### When to Use a Scatterplot
+
+Use a scatterplot when:
+
+* both variables are **quantitative**
+* you want to examine **association**
+* you want to see the direction, strength, and form of a relationship
+
+### When *Not* to Use a Scatterplot
+
+Do not use a scatterplot when:
+
+* one or both variables are categorical
+* you only want to show the distribution of a single variable
+* the data are aggregated in a way that hides individual observations unnecessarily
+
+## R Implementation
+
+Let's use the built-in `mtcars` dataset and examine the relationship between weight and miles per gallon.
+
+```{r}
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  labs(
+    title = "Relationship Between Car Weight and Fuel Efficiency",
+    x = "Weight (1000 lbs)",
+    y = "Miles Per Gallon"
+  ) +
+  theme_bw()
+```
+
+We can also add a fitted line to highlight the trend.
+
+```{r}
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(
+    title = "Relationship Between Car Weight and Fuel Efficiency",
+    x = "Weight (1000 lbs)",
+    y = "Miles Per Gallon"
+  ) +
+  theme_bw()
+```
+
+### Interpreting the Plot
+
+The scatterplot suggests a negative relationship: as weight increases, fuel efficiency tends to decrease.
+
+<div class="callout-note">
+<span class="callout-title">Teaching Note</span>
+Scatterplots are one of the most important visual tools in research methods because they help students move from “group comparison” thinking to “relationship between variables” thinking.
+</div>
+
+<div class="callout-check">
+<span class="callout-title">Student Check</span>
+What would a positive relationship look like in a scatterplot? What would no relationship look like?
+</div>
+
+# Bad Graph Choices: Common Mistakes
+
+Students often learn graphing faster when they also see what **not** to do.
+
+<div class="callout-warning">
+<span class="callout-title">Common Mistake</span>
+Using a pie chart for too many categories makes small differences very difficult to judge.
+</div>
+
+<div class="callout-warning">
+<span class="callout-title">Common Mistake</span>
+Using a column chart for a continuous distribution hides the fact that the variable is continuous. A histogram is usually better.
+</div>
+
+<div class="callout-warning">
+<span class="callout-title">Common Mistake</span>
+Using a line chart for unordered categories suggests a sequence that does not actually exist.
+</div>
+
+<div class="callout-warning">
+<span class="callout-title">Common Mistake</span>
+Using a chart of means when variability matters can hide spread, skew, and outliers.
+</div>
+
+<div class="callout-warning">
+<span class="callout-title">Common Mistake</span>
+Decorative features such as 3D effects, excessive colors, and cluttered labels often make graphs harder to interpret rather than easier.
+</div>
+
+# Comparing Two Good Choices
+
+Sometimes more than one graph is possible, but one is usually better for the specific question.
+
+### Example 1: Pie Chart vs. Column Chart
+
+If you want to show the proportion of students in each major, both a pie chart and a column chart are possible. But if your goal is to compare categories precisely, the column chart is usually easier to read.
+
+### Example 2: Column Chart vs. Boxplot
+
+If you want to compare average test scores across groups, a column chart shows the means. But if you also care about spread and outliers, a boxplot is better.
+
+### Example 3: Histogram vs. Boxplot
+
+A histogram shows the detailed shape of a distribution. A boxplot gives a compact summary. The choice depends on whether you want detail or compression.
+
+# Choosing the Right Plot
+
+At this point, the most important question is no longer “How do I make the graph?” but rather “Which graph best fits my data?”
+
+Here is a practical guide:
+
+* **Pie chart**: use for a small number of categories that make up a whole
+* **Column chart**: use for comparing counts or group summaries across categories
+* **Histogram**: use for the distribution of one continuous variable
+* **Boxplot**: use for comparing a continuous variable across groups
+* **Line chart**: use for change across ordered points or time
+* **Scatterplot**: use for the relationship between two continuous variables
+
+<div class="callout-tip">
+<span class="callout-title">Tips &amp; Tricks</span>
+A useful decision rule is: categorical variable only -&gt; pie chart or column chart; one continuous variable -&gt; histogram; one continuous variable across groups -&gt; boxplot; ordered time points -&gt; line chart; two continuous variables -&gt; scatterplot.
+</div>
+
+# R Implementation Summary
+
+Below is a quick reminder of the basic `ggplot2` geometries used in this chapter:
+
+```{r eval=FALSE}
+# Pie chart
+ggplot(data, aes(x = "", y = value, fill = category)) +
+  geom_col() +
+  coord_polar(theta = "y")
+
+# Column chart
+ggplot(data, aes(x = category, y = value)) +
+  geom_col()
+
+# Histogram
+ggplot(data, aes(x = continuous_variable)) +
+  geom_histogram()
+
+# Boxplot
+ggplot(data, aes(x = group, y = outcome)) +
+  geom_boxplot()
+
+# Line chart
+ggplot(data, aes(x = ordered_x, y = outcome)) +
+  geom_line() +
+  geom_point()
+
+# Scatterplot
+ggplot(data, aes(x = x_variable, y = y_variable)) +
+  geom_point()
+```
+
+# Practice Exercises
+
+### Exercise 1
+
+Use `mpg` to create a histogram of city mileage (`cty`).
+
+```{r eval=FALSE}
+ggplot(mpg, aes(x = cty)) +
+  geom_histogram(binwidth = 2) +
+  labs(
+    title = "Distribution of City Mileage",
+    x = "City Miles Per Gallon",
+    y = "Frequency"
+  ) +
+  theme_bw()
+```
+
+**Question:** Does the distribution appear symmetric, skewed, or multimodal?
+
+### Exercise 2
+
+Use `ToothGrowth` to create a boxplot comparing tooth length by dose.
+
+```{r eval=FALSE}
+ggplot(ToothGrowth, aes(x = factor(dose), y = len)) +
+  geom_boxplot() +
+  labs(
+    title = "Tooth Length by Dose",
+    x = "Dose",
+    y = "Tooth Length"
+  ) +
+  theme_bw()
+```
+
+**Question:** Which dose appears to have the highest median tooth length?
+
+### Exercise 3
+
+Use `mtcars` to create a scatterplot of horsepower (`hp`) and miles per gallon (`mpg`).
+
+```{r eval=FALSE}
+ggplot(mtcars, aes(x = hp, y = mpg)) +
+  geom_point() +
+  labs(
+    title = "Horsepower and Fuel Efficiency",
+    x = "Horsepower",
+    y = "Miles Per Gallon"
+  ) +
+  theme_bw()
+```
+
+**Question:** Is the relationship positive or negative?
+
+### Exercise 4
+
+Create a line chart showing average mood across five days using a small dataset of your own.
+
+```{r eval=FALSE}
+mood_data <- tibble(
+  day = 1:5,
+  mood = c(4.2, 4.8, 5.1, 4.7, 5.3)
+)
+
+ggplot(mood_data, aes(x = day, y = mood)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "Average Mood Across Five Days",
+    x = "Day",
+    y = "Average Mood"
+  ) +
+  theme_bw()
+```
+
+**Question:** Why is a line chart more appropriate here than a column chart?
+
+### Exercise 5
+
+Suppose you measured participants' reaction times and want to see whether the scores are skewed. Which graph would be most appropriate: a pie chart, column chart, histogram, boxplot, line chart, or scatterplot?
+
+**Question:** Explain your choice in one or two sentences.
+
+# Final Takeaway
+
+Plots and graphs are not just decorative. They are tools for reasoning about data. The best graph is the one that matches the structure of the data and helps the reader answer a specific question.
+
+As you continue in research methods, try not to ask only, “How do I make a graph in R?” Ask instead:
+
+> What relationship, pattern, or comparison am I trying to show?
+
+That question will usually tell you which graph to use.
